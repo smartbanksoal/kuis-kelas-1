@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif - Temanku Berbeda</title>
+    <style>
+        :root {
+            --primary-color: #4facfe;
+            --secondary-color: #00f2fe;
+            --btn-color: #fdbb2d;
+            --btn-hover: #ffc244;
+            --correct-color: #4ade80;
+            --wrong-color: #f87171;
+            --bg-color: #f0f9ff;
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #c3e8ff 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            flex: 1;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 4px solid var(--secondary-color);
+            position: relative;
+        }
+
+        h1, h2 { text-align: center; color: var(--primary-color); }
+        
+        /* Layar Login & History */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .form-group input {
+            width: 100%; padding: 12px; border: 2px solid #ddd;
+            border-radius: 10px; font-size: 16px; transition: 0.3s;
+        }
+        .form-group input:focus { border-color: var(--primary-color); outline: none; }
+        
+        .history-box {
+            margin-top: 30px; background: #fff8e1; padding: 15px;
+            border-radius: 10px; border: 2px dashed #fbc02d;
+        }
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .history-table th, .history-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .history-table th { background-color: #fbc02d; color: #fff; }
+
+        /* Kuis */
+        .info-bar {
+            display: flex; justify-content: space-between; margin-bottom: 20px;
+            font-weight: bold; background: #e0f2fe; padding: 10px; border-radius: 10px;
+        }
+        
+        .question { font-size: 20px; font-weight: bold; margin-bottom: 20px; text-align: center; }
+        
+        .options-container { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn {
+            background: #fff; border: 2px solid var(--primary-color);
+            padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold;
+            color: var(--primary-color); cursor: pointer; transition: 0.3s;
+            text-align: left;
+        }
+        .option-btn:hover:not(:disabled) { background: var(--primary-color); color: #fff; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .option-btn.correct { background: var(--correct-color); border-color: var(--correct-color); color: white; }
+        .option-btn.wrong { background: var(--wrong-color); border-color: var(--wrong-color); color: white; }
+
+        .explanation {
+            display: none; margin-top: 20px; padding: 15px;
+            background: #dcfce7; border-left: 5px solid #22c55e;
+            border-radius: 8px; font-size: 16px;
+        }
+
+        .navigation {
+            display: flex; justify-content: space-between; margin-top: 25px;
+        }
+        .nav-btn {
+            padding: 10px 20px; font-size: 16px; font-weight: bold;
+            border: none; border-radius: 10px; cursor: pointer; transition: 0.3s;
+            background: var(--btn-color); color: #fff;
+        }
+        .nav-btn:hover:not(:disabled) { background: var(--btn-hover); }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+        
+        .btn-home {
+            background-color: #64748b; 
+            margin-top: 10px;
+        }
+        .btn-home:hover {
+            background-color: #475569;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a202c; /* Latar belakang gelap elegan */
+            color: #e2e8f0; 
+            text-align: center; 
+            padding: 15px;
+            font-size: 14px; 
+            margin-top: auto;
+        }
+        footer a { color: var(--btn-color); text-decoration: none; font-weight: bold; }
+        footer a:hover { text-decoration: underline; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <span>📖 SD Kelas 1 | Kurikulum Merdeka</span>
+        <span>Kode: IND-K1-S2-B6-HOTS</span>
+    </div>
+
+    <div class="container" id="login-screen">
+        <h1>🌟 Kuis Anak Hebat 🌟</h1>
+        <p style="text-align: center;">BAB 6: Temanku Berbeda (ga-, gi-, gu-, ge-, go- & Berhitung)</p>
+        <div class="form-group">
+            <label>Nama Lengkap:</label>
+            <input type="text" id="input-nama" placeholder="Masukkan nama kamu...">
+        </div>
+        <div class="form-group">
+            <label>Kelas:</label>
+            <input type="text" id="input-kelas" placeholder="Contoh: 1A">
+        </div>
+        
+        <button class="nav-btn" style="width: 100%; font-size: 18px; padding: 15px;" onclick="startQuiz()">Mulai Kuis 🚀</button>
+        <button class="nav-btn btn-home" style="width: 100%; font-size: 16px; padding: 12px;" onclick="window.location.href='../index.html'">🏠 Kembali ke Home</button>
+
+        <div class="history-box">
+            <h3 style="margin-top: 0; text-align: center;">🏆 Riwayat Nilai Hebat</h3>
+            <table class="history-table">
+                <thead><tr><th>Nama</th><th>Kelas</th><th>Waktu</th><th>Skor</th></tr></thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container hidden" id="quiz-screen">
+        <div class="info-bar">
+            <span>Soal: <span id="current-q-num">1</span>/25</span>
+            <span>Skor Sementara: <span id="temp-score">0</span></span>
+        </div>
+        <div class="question" id="question-text"></div>
+        <div class="options-container" id="options-container"></div>
+        <div class="explanation" id="explanation-box"></div>
+        
+        <div class="navigation">
+            <button class="nav-btn" id="btn-prev" onclick="prevQuestion()" disabled>⬅️ Sebelumnya</button>
+            <button class="nav-btn" id="btn-next" onclick="nextQuestion()" disabled>Selanjutnya ➡️</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="result-screen">
+        <h1>🎉 Kuis Selesai! 🎉</h1>
+        <h2 id="final-score-text">Skor Kamu: 100</h2>
+        <p style="text-align: center; font-size: 18px;">Kerja yang sangat bagus, <span id="display-nama"></span>!</p>
+        <button class="nav-btn" style="width: 100%; margin-top: 20px;" onclick="goHome()">🏠 Kembali ke Awal</button>
+    </div>
+
+    <footer>
+        @ <script>document.write(new Date().getFullYear());</script> Oleh: Dwi Endrasto | Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        const soalData = [
+            {
+                q: "Hewan besar belalai panjang dinamakan...",
+                opts: ["Gajah bertubuh besar", "Gagak bersayap hitam", "Garuda burung kuat"],
+                ans: "Gajah bertubuh besar",
+                exp: "Benar! Hewan berbelalai adalah Gajah. Kata 'Gajah' diawali dengan suku kata 'Ga-'."
+            },
+            {
+                q: "Saat bangun tidur kita menggosok...",
+                opts: ["Gigi agar bersih", "Gusi agar sehat", "Gips agar kuat"],
+                ans: "Gigi agar bersih",
+                exp: "Benar! Kita menggosok gigi supaya bersih. Kata 'Gigi' diawali dengan suku kata 'Gi-'."
+            },
+            {
+                q: "Tempat menyimpan barang tidak terpakai adalah...",
+                opts: ["Gudang yang kotor", "Gubuk yang reot", "Gua yang gelap"],
+                ans: "Gudang yang kotor",
+                exp: "Benar! Barang tak terpakai disimpan di gudang. Kata 'Gudang' diawali suku kata 'Gu-'."
+            },
+            {
+                q: "Benda berbunyi dipukul saat lomba...",
+                opts: ["Gendang dari kayu", "Gelas dari kaca", "Gelang dari emas"],
+                ans: "Gendang dari kayu",
+                exp: "Benar! Gendang adalah alat musik yang dipukul. Kata 'Gendang' diawali suku kata 'Ge-'."
+            },
+            {
+                q: "Olahraga memukul bola kecil memakai tongkat adalah...",
+                opts: ["Golf yang seru", "Gawang yang besar", "Gasing yang putar"],
+                ans: "Golf yang seru",
+                exp: "Benar! Olahraga itu adalah Golf. Kata 'Golf' diawali dengan suku kata 'Go-'."
+            },
+            {
+                q: "Ada 🍎🍎🍎🍎🍎 di meja. Dimakan satu. Sisa...",
+                opts: ["Empat buah apel", "Lima buah apel", "Tiga buah apel"],
+                ans: "Empat buah apel",
+                exp: "Benar! 5 apel dikurangi 1 apel sama dengan 4 apel."
+            },
+            {
+                q: "Burung hitam yang suaranya keras...",
+                opts: ["Gagak warna hitam", "Gajah badan besar", "Garuda burung kuat"],
+                ans: "Gagak warna hitam",
+                exp: "Benar! Burung hitam bersuara keras adalah Gagak (diawali 'Ga-')."
+            },
+            {
+                q: "Alat musik yang dipetik berbunyi jreng...",
+                opts: ["Gitar suara merdu", "Gigi putih bersih", "Gilingan batu berat"],
+                ans: "Gitar suara merdu",
+                exp: "Benar! Alat musik petik adalah Gitar (diawali 'Gi-')."
+            },
+            {
+                q: "Pendidik yang mengajar di sekolah...",
+                opts: ["Guru yang pintar", "Gubernur yang tegas", "Gurita yang besar"],
+                ans: "Guru yang pintar",
+                exp: "Benar! Pendidik di sekolah adalah Guru (diawali 'Gu-')."
+            },
+            {
+                q: "Perhiasan dipakai di pergelangan tangan...",
+                opts: ["Gelang yang cantik", "Gelas yang bening", "Gerbang yang tinggi"],
+                ans: "Gelang yang cantik",
+                exp: "Benar! Perhiasan tangan adalah Gelang (diawali 'Ge-')."
+            },
+            {
+                q: "Budi punya 🚗🚗🚗. Diberi paman 🚗🚗. Jumlahnya...",
+                opts: ["Jadi lima mobil", "Jadi tiga mobil", "Jadi empat mobil"],
+                ans: "Jadi lima mobil",
+                exp: "Benar! 3 mobil ditambah 2 mobil sama dengan 5 mobil."
+            },
+            {
+                q: "Hewan besar yang mirip monyet...",
+                opts: ["Gorila yang kuat", "Golok yang tajam", "Goni yang kasar"],
+                ans: "Gorila yang kuat",
+                exp: "Benar! Hewan itu adalah Gorila (diawali 'Go-')."
+            },
+            {
+                q: "Bumbu dapur yang rasanya asin...",
+                opts: ["Garam yang asin", "Gula yang manis", "Getah yang lengket"],
+                ans: "Garam yang asin",
+                exp: "Benar! Bumbu asin adalah Garam (diawali 'Ga-')."
+            },
+            {
+                q: "Kata di bawah ini yang diawali huruf Gi adalah...",
+                opts: ["Gigi yang putih", "Garam yang asin", "Guru yang baik"],
+                ans: "Gigi yang putih",
+                exp: "Benar! Kata 'Gigi' diawali dengan huruf dan suku kata 'Gi-'."
+            },
+            {
+                q: "Rumah kecil di tengah sawah...",
+                opts: ["Gubuk yang sepi", "Gudang yang besar", "Gua yang gelap"],
+                ans: "Gubuk yang sepi",
+                exp: "Benar! Rumah kecil di sawah disebut Gubuk (diawali 'Gu-')."
+            },
+            {
+                q: "Ibu membeli ✏️✏️✏️✏️. Hilang dua. Sisa pensil...",
+                opts: ["Dua buah pensil", "Empat buah pensil", "Tiga buah pensil"],
+                ans: "Dua buah pensil",
+                exp: "Benar! 4 pensil dikurangi 2 pensil sisanya 2 pensil."
+            },
+            {
+                q: "Saat hujan lebat terdengar suara petir...",
+                opts: ["Gelegar yang keras", "Gembok yang kuat", "Gerobak yang berat"],
+                ans: "Gelegar yang keras",
+                exp: "Benar! Suara petir adalah gelegar (diawali 'Ge-')."
+            },
+            {
+                q: "Karung coklat untuk menyimpan beras...",
+                opts: ["Goni yang tebal", "Gorong yang kotor", "Golok yang tajam"],
+                ans: "Goni yang tebal",
+                exp: "Benar! Karung beras sering disebut karung Goni (diawali 'Go-')."
+            },
+            {
+                q: "Alat untuk menusuk mie saat makan...",
+                opts: ["Garpu yang runcing", "Gelas yang kaca", "Gayung yang plastik"],
+                ans: "Garpu yang runcing",
+                exp: "Benar! Alat itu adalah Garpu (diawali 'Ga-')."
+            },
+            {
+                q: "Menggigit makanan menggunakan bagian mulut yaitu...",
+                opts: ["Gigi bagian depan", "Gusi bagian dalam", "Ginjal bagian dalam"],
+                ans: "Gigi bagian depan",
+                exp: "Benar! Kita menggigit menggunakan Gigi (diawali 'Gi-')."
+            },
+            {
+                q: "Di langit ada ⭐⭐. Muncul lagi ⭐⭐⭐. Jumlahnya...",
+                opts: ["Lima bintang terang", "Dua bintang terang", "Empat bintang terang"],
+                ans: "Lima bintang terang",
+                exp: "Benar! 2 bintang ditambah 3 bintang sama dengan 5 bintang."
+            },
+            {
+                q: "Binatang laut yang punya delapan kaki tentakel...",
+                opts: ["Gurita yang besar", "Gurun yang panas", "Gula yang manis"],
+                ans: "Gurita yang besar",
+                exp: "Benar! Binatang laut itu adalah Gurita (diawali 'Gu-')."
+            },
+            {
+                q: "Rambut yang tidak diikat saat berlari akan terasa...",
+                opts: ["Gerah yang panas", "Gelap yang gulita", "Geli yang lucu"],
+                ans: "Gerah yang panas",
+                exp: "Benar! Kita akan merasa Gerah (diawali 'Ge-')."
+            },
+            {
+                q: "Pisau besar alat berkebun paman...",
+                opts: ["Golok yang tajam", "Goni yang kasar", "Gorila yang besar"],
+                ans: "Golok yang tajam",
+                exp: "Benar! Pisau besar disebut Golok (diawali 'Go-')."
+            },
+            {
+                q: "Budi punya 🍬🍬🍬🍬. Dibagikan satu-satu ke tiga teman. Sisa permen Budi...",
+                opts: ["Sisa satu permen", "Sisa dua permen", "Sisa tiga permen"],
+                ans: "Sisa satu permen",
+                exp: "Benar! Budi punya 4 permen. Diberikan ke 3 teman (masing-masing 1). 4 - 3 = 1 permen."
+            }
+        ];
+
+        let currentQIndex = 0;
+        let score = 0;
+        let userData = { nama: "", kelas: "" };
+        let userAnswers = [];
+
+        // KUNCI PENYIMPANAN UNIK - Mencegah skor nyasar ke soal lain
+        const STORAGE_KEY = "quizHistory_IND-K1-S2-B6-HOTS";
+
+        // Fitur Shuffle Array
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Tampilkan History
+        function renderHistory() {
+            const historyBody = document.getElementById("history-body");
+            historyBody.innerHTML = "";
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            if (history.length === 0) {
+                historyBody.innerHTML = "<tr><td colspan='4'>Belum ada data</td></tr>";
+                return;
+            }
+            history.forEach(h => {
+                let row = `<tr><td>${h.nama}</td><td>${h.kelas}</td><td>${h.waktu}</td><td><b>${h.skor}</b></td></tr>`;
+                historyBody.innerHTML += row;
+            });
+        }
+
+        function startQuiz() {
+            const n = document.getElementById("input-nama").value.trim();
+            const k = document.getElementById("input-kelas").value.trim();
+            if (!n || !k) { alert("Nama dan Kelas wajib diisi ya!"); return; }
+            
+            userData.nama = n; userData.kelas = k;
+            currentQIndex = 0; score = 0;
+            userAnswers = new Array(soalData.length).fill(null);
+            
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const data = soalData[currentQIndex];
+            document.getElementById("current-q-num").innerText = currentQIndex + 1;
+            document.getElementById("temp-score").innerText = score;
+            document.getElementById("question-text").innerText = data.q;
+            document.getElementById("explanation-box").style.display = "none";
+            document.getElementById("btn-next").disabled = true;
+            document.getElementById("btn-prev").disabled = (currentQIndex === 0);
+
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+
+            let optsToShow = [];
+            
+            if (userAnswers[currentQIndex] !== null) {
+                optsToShow = userAnswers[currentQIndex].shuffledOpts;
+            } else {
+                optsToShow = shuffleArray(data.opts);
+                userAnswers[currentQIndex] = { shuffledOpts: optsToShow, selectedAns: null, isCorrect: false };
+            }
+
+            optsToShow.forEach(opt => {
+                let btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            if (userAnswers[currentQIndex].selectedAns !== null) {
+                restoreAnswerState();
+            } else {
+                document.getElementById("btn-next").innerText = "Selanjutnya ➡️";
+            }
+        }
+
+        function checkAnswer(selectedOption, btnClicked) {
+            const data = soalData[currentQIndex];
+            const isCorrect = (selectedOption === data.ans);
+            
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(b => {
+                b.disabled = true;
+                if (b.innerText === data.ans) b.classList.add("correct");
+            });
+
+            if (isCorrect) {
+                score += 4; 
+            } else {
+                btnClicked.classList.add("wrong");
+            }
+
+            userAnswers[currentQIndex].selectedAns = selectedOption;
+            userAnswers[currentQIndex].isCorrect = isCorrect;
+
+            document.getElementById("temp-score").innerText = score;
+            document.getElementById("explanation-box").innerText = "Pembahasan: " + data.exp;
+            document.getElementById("explanation-box").style.display = "block";
+            
+            document.getElementById("btn-next").disabled = false;
+            
+            if (currentQIndex === soalData.length - 1) {
+                document.getElementById("btn-next").innerText = "Selesai & Lihat Hasil 🏁";
+            }
+        }
+
+        function restoreAnswerState() {
+            const data = soalData[currentQIndex];
+            const ansData = userAnswers[currentQIndex];
+            
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(b => {
+                b.disabled = true;
+                if (b.innerText === data.ans) {
+                    b.classList.add("correct");
+                } else if (b.innerText === ansData.selectedAns && !ansData.isCorrect) {
+                    b.classList.add("wrong");
+                }
+            });
+
+            document.getElementById("explanation-box").innerText = "Pembahasan: " + data.exp;
+            document.getElementById("explanation-box").style.display = "block";
+            document.getElementById("btn-next").disabled = false;
+            
+            if (currentQIndex === soalData.length - 1) {
+                document.getElementById("btn-next").innerText = "Selesai & Lihat Hasil 🏁";
+            } else {
+                document.getElementById("btn-next").innerText = "Selanjutnya ➡️";
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < soalData.length - 1) {
+                currentQIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQIndex > 0) {
+                currentQIndex--;
+                loadQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            
+            document.getElementById("final-score-text").innerText = "Skor Kamu: " + score;
+            document.getElementById("display-nama").innerText = userData.nama;
+
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            let now = new Date();
+            let timeStr = ("0"+now.getDate()).slice(-2) + "/" + ("0"+(now.getMonth()+1)).slice(-2) + " " + ("0"+now.getHours()).slice(-2) + ":" + ("0"+now.getMinutes()).slice(-2);
+            
+            history.push({
+                nama: userData.nama,
+                kelas: userData.kelas,
+                waktu: timeStr,
+                skor: score
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        }
+
+        function goHome() {
+            document.getElementById("input-nama").value = "";
+            document.getElementById("input-kelas").value = "";
+            document.getElementById("result-screen").classList.add("hidden");
+            document.getElementById("login-screen").classList.remove("hidden");
+            renderHistory();
+        }
+
+        window.onload = renderHistory;
+    </script>
+</body>
+</html>

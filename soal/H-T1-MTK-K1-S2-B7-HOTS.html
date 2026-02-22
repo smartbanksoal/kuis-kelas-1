@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif: Mengukur Panjang Benda</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+        :root {
+            --primary: #FF7B9C;
+            --secondary: #60D394;
+            --accent: #FFD97D;
+            --bg-color: #EEF5FF;
+            --text-color: #333;
+            --wrong: #FF6B6B;
+            --correct: #4CAF50;
+            --home-btn: #4FC3F7;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#FFD97D 2px, transparent 2px), radial-gradient(#FF7B9C 2px, transparent 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .code-header {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border: 5px solid var(--accent);
+            flex-grow: 1;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* Login Screen */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid var(--bg-color);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        .form-group input:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+        
+        .btn-start {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.3rem;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .btn-start:hover {
+            transform: scale(1.02);
+            background-color: #4ebf7a;
+        }
+
+        /* Tombol Home */
+        .btn-home {
+            display: block;
+            background-color: var(--home-btn);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            padding: 15px 30px;
+            font-size: 1.3rem;
+            border-radius: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .btn-home:hover {
+            transform: scale(1.02);
+            background-color: #29b6f6;
+        }
+
+        /* History Table */
+        .history-box {
+            margin-top: 30px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed #ccc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        table, th, td {
+            border: 2px solid var(--bg-color);
+        }
+        th {
+            background-color: var(--accent);
+            padding: 12px;
+        }
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Quiz Screen */
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .question-box {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            background: #fff5f7;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 8px solid var(--primary);
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .option-btn {
+            background-color: white;
+            border: 3px solid var(--secondary);
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+            text-align: left;
+            font-weight: 600;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--bg-color);
+            transform: translateX(5px);
+        }
+        .option-btn.correct {
+            background-color: var(--correct) !important;
+            color: white;
+            border-color: var(--correct);
+        }
+        .option-btn.wrong {
+            background-color: var(--wrong) !important;
+            color: white;
+            border-color: var(--wrong);
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Pembahasan */
+        .explanation {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e6f7ff;
+            border-radius: 15px;
+            border-left: 8px solid #3399ff;
+            display: none;
+            font-size: 1.1rem;
+            animation: fadeIn 0.5s;
+        }
+
+        /* Navigasi Soal */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .nav-btn {
+            background-color: #aaa;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .nav-btn.active-nav {
+            background-color: var(--primary);
+        }
+        .nav-btn.active-nav:hover {
+            background-color: #e66a87;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--text-color);
+            color: white;
+            margin-top: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="code-header">KODE: MTK-K1-S2-B7-HOTS</div>
+
+    <div class="container">
+        
+        <div id="login-screen">
+            <h1>Halo Juara! 👋</h1>
+            <h2>Kuis Matematika: Mengukur Panjang Benda</h2>
+            <p style="text-align:center; font-size:1.1rem;">Kelas 1 - Semester 2 - Kurikulum Merdeka</p>
+            
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" placeholder="Masukkan namamu..." required>
+            </div>
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" placeholder="Contoh: 1A" required>
+            </div>
+            
+            <button class="btn-start" onclick="mulaiKuis()">Mulai Kuis Sekarang!</button>
+
+            <a href="../index.html" class="btn-home">Kembali ke Home</a>
+
+            <div class="history-box">
+                <h3>🏆 History Pencapaian 🏆</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Skor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div class="info-bar">
+                <span id="display-nama">Nama: -</span>
+                <span id="display-soal">Soal: 1 / 25</span>
+                <span id="display-skor">Skor Sementara: 0</span>
+            </div>
+
+            <div class="question-box" id="question-text">
+                </div>
+
+            <div class="options" id="options-container">
+                </div>
+
+            <div class="explanation" id="explanation-box">
+                <strong>Pembahasan:</strong> <span id="explanation-text"></span>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn" id="btn-prev" onclick="soalSebelumnya()">⬅ Soal Sebelumnya</button>
+                <button class="nav-btn active-nav" id="btn-next" onclick="soalSelanjutnya()">Soal Selanjutnya ➡</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h1>🎉 Kuis Selesai! 🎉</h1>
+            <h2>Skor Akhir Kamu: <span id="final-score"></span> / 100</h2>
+            <p style="text-align:center; font-size:1.2rem;" id="final-message"></p>
+            <button class="btn-start" style="margin-top:20px;" onclick="location.reload()">Ulangi Kuis Ini</button>
+            <a href="../index.html" class="btn-home" style="margin-top:15px;">Kembali ke Home</a>
+        </div>
+
+    </div>
+
+    <footer>
+        Tahun 2026<br>
+        Oleh : Dwi Endrasto - hak cipta dilindungi<br>
+        Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        // Data Soal (25 Soal HOTS, Kurikulum Merdeka, Bab: Mengukur Panjang Benda)
+        const bankSoal = [
+            {
+                q: "1. Meja A panjangnya 5 jengkal. Meja B panjangnya 7 jengkal. Manakah yang ukurannya lebih pendek?",
+                opts: [{ t: "Pilih meja A", c: true }, { t: "Pilih meja B", c: false }, { t: "Sama sama panjang", c: false }],
+                exp: "5 jengkal lebih sedikit dari 7 jengkal. Maka, meja A lebih pendek dari meja B."
+            },
+            {
+                q: "2. Ada pita merah 10 jengkal dan pita biru 8 jengkal. Pita mana yang cukup mengelilingi kotak yang butuh 9 jengkal?",
+                opts: [{ t: "Pilih pita merah", c: true }, { t: "Pilih pita biru", c: false }, { t: "Pita tidak cukup", c: false }],
+                exp: "Kotak butuh 9 jengkal. Pita biru hanya 8 (kurang). Pita merah 10 (cukup dan lebih)."
+            },
+            {
+                q: "3. Jarak rumah ke sekolah adalah 20 langkah ayah atau 30 langkah anak. Mengapa jumlah langkah ayah lebih sedikit?",
+                opts: [{ t: "Kaki ayah panjang", c: true }, { t: "Kaki ayah pendek", c: false }, { t: "Kaki anak panjang", c: false }],
+                exp: "Karena kaki ayah lebih panjang, satu langkah ayah menutup jarak lebih jauh, sehingga butuh lebih sedikit langkah."
+            },
+            {
+                q: "4. Buku gambar panjangnya 2 jengkal. Meja guru panjangnya sama dengan 4 buku gambar. Berapa jengkal panjang meja guru?",
+                opts: [{ t: "Tepat delapan jengkal", c: true }, { t: "Tepat tujuh jengkal", c: false }, { t: "Tepat enam jengkal", c: false }],
+                exp: "Satu buku 2 jengkal. Jika ada 4 buku, maka 2 + 2 + 2 + 2 = 8 jengkal."
+            },
+            {
+                q: "5. Pensil A membentang dari angka 1 sampai 4 di penggaris. Pensil B dari angka 2 sampai 6. Mana yang lebih panjang?",
+                opts: [{ t: "Pensil yang B", c: true }, { t: "Pensil yang A", c: false }, { t: "Panjang sama saja", c: false }],
+                exp: "Pensil A panjangnya 3 (4 dikurang 1). Pensil B panjangnya 4 (6 dikurang 2). Jadi pensil B lebih panjang."
+            },
+            {
+                q: "6. Pohon mangga tingginya 5 tongkat. Pohon pisang 4 tongkat. Pohon jeruk 6 tongkat. Manakah pohon yang paling pendek?",
+                opts: [{ t: "Pilih pohon pisang", c: true }, { t: "Pilih pohon mangga", c: false }, { t: "Pilih pohon jeruk", c: false }],
+                exp: "Angka 4 adalah yang terkecil dibandingkan 5 dan 6. Jadi pohon pisang paling pendek."
+            },
+            {
+                q: "7. Tali jemuran butuh 15 depa. Ayah hanya memiliki tali sepanjang 12 depa. Apa yang akan terjadi saat dipasang?",
+                opts: [{ t: "Tali sangat kurang", c: true }, { t: "Tali sudah cukup", c: false }, { t: "Tali lebih panjang", c: false }],
+                exp: "12 depa lebih pendek dari 15 depa. Ayah kekurangan 3 depa lagi agar tali cukup."
+            },
+            {
+                q: "8. Sedotan merah panjangnya 5 klip kertas. Sedotan hijau panjangnya 4 klip kertas. Jika disambung memanjang, jadi berapa klip seluruhnya?",
+                opts: [{ t: "Jumlah sembilan klip", c: true }, { t: "Jumlah delapan klip", c: false }, { t: "Jumlah sepuluh klip", c: false }],
+                exp: "Jika disambung, ukurannya dijumlahkan. 5 klip ditambah 4 klip menjadi 9 klip."
+            },
+            {
+                q: "9. Papan tulis panjangnya 10 jengkal milik ibu. Kalau diukur menggunakan jengkal milik adik, jumlah jengkalnya akan menjadi...",
+                opts: [{ t: "Jadi lebih banyak", c: true }, { t: "Jadi lebih sedikit", c: false }, { t: "Jadi sama saja", c: false }],
+                exp: "Jengkal tangan adik lebih kecil. Untuk menutupi papan yang sama, butuh jengkal kecil yang lebih banyak."
+            },
+            {
+                q: "10. Andi dan Budi berjalan masing-masing 5 langkah. Tapi Andi berada lebih jauh dari Budi. Kenapa bisa begitu?",
+                opts: [{ t: "Langkah Andi lebar", c: true }, { t: "Langkah Budi lebar", c: false }, { t: "Langkah mereka sama", c: false }],
+                exp: "Meski jumlah langkahnya sama (5), jika langkah Andi lebih lebar/panjang, maka jarak akhirnya pasti lebih jauh."
+            },
+            {
+                q: "11. Tiang bendera 10 meter. Beringin 12 meter. Cemara 9 meter. Urutan nama dari yang ukurannya paling tinggi adalah?",
+                opts: [{ t: "Beringin bendera cemara", c: true }, { t: "Cemara bendera beringin", c: false }, { t: "Bendera beringin cemara", c: false }],
+                exp: "Paling tinggi Beringin (12), lalu Bendera (10), paling pendek Cemara (9)."
+            },
+            {
+                q: "12. Tali A 2 meter. Tali B 3 meter. Tali C 1 meter. Jika Tali A dan C disambung, ukurannya membandingkan Tali B?",
+                opts: [{ t: "Menjadi sama panjang", c: true }, { t: "Menjadi lebih panjang", c: false }, { t: "Menjadi lebih pendek", c: false }],
+                exp: "Tali A (2) ditambah Tali C (1) hasilnya 3 meter. Tali B ukurannya juga 3 meter. Jadi sama."
+            },
+            {
+                q: "13. Karpet A butuh 8 lantai ubin untuk ditutup. Karpet B butuh 10 ubin. Karpet manakah yang lebih luas dan panjang?",
+                opts: [{ t: "Karpet sepuluh ubin", c: true }, { t: "Karpet delapan ubin", c: false }, { t: "Karpet sama saja", c: false }],
+                exp: "Karpet yang mampu menutupi jumlah ubin lebih banyak (10 ubin) berarti ukurannya lebih besar/panjang."
+            },
+            {
+                q: "14. Satu jengkal Rina sama dengan 2 penghapus. Buku Rina panjangnya 3 jengkal. Berapa penghapus panjang buku tersebut?",
+                opts: [{ t: "Ada enam penghapus", c: true }, { t: "Ada lima penghapus", c: false }, { t: "Ada tujuh penghapus", c: false }],
+                exp: "3 jengkal Rina = 2 + 2 + 2 penghapus. Hasilnya adalah 6 penghapus."
+            },
+            {
+                q: "15. Sikat gigi ayah panjangnya 6 korek api. Sikat gigi adik panjangnya 4 korek api. Berapa selisih panjang keduanya?",
+                opts: [{ t: "Beda dua korek", c: true }, { t: "Beda tiga korek", c: false }, { t: "Beda empat korek", c: false }],
+                exp: "Selisih adalah mengurangkan yang besar dengan yang kecil. 6 dikurang 4 sama dengan 2."
+            },
+            {
+                q: "16. Ular mainan hijau panjangnya 10 balok. Ular merah 7 balok. Berapa balok harus ditambah ke merah agar panjangnya sama?",
+                opts: [{ t: "Tambah tiga balok", c: true }, { t: "Tambah dua balok", c: false }, { t: "Tambah empat balok", c: false }],
+                exp: "Dari 7 balok menuju 10 balok membutuhkan tambahan 3 balok lagi (10 - 7 = 3)."
+            },
+            {
+                q: "17. Penggaris sama dengan 5 pensil. Jika 1 pensil sama dengan 2 penghapus, berapa penghapus panjang penggaris itu?",
+                opts: [{ t: "Sepuluh buah penghapus", c: true }, { t: "Delapan buah penghapus", c: false }, { t: "Sembilan buah penghapus", c: false }],
+                exp: "5 pensil. Tiap pensil dihitung 2 penghapus. 5 + 5 (atau 5x2) = 10 penghapus."
+            },
+            {
+                q: "18. Lemari tingginya 3 meter. Pintu tingginya 2 meter. Jendela tingginya 1 meter. Benda apakah yang paling menjulang tinggi?",
+                opts: [{ t: "Benda bernama lemari", c: true }, { t: "Benda bernama pintu", c: false }, { t: "Benda bernama jendela", c: false }],
+                exp: "Angka terbesar adalah 3 meter, yang merupakan ukuran tinggi dari lemari."
+            },
+            {
+                q: "19. Siti mengukur jalan butuh 15 langkah. Udin mengukur jalan butuh 12 langkah. Siapakah yang kakinya lebih pendek?",
+                opts: [{ t: "Kaki milik Siti", c: true }, { t: "Kaki milik Udin", c: false }, { t: "Kaki mereka sama", c: false }],
+                exp: "Siti butuh lebih banyak langkah (15) untuk jalan yang sama. Artinya langkah/kaki Siti lebih pendek."
+            },
+            {
+                q: "20. Jembatan bambu panjangnya 8 meter. Jika diganti dengan jejeran papan kayu berukuran masing-masing 2 meter, butuh berapa kayu?",
+                opts: [{ t: "Butuh empat kayu", c: true }, { t: "Butuh tiga kayu", c: false }, { t: "Butuh lima kayu", c: false }],
+                exp: "2 meter + 2 meter + 2 meter + 2 meter = 8 meter. Butuh 4 buah papan kayu."
+            },
+            {
+                q: "21. Pita Ani 12 sentimeter. Pita Siti dipotong 3 sentimeter sehingga tersisa 9 sentimeter. Pita milik siapa yang awalnya lebih panjang?",
+                opts: [{ t: "Pita sama panjang", c: true }, { t: "Pita milik Ani", c: false }, { t: "Pita milik Siti", c: false }],
+                exp: "Pita Siti awalnya 9 ditambah bagian yang dipotong 3 = 12 cm. Ternyata pita mereka awalnya sama panjang."
+            },
+            {
+                q: "22. Mengukur buku bisa memakai klip kertas kecil atau memakai sebuah pensil panjang. Hasil angkanya akan lebih besar/banyak jika...",
+                opts: [{ t: "Pakai klip kertas", c: true }, { t: "Pakai sebuah pensil", c: false }, { t: "Hasil selalu sama", c: false }],
+                exp: "Semakin pendek alat ukurnya (klip), semakin besar/banyak angka yang didapat saat mengukur."
+            },
+            {
+                q: "23. Kamar lebarnya 4 rentangan tangan ayah. Saat mengukur, jika ayah merentangkan kedua tangan lebar-lebar, sama seperti mengukur benda yang...",
+                opts: [{ t: "Benda yang panjang", c: true }, { t: "Benda yang pendek", c: false }, { t: "Benda yang bulat", c: false }],
+                exp: "Rentangan tangan biasa digunakan untuk memperkirakan ukuran benda/jarak yang sangat panjang atau lebar."
+            },
+            {
+                q: "24. Sepatu roda butuh kotak berukuran 3 jengkal untuk disimpan. Kotak yang tersedia hanya berukuran 2 jengkal. Sepatu roda itu...",
+                opts: [{ t: "Tidak bisa masuk", c: true }, { t: "Pasti bisa masuk", c: false }, { t: "Masuk tapi longgar", c: false }],
+                exp: "Ukuran sepatu (3 jengkal) lebih besar dari kotaknya (2 jengkal). Jadi barang tidak akan muat."
+            },
+            {
+                q: "25. Bayangan tiang di sore hari lebih panjang dari siang. Jika kita ukur bayangan di sore hari pakai langkah, hasilnya...",
+                opts: [{ t: "Paling banyak langkah", c: true }, { t: "Paling sedikit langkah", c: false }, { t: "Tidak bisa diukur", c: false }],
+                exp: "Karena bayangan di sore hari itu sangat panjang, kita butuh jumlah langkah yang paling banyak untuk mengukurnya."
+            }
+        ];
+
+        let userName = "";
+        let userClass = "";
+        let currentQuestionIdx = 0;
+        let score = 0;
+        let answers = new Array(25).fill(null);
+        let shuffledOptionsCache = new Array(25).fill(null); 
+        
+        // Kunci unik untuk kuis ini agar tidak bentrok dengan kuis lain
+        const STORAGE_KEY = "history_MTK-K1-S2-B7-HOTS";
+
+        window.onload = function() {
+            tampilkanHistory();
+        };
+
+        function tampilkanHistory() {
+            let historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            let tbody = document.getElementById("history-body");
+            tbody.innerHTML = "";
+            
+            if (historyData.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='4'>Belum ada histori. Jadilah yang pertama!</td></tr>";
+                return;
+            }
+
+            historyData.forEach(item => {
+                let row = `<tr>
+                    <td>${item.waktu}</td>
+                    <td>${item.nama}</td>
+                    <td>${item.kelas}</td>
+                    <td><strong>${item.skor}</strong></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function shuffleArray(array) {
+            let temp = [...array];
+            for (let i = temp.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [temp[i], temp[j]] = [temp[j], temp[i]];
+            }
+            return temp;
+        }
+
+        function mulaiKuis() {
+            let n = document.getElementById("nama").value.trim();
+            let k = document.getElementById("kelas").value.trim();
+
+            if (n === "" || k === "") {
+                alert("Silakan isi Nama dan Kelas terlebih dahulu ya!");
+                return;
+            }
+
+            userName = n;
+            userClass = k;
+            document.getElementById("display-nama").innerText = "Nama: " + userName;
+
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+
+            loadSoal(0);
+        }
+
+        function loadSoal(index) {
+            currentQuestionIdx = index;
+            let soalObj = bankSoal[index];
+
+            document.getElementById("display-soal").innerText = `Soal: ${index + 1} / 25`;
+            document.getElementById("display-skor").innerText = `Skor Sementara: ${hitungSkorSementara()}`;
+            document.getElementById("question-text").innerText = soalObj.q;
+
+            let expBox = document.getElementById("explanation-box");
+            expBox.style.display = "none";
+            document.getElementById("explanation-text").innerText = soalObj.exp;
+
+            let optContainer = document.getElementById("options-container");
+            optContainer.innerHTML = "";
+
+            if (!shuffledOptionsCache[index]) {
+                shuffledOptionsCache[index] = shuffleArray(soalObj.opts);
+            }
+            
+            let opsi = shuffledOptionsCache[index];
+            let sudahDijawab = answers[index] !== null;
+
+            opsi.forEach((o, i) => {
+                let btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = o.t;
+                
+                if (sudahDijawab) {
+                    btn.disabled = true;
+                    if (o.c) {
+                        btn.classList.add("correct");
+                    }
+                } else {
+                    btn.onclick = () => pilihJawaban(btn, o.c, index);
+                }
+
+                optContainer.appendChild(btn);
+            });
+
+            if (sudahDijawab) {
+                expBox.style.display = "block";
+            }
+
+            document.getElementById("btn-prev").style.visibility = (index === 0) ? "hidden" : "visible";
+            
+            let btnNext = document.getElementById("btn-next");
+            if (index === bankSoal.length - 1) {
+                btnNext.innerText = "Selesai & Kumpulkan ✅";
+                btnNext.classList.add("active-nav");
+                btnNext.onclick = selesaikanKuis;
+            } else {
+                btnNext.innerText = "Soal Selanjutnya ➡";
+                btnNext.onclick = soalSelanjutnya;
+            }
+        }
+
+        function pilihJawaban(btn, isCorrect, soalIndex) {
+            let container = document.getElementById("options-container");
+            let buttons = container.getElementsByClassName("option-btn");
+
+            for (let b of buttons) {
+                b.disabled = true;
+            }
+
+            answers[soalIndex] = isCorrect;
+
+            if (isCorrect) {
+                btn.classList.add("correct");
+            } else {
+                btn.classList.add("wrong");
+                for (let b of buttons) {
+                    let optionText = b.innerText;
+                    let objTerkait = shuffledOptionsCache[soalIndex].find(x => x.t === optionText);
+                    if (objTerkait && objTerkait.c) {
+                        b.classList.add("correct");
+                    }
+                }
+            }
+
+            document.getElementById("display-skor").innerText = `Skor Sementara: ${hitungSkorSementara()}`;
+            document.getElementById("explanation-box").style.display = "block";
+        }
+
+        function hitungSkorSementara() {
+            let benar = answers.filter(a => a === true).length;
+            return benar * 4;
+        }
+
+        function soalSelanjutnya() {
+            if (currentQuestionIdx < bankSoal.length - 1) {
+                loadSoal(currentQuestionIdx + 1);
+            }
+        }
+
+        function soalSebelumnya() {
+            if (currentQuestionIdx > 0) {
+                loadSoal(currentQuestionIdx - 1);
+            }
+        }
+
+        function selesaikanKuis() {
+            let belumDijawab = answers.filter(a => a === null).length;
+            if (belumDijawab > 0) {
+                let konfirmasi = confirm(`Kamu masih memiliki ${belumDijawab} soal yang belum dijawab. Yakin ingin mengumpulkan?`);
+                if (!konfirmasi) return;
+            }
+
+            let finalScore = hitungSkorSementara();
+            
+            let now = new Date();
+            let dateString = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours()}:${(now.getMinutes()<10?'0':'') + now.getMinutes()}`;
+            
+            let dataBaru = {
+                waktu: dateString,
+                nama: userName,
+                kelas: userClass,
+                skor: finalScore
+            };
+
+            // Menggunakan STORAGE_KEY agar tidak bentrok
+            let historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            historyData.push(dataBaru);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(historyData));
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            document.getElementById("final-score").innerText = finalScore;
+
+            let pesan = "";
+            if (finalScore >= 80) pesan = "Luar biasa! Kamu sangat pintar mengukur panjang benda! 🌟";
+            else if (finalScore >= 60) pesan = "Bagus sekali! Sedikit latihan lagi pasti sempurna! 👍";
+            else pesan = "Jangan menyerah! Ayo belajar lagi dan coba kembali! 💪";
+            
+            document.getElementById("final-message").innerText = pesan;
+        }
+    </script>
+</body>
+</html>

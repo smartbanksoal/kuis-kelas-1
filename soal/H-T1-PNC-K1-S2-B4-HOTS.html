@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif - Pendidikan Pancasila Kelas 1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Nunito:wght@600;800&display=swap');
+
+        :root {
+            --primary: #FF9A8B;
+            --secondary: #FF6A88;
+            --accent: #FF99AC;
+            --bg-color: #fce4ec;
+            --text-main: #333;
+            --correct: #4CAF50;
+            --wrong: #F44336;
+            --btn-blue: #4fc3f7;
+            --btn-blue-hover: #29b6f6;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-main);
+        }
+
+        .container {
+            flex: 1;
+            width: 95%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 20px 30px;
+            box-sizing: border-box;
+            border: 4px dashed #ffb7b2;
+            position: relative;
+            padding-bottom: 70px; /* space for footer */
+        }
+
+        h1, h2, h3 {
+            font-family: 'Comic Neue', cursive;
+            text-align: center;
+            color: #ff6f61;
+        }
+
+        .kode-soal {
+            text-align: center;
+            background-color: #fff9c4;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            color: #ff8f00;
+            margin-bottom: 15px;
+            border: 2px solid #ffe082;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Login Screen */
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #b3e5fc;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 8px rgba(79, 195, 247, 0.4);
+        }
+
+        .btn-start {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            border: none;
+            border-radius: 15px;
+            font-size: 20px;
+            font-family: 'Comic Neue', cursive;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 106, 136, 0.4);
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        .btn-start:hover {
+            transform: scale(1.02);
+        }
+
+        /* Tombol Kembali ke Home */
+        .btn-home {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #f1f8e9;
+            border: 2px solid #c5e1a5;
+            border-radius: 15px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            color: #558b2f;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(197, 225, 165, 0.3);
+            transition: all 0.2s;
+            margin-top: 15px;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+        }
+        .btn-home:hover {
+            transform: scale(1.02);
+            background: #e8f5e9;
+            border-color: #aed581;
+        }
+
+        /* History Table */
+        .history-container {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #e1bee7;
+            border-radius: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #f3e5f5;
+        }
+        th {
+            background-color: #ce93d8;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) { background-color: #fafafa; }
+
+        /* Quiz Screen */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: #e0f7fa;
+            padding: 10px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border: 2px solid #b2ebf2;
+        }
+
+        .question-text {
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            font-size: 18px;
+            font-family: 'Nunito', sans-serif;
+            background-color: white;
+            border: 3px solid #b3e5fc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #e1f5fe;
+            border-color: #81d4fa;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            color: #333;
+        }
+        .option-btn.correct {
+            background-color: var(--correct) !important;
+            color: white !important;
+            border-color: #388E3C !important;
+        }
+        .option-btn.wrong {
+            background-color: var(--wrong) !important;
+            color: white !important;
+            border-color: #D32F2F !important;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3e0;
+            border-left: 5px solid #ffb300;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+        .nav-btn {
+            padding: 10px 25px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+        .btn-prev { background-color: #9e9e9e; }
+        .btn-next { background-color: var(--btn-blue); }
+        .nav-btn:hover:not(:disabled) { opacity: 0.8; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Footer Elegan Satu Baris */
+        footer {
+            text-align: center;
+            font-size: 13px;
+            color: #e0e0e0;
+            padding: 15px 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #2c3e50; /* Latar gelap elegan */
+            border-radius: 0 0 20px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            border-top: none;
+        }
+        footer a {
+            color: #4fc3f7;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #81d4fa;
+            text-decoration: underline;
+        }
+
+        .hidden { display: none !important; }
+        
+        .result-screen {
+            text-align: center;
+        }
+        .final-score {
+            font-size: 48px;
+            color: #4CAF50;
+            font-family: 'Comic Neue', cursive;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div id="login-screen">
+        <div class="flex-center">
+            <div class="kode-soal">Kode: PNC-K1-S2-B4-HOTS</div>
+        </div>
+        <h1>Misi Petualang Pancasila!</h1>
+        <p style="text-align: center;">BAB: Aku dan Lingkunganku</p>
+        
+        <div class="input-group">
+            <label for="nama">Nama Lengkap:</label>
+            <input type="text" id="nama" placeholder="Masukkan namamu..." required autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label for="kelas">Kelas:</label>
+            <input type="text" id="kelas" value="1" readonly>
+        </div>
+        
+        <button class="btn-start" onclick="startQuiz()">Mulai Bermain! 🚀</button>
+        <a href="../index.html" class="btn-home">⬅️ Kembali ke Home</a>
+
+        <h3>Riwayat Petualang</h3>
+        <div class="history-container">
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Skor</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div class="flex-center">
+            <div class="kode-soal">Kode: PNC-K1-S2-B4-HOTS</div>
+        </div>
+        <div class="top-bar">
+            <div>Halo, <span id="display-nama" style="color:#ff6f61;"></span>!</div>
+            <div>Skor Sementara: <span id="current-score" style="color:#4CAF50;">0</span></div>
+        </div>
+
+        <h2 id="question-number">Soal 1/25</h2>
+        <div class="question-text" id="question-text">Teks pertanyaan...</div>
+        
+        <div class="options" id="options-container">
+            </div>
+
+        <div class="explanation" id="explanation-box">
+            <strong>💡 Pembahasan:</strong> <span id="explanation-text"></span>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn btn-prev" id="btn-prev" onclick="prevQuestion()">⬅️ Sebelumnya</button>
+            <button class="nav-btn btn-next" id="btn-next" onclick="nextQuestion()">Selanjutnya ➡️</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h1>Petualangan Selesai! 🎉</h1>
+        <p>Kerja yang sangat bagus, <span id="result-nama"></span>!</p>
+        <div class="final-score" id="final-score">100</div>
+        <p>Kamu telah menyelesaikan materi "Aku dan Lingkunganku".</p>
+        <button class="btn-start" onclick="location.reload()">Main Lagi 🔄</button>
+    </div>
+
+    <footer>
+        <span>@ <span id="year"></span> Oleh: Dwi Endrasto</span> | 
+        <span>Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a></span>
+    </footer>
+
+</div>
+
+<script>
+    // --- DATABASE SOAL HOTS (25 Soal) ---
+    // Jumlah kata per pilihan jawaban = 3 kata
+    const masterQuestions = [
+        { q: "Ada sampah berserakan di depan rumahmu. Apa tindakan paling tepat bagimu?", ans: "Segera membuang sampah", wrong: ["Membiarkan sampah berserakan", "Menyuruh teman membuang"], exp: "Kita harus menjaga kebersihan dengan membuang sampah pada tempatnya." },
+        { q: "Teman barumu tersesat mencari balai desa. Apa yang harus kamu lakukan?", ans: "Beri tahu jalannya", wrong: ["Diam saja melihat", "Lari menjauhi teman"], exp: "Membantu orang yang tersesat adalah sikap peduli pada sesama." },
+        { q: "Warga sedang kerja bakti membersihkan jalan. Bagaimana sikap yang paling baik?", ans: "Ikut membantu warga", wrong: ["Tidur di kamar", "Asyik bermain game"], exp: "Ikut kerja bakti mencerminkan sikap gotong royong di masyarakat." },
+        { q: "Ibu sedang repot membersihkan halaman rumah. Apa yang sebaiknya kamu lakukan?", ans: "Ikut membantu ibu", wrong: ["Nonton televisi saja", "Pergi bermain jauh"], exp: "Membantu orang tua adalah kewajiban anak di rumah." },
+        { q: "Kamu melihat tembok sekolah dicoret temanmu. Apa tindakan paling benar bagimu?", ans: "Menegur dengan sopan", wrong: ["Ikut mencoret tembok", "Pura pura buta"], exp: "Mencoret tembok merusak fasilitas, kita harus berani menegur yang salah." },
+        { q: "Temanmu lupa membawa bekal saat istirahat. Apa yang sebaiknya kamu lakukan?", ans: "Berbagi bekal makanan", wrong: ["Makan sendirian saja", "Mengejek teman tersebut"], exp: "Berbagi makanan dengan teman menumbuhkan kerukunan dan rasa sayang." },
+        { q: "Halaman sekolah sangat kotor setelah angin kencang. Apa tindakan warga sekolah?", ans: "Bersama menyapu halaman", wrong: ["Membiarkan halaman kotor", "Pulang ke rumah"], exp: "Membersihkan halaman bersama-sama membuat pekerjaan berat menjadi ringan." },
+        { q: "Pot bunga di depan kelas pecah berantakan. Apa tindakan paling tepat?", ans: "Lapor kepada guru", wrong: ["Sembunyi di kelas", "Menyalahkan teman lain"], exp: "Jujur dan melaporkan kejadian kepada guru adalah sikap anak hebat." },
+        { q: "Selokan desa mampet karena banyak tumpukan daun. Apa yang harus dilakukan?", ans: "Segera bersihkan selokan", wrong: ["Buang sampah lagi", "Tutup mata saja"], exp: "Selokan yang bersih mencegah banjir, kita harus peduli lingkungan." },
+        { q: "Adik mencabut tanaman bunga di taman sekolah. Apa teguran yang tepat?", ans: "Jangan cabut bunganya", wrong: ["Ayo cabut semuanya", "Biarkan saja adik"], exp: "Tanaman membuat sekolah indah, kita harus merawat dan melindunginya." },
+        { q: "Bel tanda masuk kelas sudah berbunyi nyaring. Apa yang segera dilakukan?", ans: "Masuk ruang kelas", wrong: ["Jajan di kantin", "Main di lapangan"], exp: "Disiplin waktu masuk kelas adalah aturan yang harus ditaati." },
+        { q: "Temanmu jatuh saat berlari kencang di lapangan. Bagaimana sikap terbaik kita?", ans: "Segera menolong teman", wrong: ["Menertawakan teman jatuh", "Lari pura pura"], exp: "Menolong teman yang kesusahan adalah sikap saling menyayangi." },
+        { q: "Saat guru menjelaskan pelajaran di depan kelas. Bagaimana sikap kita seharusnya?", ans: "Duduk dengarkan guru", wrong: ["Ngobrol dengan teman", "Tidur di meja"], exp: "Mendengarkan guru dengan baik bentuk sikap sopan dan hormat." },
+        { q: "Selesai piket kelas, sapu ditaruh sembarangan. Di mana seharusnya sapu diletakkan?", ans: "Simpan di tempatnya", wrong: ["Taruh di meja", "Lempar ke luar"], exp: "Menyimpan alat kebersihan di tempatnya menjaga kelas tetap rapi." },
+        { q: "Kamu tidak sengaja menginjak kaki teman sebelahmu. Apa yang harus diucapkan?", ans: "Saya minta maaf", wrong: ["Salah kamu sendiri", "Biarkan saja dia"], exp: "Meminta maaf saat berbuat salah adalah tindakan anak pemberani." },
+        { q: "Teman membuang bungkus permen ke kolam ikan. Apa tindakanmu yang benar?", ans: "Menasihati buang sampah", wrong: ["Ikut buang sampah", "Diam saja melihat"], exp: "Mengingatkan teman untuk menjaga kebersihan adalah sikap peduli lingkungan." },
+        { q: "Ruang perpustakaan berantakan setelah dipakai anak kelas. Apa yang harus dilakukan?", ans: "Rapikan buku kembali", wrong: ["Biarkan buku berantakan", "Marah kepada teman"], exp: "Merapikan buku membuat perpustakaan nyaman digunakan orang lain." },
+        { q: "Pintu gerbang sekolah masih terbuka saat pulang. Siapa yang bertanggung jawab?", ans: "Semua warga sekolah", wrong: ["Cuma satpam saja", "Anak kelas enam"], exp: "Menjaga keamanan dan ketertiban sekolah adalah tanggung jawab bersama." },
+        { q: "Kaca jendela kelas kotor penuh dengan debu. Apa langkah paling baik?", ans: "Bersihkan kaca bersama", wrong: ["Biarkan kaca kotor", "Tutup gorden jendela"], exp: "Bekerja sama membersihkan kelas membuat ruangan belajar lebih sehat." },
+        { q: "Ayah meminta tolong mengambilkan air minum hangat. Apa yang kamu lakukan?", ans: "Ambilkan air minum", wrong: ["Suruh adik ambil", "Pura pura tidur"], exp: "Berbakti dan patuh kepada orang tua adalah contoh perbuatan mulia." },
+        { q: "Warga desa membangun pos ronda pada malam. Bantuan apa yang sesuai?", ans: "Beri makanan ringan", wrong: ["Merusak pos ronda", "Tidur di rumah"], exp: "Memberi makanan adalah bentuk dukungan gotong royong antar warga." },
+        { q: "Tanaman di pot depan kelas terlihat layu. Apa yang sebaiknya dilakukan?", ans: "Beri air siraman", wrong: ["Cabut tanaman layu", "Buang pot tersebut"], exp: "Tanaman butuh air untuk hidup, menyiramnya adalah bentuk kepedulian." },
+        { q: "Kamar mandi sekolah berbau karena tidak disiram. Apa tindakanmu setelah memakai?", ans: "Siram sampai bersih", wrong: ["Lari keluar cepat", "Tutup hidung saja"], exp: "Menyiram toilet setelah dipakai menjaga kebersihan dan kenyamanan bersama." },
+        { q: "Saat kerja bakti desa, kamu masih kecil. Apa yang bisa dibantu?", ans: "Kumpul sampah kecil", wrong: ["Angkat batu besar", "Potong pohon tinggi"], exp: "Membantu sesuai kemampuan sudah cukup untuk ikut bergotong royong." },
+        { q: "Kamu menemukan dompet jatuh di halaman sekolah. Ke mana kamu menyerahkannya?", ans: "Bawa ke guru", wrong: ["Simpan di saku", "Buang ke tong"], exp: "Menyerahkan barang temuan kepada guru adalah wujud sikap jujur." }
+    ];
+
+    let quizData = [];
+    let currentQIndex = 0;
+    let score = 0;
+    let userName = "";
+    let userClass = "";
+    let pointsPerQuestion = 4; // 25 soal * 4 = 100 poin max
+    
+    // KUNCI PERUBAHAN: Membuat ID LocalStorage sangat spesifik untuk file ini
+    // Hal ini mencegah skor nyasar ke kuis/file HTML lain di browser yang sama
+    const historyKey = "history_PNC_K1_S2_B4_HOTS_unique";
+
+    // Set Footer Year
+    document.getElementById("year").innerText = new Date().getFullYear();
+
+    // Fungsi Mengacak Array
+    function shuffleArray(array) {
+        let curId = array.length;
+        while (0 !== curId) {
+            let randId = Math.floor(Math.random() * curId);
+            curId -= 1;
+            let tmp = array[curId];
+            array[curId] = array[randId];
+            array[randId] = tmp;
+        }
+        return array;
+    }
+
+    // Load History pada Start
+    function loadHistory() {
+        const historyData = JSON.parse(localStorage.getItem(historyKey)) || [];
+        const tbody = document.getElementById("history-body");
+        tbody.innerHTML = "";
+        historyData.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${item.nama}</td><td>${item.kelas}</td><td><strong>${item.skor}</strong></td><td>${item.waktu}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Inisialisasi Kuis saat tombol Mulai ditekan
+    function startQuiz() {
+        const inputNama = document.getElementById("nama").value.trim();
+        if(!inputNama) {
+            alert("Tulis namamu dulu ya pahlawan kecil!");
+            return;
+        }
+        userName = inputNama;
+        userClass = document.getElementById("kelas").value;
+        
+        quizData = masterQuestions.map(q => {
+            let ops = [q.ans, q.wrong[0], q.wrong[1]];
+            return {
+                question: q.q,
+                correctAnswer: q.ans,
+                options: shuffleArray(ops), // Posisi diacak di awal
+                explanation: q.exp,
+                userAnswer: null // Belum dijawab
+            };
+        });
+
+        document.getElementById("login-screen").classList.add("hidden");
+        document.getElementById("quiz-screen").classList.remove("hidden");
+        document.getElementById("display-nama").innerText = userName;
+
+        renderQuestion();
+    }
+
+    // Render Soal dan Opsi Jawaban
+    function renderQuestion() {
+        const qData = quizData[currentQIndex];
+        document.getElementById("question-number").innerText = `Soal ${currentQIndex + 1} dari ${quizData.length}`;
+        document.getElementById("question-text").innerText = qData.question;
+        document.getElementById("current-score").innerText = score;
+
+        const optionsContainer = document.getElementById("options-container");
+        optionsContainer.innerHTML = "";
+        
+        const expBox = document.getElementById("explanation-box");
+        const expText = document.getElementById("explanation-text");
+        const btnNext = document.getElementById("btn-next");
+        const btnPrev = document.getElementById("btn-prev");
+
+        // Render Tombol Opsi
+        qData.options.forEach(opt => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            
+            // Jika soal sudah pernah dijawab sebelumnya (saat tombol Prev ditekan)
+            if(qData.userAnswer !== null) {
+                btn.disabled = true;
+                if(opt === qData.correctAnswer) {
+                    btn.classList.add("correct");
+                } else if(opt === qData.userAnswer) {
+                    btn.classList.add("wrong");
+                }
+            } else {
+                // Event click jika belum dijawab
+                btn.onclick = () => selectAnswer(opt, btn);
+            }
+            optionsContainer.appendChild(btn);
+        });
+
+        // Kontrol Tombol "Sebelumnya"
+        btnPrev.disabled = currentQIndex === 0;
+        
+        // Perbaikan di bagian ini: Memastikan tombol Next aktif kembali saat mengecek soal lama
+        if(qData.userAnswer !== null) {
+            expText.innerText = qData.explanation;
+            expBox.style.display = "block";
+            btnNext.disabled = false; // <-- FIX: Aktifkan kembali tombol next jika sudah dijawab
+            
+            if(currentQIndex === quizData.length - 1) {
+                btnNext.innerText = "Selesai 🏆";
+                btnNext.onclick = finishQuiz;
+            } else {
+                btnNext.innerText = "Selanjutnya ➡️";
+                btnNext.onclick = nextQuestion;
+            }
+        } else {
+            expBox.style.display = "none";
+            btnNext.disabled = true; // Wajib jawab dulu untuk soal baru
+            btnNext.innerText = "Selanjutnya ➡️";
+            btnNext.onclick = nextQuestion; // Reset onclick ke selanjutnya untuk amannya
+        }
+    }
+
+    // Fungsi Pilih Jawaban
+    function selectAnswer(selectedOpt, btnElement) {
+        const qData = quizData[currentQIndex];
+        qData.userAnswer = selectedOpt;
+
+        const buttons = document.querySelectorAll(".option-btn");
+        buttons.forEach(b => {
+            b.disabled = true; // Kunci semua jawaban
+            if(b.innerText === qData.correctAnswer) {
+                b.classList.add("correct"); // Hijau untuk yang benar
+            }
+        });
+
+        if(selectedOpt === qData.correctAnswer) {
+            score += pointsPerQuestion;
+            document.getElementById("current-score").innerText = score;
+        } else {
+            btnElement.classList.add("wrong"); // Merah untuk yang salah
+        }
+
+        // Tampilkan pembahasan
+        document.getElementById("explanation-text").innerText = qData.explanation;
+        document.getElementById("explanation-box").style.display = "block";
+
+        // Aktifkan tombol next setelah menjawab
+        const btnNext = document.getElementById("btn-next");
+        btnNext.disabled = false;
+        
+        if(currentQIndex === quizData.length - 1) {
+            btnNext.innerText = "Selesai 🏆";
+            btnNext.onclick = finishQuiz;
+        } else {
+            btnNext.innerText = "Selanjutnya ➡️";
+            btnNext.onclick = nextQuestion;
+        }
+    }
+
+    // Navigasi Selanjutnya
+    function nextQuestion() {
+        if(currentQIndex < quizData.length - 1) {
+            currentQIndex++;
+            renderQuestion();
+        }
+    }
+
+    // Navigasi Sebelumnya
+    function prevQuestion() {
+        if(currentQIndex > 0) {
+            currentQIndex--;
+            renderQuestion();
+        }
+    }
+
+    // Selesaikan Kuis dan Simpan History
+    function finishQuiz() {
+        // Simpan ke local storage
+        const historyData = JSON.parse(localStorage.getItem(historyKey)) || [];
+        const now = new Date();
+        const timeString = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+        
+        historyData.push({
+            nama: userName,
+            kelas: userClass,
+            skor: score,
+            waktu: timeString
+        });
+        localStorage.setItem(historyKey, JSON.stringify(historyData));
+
+        // Tampilkan Layar Hasil
+        document.getElementById("quiz-screen").classList.add("hidden");
+        document.getElementById("result-screen").classList.remove("hidden");
+        document.getElementById("result-nama").innerText = userName;
+        document.getElementById("final-score").innerText = score;
+    }
+
+    // Eksekusi Awal
+    window.onload = loadHistory;
+
+</script>
+
+</body>
+</html>

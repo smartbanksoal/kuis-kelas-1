@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika Kelas 1 - Kurikulum Merdeka</title>
+    <style>
+        :root {
+            --primary: #FF9A8B;
+            --secondary: #FF6A88;
+            --tertiary: #FF99AC;
+            --bg-color: #fdfbfb;
+            --text-main: #333;
+            --correct: #4CAF50;
+            --incorrect: #F44336;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        .container {
+            background-color: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 80vh;
+            margin: 20px 0;
+        }
+
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .kode-soal {
+            font-size: 0.9em;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Layar Login */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .input-group input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            background: #ff4d6d;
+        }
+
+        .btn-home {
+            background: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            display: block;
+            font-family: inherit;
+        }
+
+        .btn-home:hover {
+            background: var(--secondary);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .history-section {
+            margin-top: 15px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed #ccc;
+        }
+
+        .history-section h3 {
+            margin-top: 0;
+            text-align: center;
+            color: var(--secondary);
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: white;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 5px solid var(--secondary);
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Layar Kuis */
+        .quiz-screen {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #666;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+            font-family: inherit;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+
+        .option-btn.correct {
+            background: var(--correct);
+            color: white;
+            border-color: var(--correct);
+        }
+
+        .option-btn.incorrect {
+            background: var(--incorrect);
+            color: white;
+            border-color: var(--incorrect);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .pembahasan {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-left: 5px solid var(--correct);
+            border-radius: 8px;
+            animation: fadeIn 0.5s;
+        }
+
+        .pembahasan h4 {
+            margin: 0 0 5px 0;
+            color: #2e7d32;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        .nav-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+        
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Layar Hasil */
+        .result-screen {
+            display: none;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        .final-score {
+            font-size: 4em;
+            color: var(--secondary);
+            margin: 20px 0;
+            font-weight: bold;
+            text-shadow: 2px 2px 0px #ffd1dc;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8em;
+            line-height: 1.6;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: #FF9A8B;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="kode-soal" id="kodeSoalText">KODE: MTK-K1-S2-B5-HOTS</div>
+        <h1 style="margin: 0; font-size: 1.5em;">🌟 Kuis Pintar Matematika 🌟</h1>
+    </div>
+
+    <div class="content">
+        <div class="login-screen" id="loginScreen">
+            <h2 style="text-align: center; margin-top: 0;">Halo, Selamat Datang! 🚀</h2>
+            <div class="input-group">
+                <label for="namaLengkap">Nama Lengkap:</label>
+                <input type="text" id="namaLengkap" placeholder="Masukkan namamu..." required>
+            </div>
+            <div class="input-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" placeholder="Misal: 1A" required>
+            </div>
+            
+            <button class="btn" onclick="mulaiKuis()">Mulai Petualangan! 🎮</button>
+            
+            <a href="../index.html" class="btn-home">🏠 Kembali ke Menu Utama</a>
+
+            <div class="history-section">
+                <h3>🏆 Papan Skor Pahlawan (Riwayat)</h3>
+                <ul class="history-list" id="historyList">
+                    </ul>
+            </div>
+        </div>
+
+        <div class="quiz-screen" id="quizScreen">
+            <div class="quiz-info">
+                <span id="progressText">Soal 1 / 25</span>
+                <span id="scoreText">Skor Sementara: 0</span>
+            </div>
+            <div class="question-text" id="questionText">Pertanyaan muncul di sini</div>
+            <div class="options-container" id="optionsContainer">
+                </div>
+            <div class="pembahasan" id="pembahasanContainer">
+                <h4>💡 Pembahasan:</h4>
+                <p id="pembahasanText">Penjelasan muncul di sini.</p>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" id="btnPrev" onclick="soalSebelumnya()">⬅️ Sebelumnya</button>
+                <button class="nav-btn" id="btnNext" onclick="soalSelanjutnya()">Selanjutnya ➡️</button>
+            </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h2>🎉 Kerja Bagus, Pahlawan! 🎉</h2>
+            <p>Skor Akhir Kamu:</p>
+            <div class="final-score" id="finalScoreDisplay">100</div>
+            <p id="resultMessage"></p>
+            <button class="btn" style="margin-top: 20px;" onclick="kembaliKeLogin()">Main Lagi 🔄</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; <span id="tahunTeks"></span> Oleh : Dwi Endrasto - hak cipta dilindungi<br>
+        Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </div>
+</div>
+
+<script>
+    // Dinamis Tahun Footer
+    document.getElementById('tahunTeks').innerText = new Date().getFullYear();
+
+    // KUNCI PENYIMPANAN UNIK - Mencegah bentrok dengan kuis lain
+    const STORAGE_KEY = 'history_MTK_K1_S2_B5_HOTS';
+
+    // Data Soal (25 Soal HOTS Kelas 1 Kurikulum Merdeka)
+    const bankSoal = [
+        { q: "Ada 1 kotak berisi 10 pensil dan 4 pensil di luar kotak. Berapa banyak pensil semuanya?", options: ["Empat belas", "Tiga belas", "Lima belas"], ans: "Empat belas", pen: "10 pensil ditambah 4 pensil sama dengan 14 (Empat belas)." },
+        { q: "Budi melihat nomor rumah temannya tertulis angka '18'. Bagaimana Budi harus membacanya?", options: ["Delapan belas", "Tujuh belas", "Sembilan belas"], ans: "Delapan belas", pen: "Angka 18 secara matematis dibaca delapan belas." },
+        { q: "Dina sedang berhitung maju dari 12. Setelah menyebutkan 16, bilangan berapakah yang diucapkan Dina selanjutnya?", options: ["Tujuh belas", "Delapan belas", "Sembilan belas"], ans: "Tujuh belas", pen: "Hitung maju setelah angka 16 adalah 17 (Tujuh belas)." },
+        { q: "Roket menghitung mundur sebelum meluncur: 20, 19, 18. Bilangan apa yang diucapkan selanjutnya?", options: ["Tujuh belas", "Enam belas", "Lima belas"], ans: "Tujuh belas", pen: "Mundur satu langkah dari 18 adalah 17 (Tujuh belas)." },
+        { q: "Angka 1 pada bilangan 15 memiliki nilai tempat sebagai apa?", options: ["Satu puluhan", "Satu satuan", "Lima puluhan"], ans: "Satu puluhan", pen: "Pada bilangan 15, angka 1 di depan bernilai puluhan (10)." },
+        { q: "Caca punya 17 kelereng. Angka 7 pada jumlah kelereng Caca menunjukkan nilai tempat apa?", options: ["Tujuh satuan", "Tujuh puluhan", "Satu puluhan"], ans: "Tujuh satuan", pen: "Angka 7 berada di posisi paling belakang, yang berarti menunjukkan satuan." },
+        { q: "Kotak A berisi 14 apel. Kotak B berisi 19 apel. Kotak mana yang lebih banyak?", options: ["Kotak B", "Kotak A", "Sama banyak"], ans: "Kotak B", pen: "Angka 19 lebih besar dari 14, sehingga Kotak B lebih banyak." },
+        { q: "Usia Rina 12 tahun, usia Sita 15 tahun, dan usia Budi 11 tahun. Siapakah yang usianya paling tua?", options: ["Sita tertua", "Rina tertua", "Budi tertua"], ans: "Sita tertua", pen: "15 adalah angka terbesar di antara 11, 12, dan 15." },
+        { q: "'Enam belas' jika ditulis dalam bentuk lambang bilangan adalah...", options: ["16", "15", "17"], ans: "16", pen: "Lambang bilangan adalah angka. Enam belas ditulis 16." },
+        { q: "Ibu membeli 1 lusin donat (12 buah) dan 3 kue tart. Berapa total kue Ibu?", options: ["Lima belas", "Empat belas", "Tiga belas"], ans: "Lima belas", pen: "12 ditambah 3 sama dengan 15 (Lima belas)." },
+        { q: "Dari lantai 19, lift bergerak turun 3 lantai. Di lantai berapakah lift itu sekarang berhenti?", options: ["Enam belas", "Tujuh belas", "Lima belas"], ans: "Enam belas", pen: "19 dikurangi 3 hasilnya adalah 16 (Enam belas)." },
+        { q: "Andi punya 18 kelereng. Budi punya 15 kelereng. Caca punya 20 kelereng. Siapa yang kelerengnya paling sedikit?", options: ["Budi sedikit", "Andi sedikit", "Caca sedikit"], ans: "Budi sedikit", pen: "Angka terkecil di antara 18, 15, dan 20 adalah 15 (milik Budi)." },
+        { q: "Di pohon ada 11 burung. Datang lagi sekelompok burung sehingga totalnya menjadi 16. Berapa burung yang baru datang?", options: ["Lima ekor", "Enam ekor", "Tiga ekor"], ans: "Lima ekor", pen: "Untuk menjadi 16 dari 11, kita butuh tambahan 5 burung." },
+        { q: "Hari ini tanggal 14. Tiga hari lagi adalah hari ulang tahun paman. Tanggal berapakah paman berulang tahun?", options: ["Tujuh belas", "Delapan belas", "Sembilan belas"], ans: "Tujuh belas", pen: "14 ditambah 3 hari sama dengan tanggal 17 (Tujuh belas)." },
+        { q: "Bilangan berapakah yang terdiri dari 1 puluhan dan 9 satuan?", options: ["Sembilan belas", "Delapan belas", "Tujuh belas"], ans: "Sembilan belas", pen: "1 puluhan (10) dan 9 satuan (9) dirangkai menjadi 19 (Sembilan belas)." },
+        { q: "Pada bilangan 18, nilai tempat puluhan ditempati oleh angka berapa?", options: ["Angka satu", "Angka delapan", "Angka sembilan"], ans: "Angka satu", pen: "Angka terdepan pada 18 adalah 1, yang menempati posisi puluhan." },
+        { q: "Piring A ada 12 kue. Piring B ada 14 kue. Piring C ada 11 kue. Manakah urutan piring dari yang kuenya paling banyak?", options: ["Piring B, A, C", "Piring A, B, C", "Piring C, A, B"], ans: "Piring B, A, C", pen: "Urutan terbesar ke terkecil: 14 (B), lalu 12 (A), lalu 11 (C)." },
+        { q: "Jumlah hari dalam dua minggu adalah 14. Tulisan ejaan huruf dari angka tersebut adalah...", options: ["Empat belas", "Tiga belas", "Lima belas"], ans: "Empat belas", pen: "Angka 14 ditulis dan dibaca empat belas." },
+        { q: "Beni mempunyai 20 lembar kertas lipat. Ia memberikan 4 lembar kepada adiknya. Sisa kertas lipat Beni sekarang adalah...", options: ["Enam belas", "Tujuh belas", "Lima belas"], ans: "Enam belas", pen: "20 dikurangi 4 sisanya adalah 16 (Enam belas)." },
+        { q: "Aku adalah sebuah bilangan. Jika aku ditambah 2, hasilnya menjadi 19. Bilangan berapakah aku?", options: ["Tujuh belas", "Delapan belas", "Sembilan belas"], ans: "Tujuh belas", pen: "Bilangan yang jika ditambah 2 menjadi 19 adalah 17." },
+        { q: "Aku lebih besar dari 15 tapi lebih kecil dari 17. Bilangan berapakah aku?", options: ["Enam belas", "Tujuh belas", "Lima belas"], ans: "Enam belas", pen: "Satu-satunya bilangan bulat di antara 15 dan 17 adalah 16." },
+        { q: "Pak guru meminta siswa menuliskan gabungan 1 puluhan dan 0 satuan. Angka yang dimaksud adalah...", options: ["10", "11", "12"], ans: "10", pen: "1 puluhan dan 0 satuan adalah bentuk panjang dari angka 10." },
+        { q: "Rini melihat 8 kupu-kupu merah dan 7 kupu-kupu kuning di taman. Total kupu-kupu yang dilihat Rini adalah...", options: ["Lima belas", "Empat belas", "Tiga belas"], ans: "Lima belas", pen: "8 ditambah 7 hasilnya adalah 15 (Lima belas)." },
+        { q: "Di kelas ada 16 siswa putra dan 14 siswa putri. Kelompok mana yang jumlahnya lebih sedikit?", options: ["Siswa putri", "Siswa putra", "Sama banyak"], ans: "Siswa putri", pen: "14 (putri) lebih kecil nilainya daripada 16 (putra)." },
+        { q: "Edo menghitung petak umpet sampai 20. Sekarang ia berada di angka 18. Berapa angka lagi yang harus ia sebutkan sebelum mencari?", options: ["Dua angka", "Tiga angka", "Satu angka"], ans: "Dua angka", pen: "Setelah 18, Edo harus menyebut 19 dan 20. Jadi tersisa dua angka lagi." }
+    ];
+
+    let sessionQuestions = [];
+    let currentQIndex = 0;
+    let userAnswers = [];
+    let userProfile = { nama: '', kelas: '' };
+    let temporaryScore = 0;
+    let pointPerQuestion = 100 / 25;
+
+    function shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function renderHistory() {
+        // Menggunakan STORAGE_KEY yang spesifik agar tidak bentrok
+        const historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const historyList = document.getElementById('historyList');
+        historyList.innerHTML = '';
+        
+        if (historyData.length === 0) {
+            historyList.innerHTML = '<li style="text-align:center; color:#999; border:none; background:transparent; box-shadow:none;">Belum ada riwayat pahlawan.</li>';
+            return;
+        }
+
+        historyData.reverse().forEach(entry => {
+            const li = document.createElement('li');
+            li.className = 'history-item';
+            li.innerHTML = `
+                <div><b>${entry.nama}</b> (Kls: ${entry.kelas})<br><small style="color:#777">${entry.waktu}</small></div>
+                <div style="font-weight:bold; color:var(--correct); font-size:1.2em;">⭐ ${entry.skor}</div>
+            `;
+            historyList.appendChild(li);
+        });
+    }
+
+    function showScreen(screenId) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'none';
+        document.getElementById('resultScreen').style.display = 'none';
+        document.getElementById(screenId).style.display = 'flex';
+    }
+
+    function mulaiKuis() {
+        const inputNama = document.getElementById('namaLengkap').value.trim();
+        const inputKelas = document.getElementById('kelas').value.trim();
+
+        if (!inputNama || !inputKelas) {
+            alert('Hai pahlawan! Tolong isi nama lengkap dan kelasmu dulu ya!');
+            return;
+        }
+
+        userProfile.nama = inputNama;
+        userProfile.kelas = inputKelas;
+
+        sessionQuestions = bankSoal.map(q => {
+            return {
+                ...q,
+                shuffledOptions: shuffleArray([...q.options])
+            };
+        });
+
+        currentQIndex = 0;
+        userAnswers = new Array(25).fill(null);
+        temporaryScore = 0;
+
+        showScreen('quizScreen');
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const qData = sessionQuestions[currentQIndex];
+        
+        document.getElementById('progressText').innerText = `Soal ${currentQIndex + 1} / 25`;
+        document.getElementById('scoreText').innerText = `Skor Sementara: ${temporaryScore}`;
+        document.getElementById('questionText').innerText = `${currentQIndex + 1}. ${qData.q}`;
+
+        const optionsContainer = document.getElementById('optionsContainer');
+        optionsContainer.innerHTML = '';
+        
+        qData.shuffledOptions.forEach(optText => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = optText;
+            btn.onclick = () => pilihJawaban(optText, btn);
+            optionsContainer.appendChild(btn);
+        });
+
+        const pembahasanContainer = document.getElementById('pembahasanContainer');
+        const pembahasanText = document.getElementById('pembahasanText');
+        
+        if (userAnswers[currentQIndex] !== null) {
+            const answeredText = userAnswers[currentQIndex];
+            const buttons = optionsContainer.getElementsByClassName('option-btn');
+            
+            for (let b of buttons) {
+                b.disabled = true;
+                if (b.innerText === qData.ans) {
+                    b.classList.add('correct');
+                }
+                if (b.innerText === answeredText && answeredText !== qData.ans) {
+                    b.classList.add('incorrect');
+                }
+            }
+            pembahasanText.innerText = qData.pen;
+            pembahasanContainer.style.display = 'block';
+        } else {
+            pembahasanContainer.style.display = 'none';
+        }
+
+        updateNavButtons();
+    }
+
+    function pilihJawaban(selectedText, btnClicked) {
+        if (userAnswers[currentQIndex] !== null) return; 
+
+        const qData = sessionQuestions[currentQIndex];
+        userAnswers[currentQIndex] = selectedText;
+
+        const isCorrect = (selectedText === qData.ans);
+        
+        if (isCorrect) {
+            temporaryScore += pointPerQuestion;
+            btnClicked.classList.add('correct');
+        } else {
+            btnClicked.classList.add('incorrect');
+        }
+
+        const optionsContainer = document.getElementById('optionsContainer');
+        const buttons = optionsContainer.getElementsByClassName('option-btn');
+        for (let b of buttons) {
+            b.disabled = true;
+            if (b.innerText === qData.ans) {
+                b.classList.add('correct');
+            }
+        }
+
+        document.getElementById('pembahasanText').innerText = qData.pen;
+        document.getElementById('pembahasanContainer').style.display = 'block';
+        document.getElementById('scoreText').innerText = `Skor Sementara: ${temporaryScore}`;
+    }
+
+    function updateNavButtons() {
+        document.getElementById('btnPrev').disabled = (currentQIndex === 0);
+        
+        const btnNext = document.getElementById('btnNext');
+        if (currentQIndex === sessionQuestions.length - 1) {
+            btnNext.innerText = 'Selesaikan Kuis 🏆';
+            btnNext.style.background = '#4CAF50';
+        } else {
+            btnNext.innerText = 'Selanjutnya ➡️';
+            btnNext.style.background = '#2196F3';
+        }
+    }
+
+    function soalSelanjutnya() {
+        if (userAnswers[currentQIndex] === null) {
+            alert('Tolong jawab pertanyaannya dulu ya, jagoan!');
+            return;
+        }
+
+        if (currentQIndex < sessionQuestions.length - 1) {
+            currentQIndex++;
+            renderQuestion();
+        } else {
+            selesaikanKuis();
+        }
+    }
+
+    function soalSebelumnya() {
+        if (currentQIndex > 0) {
+            currentQIndex--;
+            renderQuestion();
+        }
+    }
+
+    function selesaikanKuis() {
+        showScreen('resultScreen');
+        document.getElementById('finalScoreDisplay').innerText = temporaryScore;
+        
+        const msg = document.getElementById('resultMessage');
+        if (temporaryScore >= 80) msg.innerHTML = "Luar biasa! Kamu sangat pintar Matematika! 🌟";
+        else if (temporaryScore >= 60) msg.innerHTML = "Bagus sekali! Tetap semangat berlatih ya! 👍";
+        else msg.innerHTML = "Jangan menyerah, ayo belajar lagi! Kamu pasti bisa! 💪";
+
+        simpanRiwayat();
+    }
+
+    function simpanRiwayat() {
+        // Menggunakan STORAGE_KEY yang spesifik agar tidak bentrok
+        const historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const now = new Date();
+        const strWaktu = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth()+1).toString().padStart(2, '0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const entry = {
+            nama: userProfile.nama,
+            kelas: userProfile.kelas,
+            waktu: strWaktu,
+            skor: temporaryScore
+        };
+
+        historyData.push(entry);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(historyData));
+    }
+
+    function kembaliKeLogin() {
+        document.getElementById('namaLengkap').value = '';
+        document.getElementById('kelas').value = '';
+        renderHistory();
+        showScreen('loginScreen');
+    }
+
+    window.onload = () => {
+        renderHistory();
+    }
+</script>
+
+</body>
+</html>

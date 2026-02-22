@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bahasa Indonesia - Aku Ingin</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --bg-color: #f7f9fc;
+            --text-dark: #2C3E50;
+            --correct: #28a745;
+            --wrong: #dc3545;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-code {
+            text-align: center;
+            background-color: var(--accent);
+            padding: 5px 15px;
+            border-radius: 10px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border: 2px dashed #ff9f43;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--secondary);
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.2s;
+            font-family: inherit;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background-color: #45b7af;
+        }
+
+        .btn-start {
+            width: 100%;
+            background-color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .btn-start:hover {
+            background-color: #ff5252;
+        }
+
+        /* Tombol Home Baru */
+        .btn-home {
+            width: 100%;
+            background-color: #34495E;
+            margin-top: 10px;
+        }
+
+        .btn-home:hover {
+            background-color: #2C3E50;
+        }
+
+        /* History Table */
+        .history-container {
+            margin-top: 30px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #eee;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Quiz Area */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .score-info {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            background: #ffeaa7;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background-color: white;
+            color: var(--text-dark);
+            border: 2px solid var(--secondary);
+            text-align: left;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #e0f7fa;
+            transform: none;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct) !important;
+            color: white !important;
+            border-color: var(--correct) !important;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong) !important;
+            color: white !important;
+            border-color: var(--wrong) !important;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            border-radius: 5px;
+            font-size: 16px;
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Footer Elegan */
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #ecf0f1;
+            background-color: #2C3E50;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align: center;">
+        <div class="header-code">KODE: IND-K1-S2-B7-HOTS</div>
+    </div>
+
+    <div id="login-screen">
+        <h1>🌟 Kuis Bahasa Indonesia 🌟</h1>
+        <h2>Bab 7: Aku Ingin (Kelas 1)</h2>
+        
+        <div class="form-group">
+            <label for="playerName">Nama Lengkap:</label>
+            <input type="text" id="playerName" placeholder="Masukkan nama kamu..." required>
+        </div>
+        <div class="form-group">
+            <label for="playerClass">Kelas:</label>
+            <input type="text" id="playerClass" placeholder="Contoh: 1A" required>
+        </div>
+        
+        <button class="btn-start" onclick="startQuiz()">Mulai Belajar!</button>
+        <button class="btn-home" onclick="window.location.href='../index.html'">🏠 Kembali ke Home</button>
+
+        <div class="history-container">
+            <h3>🏆 Riwayat Nilai Hebatmu 🏆</h3>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div class="quiz-header">
+            <span class="score-info" id="temp-score">Skor Sementara: 0</span>
+            <span class="score-info" id="question-tracker">Soal: 1 / 25</span>
+        </div>
+
+        <div class="question" id="question-text"></div>
+        <div class="options" id="options-container"></div>
+        <div class="explanation" id="explanation-box"></div>
+
+        <div class="nav-buttons">
+            <button id="prev-btn" onclick="prevQuestion()" class="hidden">⬅️ Sebelumnya</button>
+            <button id="next-btn" onclick="nextQuestion()" class="hidden">Selanjutnya ➡️</button>
+            <button id="finish-btn" onclick="finishQuiz()" class="hidden" style="background-color: var(--primary);">Selesai 🎉</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h1>🎉 Kuis Selesai! 🎉</h1>
+        <h2>Selamat, <span id="final-name"></span>!</h2>
+        <h1 style="font-size: 48px; margin: 10px 0;" id="final-score"></h1>
+        <p>Terus semangat belajar dan raih cita-citamu!</p>
+        <button onclick="backToLogin()" class="btn-start">Kembali ke Beranda Kuis</button>
+        <button class="btn-home" onclick="window.location.href='../index.html'">🏠 Kembali ke Home</button>
+    </div>
+
+    <div class="footer">
+        @ <span id="current-year"></span>, Oleh: Dwi Endrasto, Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </div>
+</div>
+
+<script>
+    // --- Data Soal HOTS ---
+    const questionsData = [
+        {
+            q: "1. Sani ingin beli buku. Sani membawa dua koin. Bentuk koin Sani adalah...",
+            options: ["bulat dan pipih", "kotak dan tebal", "panjang dan besar"],
+            answer: "bulat dan pipih",
+            exp: "Pembahasan: Koin atau uang logam bentuk aslinya adalah bulat dan pipih."
+        },
+        {
+            q: "2. Adik melihat mainan mahal. Adik belum punya uang. Apa yang adik lakukan?",
+            options: ["rajin menabung dahulu", "menangis minta beli", "marah kepada ibu"],
+            answer: "rajin menabung dahulu",
+            exp: "Pembahasan: Jika belum punya uang untuk membeli barang yang kita ingin, kita harus rajin menabung."
+        },
+        {
+            q: "3. Caca punya uang kertas. Uang kertas bisa sobek. Caca harus menyimpannya di...",
+            options: ["dalam dompet Caca", "dalam bak mandi", "bawah sepatu Caca"],
+            answer: "dalam dompet Caca",
+            exp: "Pembahasan: Uang kertas rentan rusak, tempat paling aman untuk menyimpannya adalah di dalam dompet."
+        },
+        {
+            q: "4. Kata 'uang' ada huruf vokalnya. Huruf vokal pada kata uang yaitu...",
+            options: ["huruf u dan a", "huruf u dan ng", "huruf n dan g"],
+            answer: "huruf u dan a",
+            exp: "Pembahasan: Huruf vokal (huruf hidup) terdiri dari a, i, u, e, o. Pada kata 'uang' vokalnya adalah u dan a."
+        },
+        {
+            q: "5. Beni butuh pensil baru. Pensil lama sudah habis. Beni memakai uang untuk...",
+            options: ["beli pensil baru", "beli mainan robot", "jajan es krim"],
+            answer: "beli pensil baru",
+            exp: "Pembahasan: Kita harus mendahulukan kebutuhan (pensil) daripada sekadar keinginan (mainan/es krim)."
+        },
+        {
+            q: "6. Kita butuh makan setiap hari. Makan adalah sebuah...",
+            options: ["hal yang penting", "hal yang biasa", "hal yang mahal"],
+            answer: "hal yang penting",
+            exp: "Pembahasan: Makan adalah kebutuhan pokok dan sangat penting agar kita bisa hidup sehat."
+        },
+        {
+            q: "7. Tika ingin boneka besar. Tika butuh sepatu sekolah. Tika harus memilih beli...",
+            options: ["sepatu sekolah dulu", "boneka besar dulu", "mainan yang lain"],
+            answer: "sepatu sekolah dulu",
+            exp: "Pembahasan: Sepatu sekolah adalah kebutuhan penting, sedangkan boneka hanya keinginan."
+        },
+        {
+            q: "8. Huruf b, a, y, a, r disusun menjadi kata...",
+            options: ["kata yaitu bayar", "kata yaitu rabay", "kata yaitu layar"],
+            answer: "kata yaitu bayar",
+            exp: "Pembahasan: Jika diurutkan dengan benar, huruf-huruf tersebut membentuk kata 'bayar'."
+        },
+        {
+            q: "9. Doni melihat celengan penuh. Celengan Doni bentuknya ayam. Doni bisa memakai uangnya untuk...",
+            options: ["beli tas sekolah", "dibuang ke jalan", "disobek jadi dua"],
+            answer: "beli tas sekolah",
+            exp: "Pembahasan: Uang dari celengan harus digunakan untuk hal yang berguna seperti tas sekolah."
+        },
+        {
+            q: "10. Kata 'celengan' memiliki banyak huruf. Berapa jumlah suku kata celengan?",
+            options: ["ada tiga suku kata", "ada empat suku kata", "ada dua suku kata"],
+            answer: "ada tiga suku kata",
+            exp: "Pembahasan: Pemenggalan suku kata yang benar adalah ce - leng - an (tiga suku kata)."
+        },
+        {
+            q: "11. Uang koin jatuh berbunyi klinting. Huruf awal kata koin adalah...",
+            options: ["awal huruf itu k", "awal huruf itu c", "awal huruf itu o"],
+            answer: "awal huruf itu k",
+            exp: "Pembahasan: Kata 'koin' dimulai dengan huruf k."
+        },
+        {
+            q: "12. Ibu pergi ke pasar. Ibu membeli sayur bayam. Ibu membayar sayur memakai...",
+            options: ["uang kertas ibu", "daun pisang kering", "batu kerikil kecil"],
+            answer: "uang kertas ibu",
+            exp: "Pembahasan: Alat pembayaran yang sah untuk jual beli di pasar adalah uang."
+        },
+        {
+            q: "13. Baju Lala sudah kecil. Lala butuh baju baru. Ibu membelikan Lala baju di...",
+            options: ["toko baju anak", "toko buah segar", "toko buku tulis"],
+            answer: "toko baju anak",
+            exp: "Pembahasan: Baju baru dijual di tempat pakaian seperti toko baju anak."
+        },
+        {
+            q: "14. Kata 'tabung' jika ditambah awalan me menjadi kata...",
+            options: ["kata yaitu menabung", "kata yaitu metabung", "kata yaitu menyabung"],
+            answer: "kata yaitu menabung",
+            exp: "Pembahasan: Kata dasar 'tabung' mendapat awalan me- huruf t akan melebur menjadi 'menabung'."
+        },
+        {
+            q: "15. Gina ingin es krim. Es krim harganya mahal. Uang Gina kurang. Gina sebaiknya...",
+            options: ["tidak jadi beli", "paksa ibu beli", "ambil es krim"],
+            answer: "tidak jadi beli",
+            exp: "Pembahasan: Jika uang tidak cukup, kita tidak boleh memaksa atau mengambil tanpa izin."
+        },
+        {
+            q: "16. Uang kertas sepuluh ribu warnanya ungu. Uang itu untuk beli buku. Kata buku berakhiran huruf...",
+            options: ["huruf akhirnya yaitu u", "huruf akhirnya yaitu k", "huruf akhirnya yaitu b"],
+            answer: "huruf akhirnya yaitu u",
+            exp: "Pembahasan: Kata 'buku' (b-u-k-u) diakhiri dengan huruf u."
+        },
+        {
+            q: "17. Kakak punya uang logam. Uang logam itu berat. Jika dilempar ke air akan...",
+            options: ["tenggelam ke bawah", "mengapung di atas", "terbang ke udara"],
+            answer: "tenggelam ke bawah",
+            exp: "Pembahasan: Logam memiliki massa yang berat sehingga akan tenggelam jika masuk ke air."
+        },
+        {
+            q: "18. Suka jajan membuat uang habis. Agar tidak habis kita harus membawa...",
+            options: ["bekal dari rumah", "mainan dari rumah", "baju dari rumah"],
+            answer: "bekal dari rumah",
+            exp: "Pembahasan: Membawa bekal makanan dari rumah bisa mencegah kita banyak jajan."
+        },
+        {
+            q: "19. Kata 'jajan' ada dua huruf j. Huruf j adalah termasuk huruf...",
+            options: ["jenis huruf itu konsonan", "jenis huruf itu vokal", "jenis huruf itu angka"],
+            answer: "jenis huruf itu konsonan",
+            exp: "Pembahasan: Huruf j adalah huruf mati atau disebut konsonan."
+        },
+        {
+            q: "20. Dina punya uang kertas lusuh. Uang lusuh itu kotor. Dina harus mencuci tangan setelah...",
+            options: ["pegang uang itu", "lihat uang itu", "buang uang itu"],
+            answer: "pegang uang itu",
+            exp: "Pembahasan: Uang yang berpindah-pindah tangan memiliki banyak kuman, kita harus cuci tangan setelah memegangnya."
+        },
+        {
+            q: "21. Keinginan dan kebutuhan itu berbeda. Kebutuhan harus segera dibeli agar...",
+            options: ["kita bisa hidup", "kita bisa main", "kita bisa tidur"],
+            answer: "kita bisa hidup",
+            exp: "Pembahasan: Kebutuhan pokok seperti makan dan minum sangat penting untuk kelangsungan hidup kita."
+        },
+        {
+            q: "22. Dika menulis kata 'pasar'. Huruf s pada kata pasar ada di...",
+            options: ["posisi di tengah kata", "posisi di awal kata", "posisi di akhir kata"],
+            answer: "posisi di tengah kata",
+            exp: "Pembahasan: Pada kata p-a-s-a-r, huruf s berada di urutan tengah."
+        },
+        {
+            q: "23. Ibu simpan uang di bank. Bank adalah tempat yang aman. Huruf akhir bank adalah...",
+            options: ["huruf akhirnya yaitu k", "huruf akhirnya yaitu b", "huruf akhirnya yaitu n"],
+            answer: "huruf akhirnya yaitu k",
+            exp: "Pembahasan: Kata 'bank' diakhiri oleh huruf k."
+        },
+        {
+            q: "24. Ayah bekerja mendapat gaji. Gaji ayah berupa uang. Uang itu digunakan untuk bayar...",
+            options: ["biaya sekolah anak", "daun di pohon", "angin di luar"],
+            answer: "biaya sekolah anak",
+            exp: "Pembahasan: Uang digunakan untuk alat tukar jasa atau barang penting, seperti membayar biaya sekolah."
+        },
+        {
+            q: "25. Beli barang karena butuh itu baik. Beli barang karena ingin itu...",
+            options: ["harus kita batasi", "harus kita ikuti", "harus kita paksa"],
+            answer: "harus kita batasi",
+            exp: "Pembahasan: Keinginan yang tidak penting harus dibatasi agar uang tidak cepat habis atau boros."
+        }
+    ];
+
+    // --- State Variables ---
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let playerName = "";
+    let playerClass = "";
+    let userAnswers = []; 
+    
+    // PERBAIKAN: Menggunakan Kunci Penyimpanan Unik untuk Kuis Ini
+    const STORAGE_KEY = 'quizHistory_IND_K1_S2_B7_HOTS';
+    let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    // --- Initialization ---
+    document.getElementById('current-year').innerText = new Date().getFullYear();
+    renderHistory();
+
+    // --- Functions ---
+    function shuffleArray(array) {
+        let shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    function renderHistory() {
+        const tbody = document.getElementById('history-body');
+        tbody.innerHTML = '';
+        if (history.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada riwayat. Jadilah yang pertama!</td></tr>';
+            return;
+        }
+        // Tampilkan dari yang paling baru
+        const reversedHistory = [...history].reverse();
+        reversedHistory.forEach(record => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${record.time}</td>
+                <td>${record.name}</td>
+                <td>${record.cls}</td>
+                <td><strong>${record.score}</strong></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function startQuiz() {
+        const nameInput = document.getElementById('playerName').value.trim();
+        const classInput = document.getElementById('playerClass').value.trim();
+
+        if (nameInput === "" || classInput === "") {
+            alert("Halo! Silakan isi Nama Lengkap dan Kelas kamu dulu ya!");
+            return;
+        }
+
+        playerName = nameInput;
+        playerClass = classInput;
+        score = 0;
+        currentQuestionIndex = 0;
+        
+        // Setup initial user state empty
+        userAnswers = questionsData.map(() => ({
+            answered: false,
+            selectedOption: null,
+            shuffledOptions: []
+        }));
+
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+
+        updateScoreUI();
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const qData = questionsData[currentQuestionIndex];
+        const state = userAnswers[currentQuestionIndex];
+
+        // Shuffle options if not done yet
+        if (state.shuffledOptions.length === 0) {
+            state.shuffledOptions = shuffleArray(qData.options);
+        }
+
+        document.getElementById('question-tracker').innerText = `Soal: ${currentQuestionIndex + 1} / ${questionsData.length}`;
+        document.getElementById('question-text').innerText = qData.q;
+        
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        const explanationBox = document.getElementById('explanation-box');
+        explanationBox.style.display = 'none';
+
+        state.shuffledOptions.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            
+            // If question was already answered, apply styling
+            if (state.answered) {
+                btn.disabled = true;
+                if (opt === qData.answer) {
+                    btn.classList.add('correct');
+                } else if (opt === state.selectedOption) {
+                    btn.classList.add('wrong');
+                }
+            } else {
+                btn.onclick = () => selectOption(opt, btn);
+            }
+            optionsContainer.appendChild(btn);
+        });
+
+        if (state.answered) {
+            explanationBox.innerText = qData.exp;
+            explanationBox.style.display = 'block';
+        }
+
+        updateNavButtons();
+    }
+
+    function selectOption(selectedOpt, btnElement) {
+        const qData = questionsData[currentQuestionIndex];
+        const state = userAnswers[currentQuestionIndex];
+        
+        state.answered = true;
+        state.selectedOption = selectedOpt;
+
+        if (selectedOpt === qData.answer) {
+            // Hitung skor sementara (100 / 25 soal = 4 poin per soal)
+            score += 4;
+            updateScoreUI();
+        }
+
+        renderQuestion(); // Re-render to show colors and explanation
+    }
+
+    function updateScoreUI() {
+        document.getElementById('temp-score').innerText = `Skor Sementara: ${score}`;
+    }
+
+    function updateNavButtons() {
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const finishBtn = document.getElementById('finish-btn');
+        const state = userAnswers[currentQuestionIndex];
+
+        // Prev logic
+        if (currentQuestionIndex > 0) {
+            prevBtn.classList.remove('hidden');
+        } else {
+            prevBtn.classList.add('hidden');
+        }
+
+        // Next/Finish logic
+        if (!state.answered) {
+            nextBtn.classList.add('hidden');
+            finishBtn.classList.add('hidden');
+        } else {
+            if (currentQuestionIndex < questionsData.length - 1) {
+                nextBtn.classList.remove('hidden');
+                finishBtn.classList.add('hidden');
+            } else {
+                nextBtn.classList.add('hidden');
+                finishBtn.classList.remove('hidden');
+            }
+        }
+    }
+
+    function finishQuiz() {
+        // Simpan ke history
+        const dateStr = new Date().toLocaleString('id-ID', { 
+            day: '2-digit', month: 'short', year: 'numeric', 
+            hour: '2-digit', minute:'2-digit' 
+        });
+
+        const newRecord = {
+            time: dateStr,
+            name: playerName,
+            cls: playerClass,
+            score: score
+        };
+
+        history.push(newRecord);
+        // PERBAIKAN: Menyimpan ke Kunci Spesifik
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        
+        // Update tampilan history
+        renderHistory();
+
+        // Tampilkan hasil
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        
+        document.getElementById('final-name').innerText = playerName;
+        document.getElementById('final-score').innerText = `Skor Kamu: ${score}`;
+    }
+
+    function backToLogin() {
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
+        document.getElementById('playerName').value = '';
+        document.getElementById('playerClass').value = '';
+    }
+</script>
+
+</body>
+</html>

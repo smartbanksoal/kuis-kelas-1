@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis PAI Kelas 1 - Al-Qur'an Pedoman Hidupku</title>
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --accent-color: #FFE66D;
+            --text-color: #2F2F2F;
+            --bg-color: #f7f9fc;
+            --correct-color: #2ecc71;
+            --wrong-color: #e74c3c;
+            --home-color: #6c757d;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 70px; /* Ruang untuk footer */
+            text-align: center;
+        }
+
+        .question-code {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 0 #2a9d8f;
+        }
+
+        .screen {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 5px solid var(--accent-color);
+        }
+
+        .active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="text"] {
+            width: 85%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 5px 0 #c0392b;
+            transition: 0.1s;
+            margin: 5px;
+        }
+
+        button:active { transform: translateY(4px); box-shadow: 0 1px 0 #c0392b; }
+
+        .btn-home {
+            background-color: var(--home-color);
+            box-shadow: 0 5px 0 #495057;
+            text-decoration: none;
+            display: inline-block;
+            color: white;
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .history-box {
+            margin-top: 20px;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 2px dashed var(--secondary-color);
+        }
+        
+        .history-item { border-bottom: 1px solid #eee; padding: 5px 0; font-size: 0.9em; }
+
+        .progress-bar { width: 100%; background: #eee; border-radius: 10px; height: 12px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--secondary-color); width: 0%; transition: 0.3s; }
+
+        .options-grid { display: grid; gap: 12px; margin: 20px 0; }
+
+        /* PERBAIKAN FONT JAWABAN */
+        .option-btn {
+            background: #ffffff;
+            border: 3px solid var(--secondary-color);
+            box-shadow: 0 4px 0 #2a9d8f;
+            padding: 15px;
+            font-size: 18px; /* Lebih besar */
+            font-weight: 800; /* Lebih tebal */
+            color: #000000; /* Hitam pekat agar jelas */
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        .option-btn.correct { background: var(--correct-color)!important; color: white!important; border-color: #27ae60!important; box-shadow: 0 4px 0 #219150!important; }
+        .option-btn.wrong { background: var(--wrong-color)!important; color: white!important; border-color: #c0392b!important; box-shadow: 0 4px 0 #96281b!important; }
+
+        .explanation {
+            display: none;
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: left;
+            font-size: 1em;
+            border-left: 5px solid #ffeeba;
+            color: #856404;
+        }
+
+        /* FOOTER RAMPING SESUAI PERMINTAAN */
+        footer {
+            background: #222;
+            color: #fff;
+            padding: 12px 5px;
+            text-align: center;
+            font-size: 0.7em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            line-height: 1.5;
+        }
+
+        footer a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="question-code">PAI-K1-S2-B6-HOTS</div>
+
+        <div id="login-screen" class="screen active">
+            <h1 style="color: var(--primary-color);">Selamat Datang!</h1>
+            <p>Belajar Al-Qur'an Pedoman Hidupku</p>
+            <div style="font-size: 40px; margin: 10px 0;">📖</div>
+            
+            <input type="text" id="input-nama" placeholder="Nama Lengkap" required>
+            <input type="text" id="input-kelas" placeholder="Kelas" required>
+            <br>
+            <button onclick="startQuiz()">Mulai Kuis 🚀</button>
+            <br>
+            <a href="../index.html" class="btn-home">🏠 Kembali ke Home</a>
+
+            <div class="history-box">
+                <strong>🏅 Riwayat Skor Materi Ini:</strong>
+                <div id="history-list">Belum ada riwayat.</div>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-weight: bold; color: var(--primary-color);">Skor: <span id="current-score">0</span></div>
+                <div style="font-weight: bold;">Soal <span id="q-number">1</span>/25</div>
+            </div>
+            <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+            <div id="question-text" class="question-text" style="font-weight: bold; font-size: 1.2em;"></div>
+            <div id="options-container" class="options-grid"></div>
+            <div id="explanation" class="explanation"></div>
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button id="prev-btn" style="background: var(--secondary-color); box-shadow: 0 5px 0 #2a9d8f; display:none;" onclick="prevQuestion()">⬅️</button>
+                <button id="next-btn" style="background: var(--secondary-color); box-shadow: 0 5px 0 #2a9d8f; display:none;" onclick="nextQuestion()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h2 style="color: var(--secondary-color);">Selesai! 🎉</h2>
+            <p id="result-message"></p>
+            <h1 style="font-size: 3.5em; color: var(--primary-color); margin: 10px 0;" id="final-score">0</h1>
+            <button onclick="resetQuiz()">Ulangi 🔄</button>
+            <br>
+            <a href="../index.html" class="btn-home">🏠 Kembali ke Home</a>
+        </div>
+    </div>
+
+    <footer>
+        <span id="copy-tag"></span> Dwi Endrasto | Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        // Unique ID agar tidak bentrok dengan kuis lain
+        const QUIZ_ID = "PAI_K1_S2_B6_HOTS_FINAL"; 
+
+        const questionsData = [
+            { q: "Agar huruf 'Ba' berbunyi 'Bi', harakat apa yang harus kita berikan?", o: ["Harakat Fathah di atas", "Harakat Kasrah di bawah", "Harakat Dammah di depan"], a: "Harakat Kasrah di bawah", exp: "Kasrah adalah tanda baris bawah yang menghasilkan bunyi 'i'." },
+            { q: "Andi ingin menulis kata 'Buku' dalam huruf Arab. Huruf pertamanya harus diberi harakat apa?", o: ["Fathah agar bunyi A", "Kasrah agar bunyi I", "Dammah agar bunyi U"], a: "Dammah agar bunyi U", exp: "Kata 'Buku' berawalan bunyi 'Bu'. Huruf Ba diberi harakat Dammah." },
+            { q: "Perhatikan lafal: 'Qul Huwallahu Ahad'. Ayat ini mengajarkan kita bahwa Allah itu...", o: ["Ada Banyak", "Maha Satu", "Maha Kaya"], a: "Maha Satu", exp: "Ahad artinya Satu/Esa." },
+            { q: "Jika kita berdoa meminta pertolongan kepada patung atau pohon besar, berarti kita...", o: ["Mengamalkan Surah Al-Ikhlas", "Melanggar Surah Al-Ikhlas", "Menambah pahala ibadah"], a: "Melanggar Surah Al-Ikhlas", exp: "Meminta selain kepada Allah adalah perbuatan syirik." },
+            { q: "Huruf 'Jim' jika diberi harakat Fathah akan dibaca...", o: ["Ja", "Ji", "Ju"], a: "Ja", exp: "Fathah menghasilkan bunyi vokal 'a'." },
+            { q: "Budi sedang sakit. Sesuai pesan Surah Al-Ikhlas ayat ke-2, apa yang harus Budi lakukan?", o: ["Meminta kesembuhan pada Allah", "Menangis seharian di kamar", "Marah kepada teman-temannya"], a: "Meminta kesembuhan pada Allah", exp: "Allahus-Samad artinya Allah tempat bergantung segala sesuatu." },
+            { q: "Allah tidak beranak dan tidak diperanakkan. Ini adalah arti dari Surah Al-Ikhlas ayat ke...", o: ["Satu", "Dua", "Tiga"], a: "Tiga", exp: "Ayat ke-3 berbunyi: 'Lam yalid wa lam yuulad'." },
+            { q: "Manakah di bawah ini yang merupakan contoh huruf Hijaiah yang tidak bisa disambung dengan huruf setelahnya?", o: ["Huruf Ba (ب)", "Huruf Jim (ج)", "Huruf Alif (ا)"], a: "Huruf Alif (ا)", exp: "Alif tidak bisa menyambung ke huruf sesudahnya." },
+            { q: "Jika harakat Fathah, Kasrah, dan Dammah digabung pada huruf 'Ta', 'Ta', 'Ta', bunyinya menjadi...", o: ["Ta - Ti - Tu", "Tu - Ti - Ta", "Ti - Ta - Tu"], a: "Ta - Ti - Tu", exp: "Fathah(a), Kasrah(i), Dammah(u)." },
+            { q: "Sinta percaya bahwa tidak ada yang setara atau sama dengan Allah. Sikap Sinta sesuai dengan Surrah Al-Ikhlas ayat...", o: ["Pertama", "Ketiga", "Keempat"], a: "Keempat", exp: "Ayat ke-4: 'Wa lam yakul-lahu kufuwan ahad'." },
+            { q: "Huruf 'Mim' (م) bentuknya akan berubah jika ditulis di...", o: ["Awal dan Tengah", "Hanya di Akhir", "Tidak pernah berubah"], a: "Awal dan Tengah", exp: "Mim berubah bentuk saat menyambung di awal/tengah." },
+            { q: "Kenapa Surah ini dinamakan Al-Ikhlas padahal tidak ada kata 'Al-Ikhlas' di dalamnya?", o: ["Karena isinya tentang ibadah haji", "Karena isinya memurnikan tauhid", "Karena isinya tentang sejarah nabi"], a: "Karena isinya memurnikan tauhid", exp: "Al-Ikhlas berarti memurnikan keesaan Allah." },
+            { q: "Tanda baca Al-Qur'an yang bentuknya seperti angka sembilan kecil di atas huruf disebut...", o: ["Fathah", "Kasrah", "Dammah"], a: "Dammah", exp: "Dammah berada di atas huruf dan berbunyi 'u'." },
+            { q: "Ayat 'Lam yalid wa lam yuulad' membantah anggapan orang yang mengatakan bahwa...", o: ["Allah itu Maha Melihat", "Allah itu mempunyai anak", "Allah itu Maha Mendengar"], a: "Allah itu mempunyai anak", exp: "Ayat ini menegaskan Allah tidak memiliki anak." },
+            { q: "Huruf Syin (ش) memiliki titik sebanyak...", o: ["Satu di bawah", "Dua di atas", "Tiga di atas"], a: "Tiga di atas", exp: "Ciri huruf Syin adalah memiliki tiga titik di atas." },
+            { q: "Rani selalu jujur karena yakin Allah Maha Esa dan Maha Melihat. Perilaku Rani adalah bukti...", o: ["Dia takut kepada guru", "Dia mengamalkan Al-Ikhlas", "Dia ingin dipuji teman"], a: "Dia mengamalkan Al-Ikhlas", exp: "Meyakini Allah Maha Esa mendorong perilaku jujur." },
+            { q: "Harakat yang letaknya di bawah huruf hijaiyah disebut...", o: ["Fathah", "Kasrah", "Dammah"], a: "Kasrah", exp: "Kasrah adalah tanda baris di bawah huruf." },
+            { q: "Jika ada teman yang mengajak menyembah selain Allah, sikap kita adalah...", o: ["Mengikuti agar teman senang", "Menolak dengan sopan", "Marah dan memukulnya"], a: "Menolak dengan sopan", exp: "Tolak ajakan buruk dengan tetap berakhlak baik." },
+            { q: "Bunyi huruf 'Ra' jika diberi harakat Fathah tebal adalah...", o: ["Ra (o)", "Ri (i)", "Ru (u)"], a: "Ra (o)", exp: "Ra Fathah dibaca tebal (tafkhim)." },
+            { q: "Apa akibatnya jika kita tidak mengenal harakat saat membaca Al-Qur'an?", o: ["Bacaan menjadi sangat merdu", "Tidak bisa membunyikan huruf", "Hafalan menjadi lebih cepat"], a: "Tidak bisa membunyikan huruf", exp: "Harakat berfungsi sebagai tanda bunyi (vokal)." },
+            { q: "Urutan ayat yang benar setelah 'Allahus-samad' adalah...", o: ["Qul huwallahu ahad", "Lam yalid wa lam yuulad", "Wa lam yakul-lahu kufuwan ahad"], a: "Lam yalid wa lam yuulad", exp: "Itu adalah urutan ayat ketiga surah Al-Ikhlas." },
+            { q: "Huruf 'Kaf' (ك) jika berada di akhir kalimat bentuknya...", o: ["Seperti huruf Lam", "Kembali ke bentuk asli", "Menjadi bulat kecil"], a: "Kembali ke bentuk asli", exp: "Kaf di akhir kata kembali ke bentuk aslinya." },
+            { q: "Membaca Surah Al-Ikhlas pahalanya disamakan dengan membaca...", o: ["Sepertiga Al-Qur'an", "Setengah Al-Qur'an", "Seluruh isi Al-Qur'an"], a: "Sepertiga Al-Qur'an", exp: "Hadis menyebut Al-Ikhlas setara sepertiga Al-Qur'an." },
+            { q: "Pak Guru menulis huruf 'Sin' (س) dan memberi tanda coret miring di atasnya. Murid membacanya...", o: ["Si", "Su", "Sa"], a: "Sa", exp: "Coret miring di atas adalah harakat Fathah(a)." },
+            { q: "Pesan utama Surah Al-Ikhlas adalah tentang...", o: ["Kisah para Nabi", "Keesaan Allah SWT", "Hukum puasa Ramadan"], a: "Keesaan Allah SWT", exp: "Inti surah Al-Ikhlas adalah Tauhid." }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = new Array(questionsData.length).fill(null);
+        let userName = "";
+        let userClass = "";
+
+        const loginScreen = document.getElementById('login-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const explanationDiv = document.getElementById('explanation');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const currentScoreDisplay = document.getElementById('current-score');
+        const progressBar = document.getElementById('progress-fill');
+        const historyList = document.getElementById('history-list');
+
+        document.getElementById('copy-tag').innerText = "@ " + new Date().getFullYear();
+        loadHistory();
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem(QUIZ_ID)) || [];
+            if (history.length > 0) {
+                historyList.innerHTML = history.map(item => 
+                    `<div class="history-item">👤 <b>${item.name}</b> (${item.class}) - Skor: <b>${item.score}</b> <br><small>${item.date}</small></div>`
+                ).join('');
+            } else { historyList.innerHTML = "Belum ada riwayat."; }
+        }
+
+        function saveHistory() {
+            const history = JSON.parse(localStorage.getItem(QUIZ_ID)) || [];
+            const newEntry = {
+                name: userName,
+                class: userClass,
+                score: Math.round((score / questionsData.length) * 100),
+                date: new Date().toLocaleString('id-ID')
+            };
+            history.unshift(newEntry);
+            if (history.length > 5) history.pop();
+            localStorage.setItem(QUIZ_ID, JSON.stringify(history));
+        }
+
+        function startQuiz() {
+            userName = document.getElementById('input-nama').value;
+            userClass = document.getElementById('input-kelas').value;
+            if (!userName || !userClass) { alert("Tulis Nama & Kelas dulu ya!"); return; }
+            currentQuestionIndex = 0; score = 0;
+            userAnswers.fill(null);
+            currentScoreDisplay.innerText = 0;
+            loginScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const qData = questionsData[currentQuestionIndex];
+            document.getElementById('q-number').innerText = currentQuestionIndex + 1;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            explanationDiv.style.display = 'none';
+            nextBtn.style.display = 'none';
+            prevBtn.style.display = currentQuestionIndex > 0 ? 'block' : 'none';
+
+            qData.o.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, qData.a, qData.exp);
+                optionsContainer.appendChild(btn);
+            });
+
+            progressBar.style.width = `${(currentQuestionIndex / questionsData.length) * 100}%`;
+            if (userAnswers[currentQuestionIndex]) restoreAnswerState(userAnswers[currentQuestionIndex], qData.a, qData.exp);
+        }
+
+        function checkAnswer(selectedBtn, selectedText, correctText, explanation) {
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+            const isCorrect = selectedText === correctText;
+            if (isCorrect) selectedBtn.classList.add('correct');
+            else {
+                selectedBtn.classList.add('wrong');
+                buttons.forEach(btn => { if (btn.innerText === correctText) btn.classList.add('correct'); });
+            }
+            explanationDiv.innerHTML = `<b>Jawaban Benar: ${correctText}</b><br>${explanation}`;
+            explanationDiv.style.display = 'block';
+            userAnswers[currentQuestionIndex] = { isCorrect: isCorrect, selected: selectedText };
+            recalculateScore();
+            nextBtn.style.display = 'block';
+        }
+
+        function restoreAnswerState(state, correctText, explanation) {
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.innerText === state.selected) btn.classList.add(state.isCorrect ? 'correct' : 'wrong');
+                if (btn.innerText === correctText) btn.classList.add('correct');
+            });
+            explanationDiv.style.display = 'block';
+            nextBtn.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questionsData.length - 1) { currentQuestionIndex++; loadQuestion(); }
+            else showResult();
+        }
+
+        function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(); } }
+
+        function recalculateScore() {
+            score = userAnswers.filter(a => a && a.isCorrect).length;
+            currentScoreDisplay.innerText = score;
+        }
+
+        function showResult() {
+            recalculateScore();
+            quizScreen.classList.remove('active');
+            resultScreen.classList.add('active');
+            const final = Math.round((score / questionsData.length) * 100);
+            document.getElementById('final-score').innerText = final;
+            document.getElementById('result-message').innerText = final >= 70 ? "Alhamdulillah! Kamu Hebat! 🌟" : "Tetap Semangat Belajar Lagi! 💪";
+            saveHistory();
+        }
+
+        function resetQuiz() {
+            resultScreen.classList.remove('active');
+            loginScreen.classList.add('active');
+            loadHistory();
+        }
+    </script>
+</body>
+</html>

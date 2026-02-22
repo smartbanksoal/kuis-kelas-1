@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif Bahasa Indonesia Kelas 1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .kode-soal {
+            background-color: #ffeb3b;
+            color: #e65100;
+            font-weight: 900;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            border: 2px dashed #ff9800;
+            font-size: 14px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 700px;
+            margin: 40px auto;
+            flex: 1;
+            position: relative;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+        }
+        
+        h1 { color: #ff4081; font-size: 28px; }
+        h2 { color: #00bcd4; }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #5e35b1;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #b39ddb;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #651fff;
+        }
+
+        .btn {
+            background-color: #00e676;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 5px 0 #00c853;
+            transition: all 0.2s;
+            margin-top: 10px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn:active {
+            box-shadow: 0 2px 0 #00c853;
+            transform: translateY(3px);
+        }
+
+        .btn-blue {
+            background-color: #29b6f6;
+            box-shadow: 0 5px 0 #0288d1;
+        }
+        .btn-blue:active { box-shadow: 0 2px 0 #0288d1; }
+
+        /* Style untuk link yang menyerupai tombol */
+        a.btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+            margin-top: 15px;
+        }
+
+        /* Kuis Section */
+        #quiz-screen { display: none; }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #e1bee7;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: #4a148c;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #37474f;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            background: #e0f7fa;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: left;
+            border: 3px solid #80deea;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #006064;
+            font-weight: bold;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .option-btn:hover { background: #b2ebf2; }
+        
+        .correct { background-color: #a5d6a7 !important; border-color: #2e7d32 !important; color: #1b5e20 !important; }
+        .wrong { background-color: #ef9a9a !important; border-color: #c62828 !important; color: #b71c1c !important; }
+        .disabled { pointer-events: none; opacity: 0.8; }
+
+        .explanation {
+            display: none;
+            background: #fff9c4;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 6px solid #fbc02d;
+            font-size: 16px;
+            color: #555;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        /* History Table */
+        .history-container {
+            margin-top: 30px;
+            border-top: 3px dashed #ce93d8;
+            padding-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            border: 1px solid #f8bbd0;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        th { background: #f48fb1; color: white; }
+        tr:nth-child(even) { background-color: #fce4ec; }
+
+        /* Footer Elegan */
+        footer {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            text-align: center;
+            padding: 15px 20px;
+            margin-top: auto;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        footer a { color: #80deea; text-decoration: none; font-weight: bold; }
+        footer a:hover { color: #b2ebf2; text-decoration: underline; }
+
+        .ornament { font-size: 30px; margin: 0 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="login-screen">
+        <div style="text-align: center;">
+            <div class="kode-soal">KODE: IND-K1-S2-B8-HOTS</div>
+        </div>
+        <h1><span class="ornament">🌟</span> Selamat Datang di Kuis Pintar! <span class="ornament">🌟</span></h1>
+        <h2>Bahasa Indonesia - Di Sekitar Rumah</h2>
+        
+        <div class="input-group">
+            <label for="namaLengkap">Nama Lengkap:</label>
+            <input type="text" id="namaLengkap" placeholder="Tulis namamu di sini..." required>
+        </div>
+        <div class="input-group">
+            <label for="kelas">Kelas:</label>
+            <input type="text" id="kelas" placeholder="Contoh: 1A" required>
+        </div>
+        
+        <button class="btn" onclick="mulaiKuis()" style="width: 100%;">Mulai Bermain 🚀</button>
+        <a href="../index.html" class="btn btn-blue">🏠 Kembali ke Home</a>
+
+        <div class="history-container">
+            <h3>Papan Peringkat (History Skor) 🏆</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Waktu</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container" id="quiz-screen">
+        <div style="text-align: center;">
+            <div class="kode-soal">KODE: IND-K1-S2-B8-HOTS</div>
+        </div>
+        <div class="status-bar">
+            <span id="player-info">Nama - Kelas</span>
+            <span id="score-info">Skor Sementara: 0</span>
+        </div>
+        
+        <div style="font-weight: bold; color: #8e24aa; margin-bottom: 10px;">Soal <span id="question-number">1</span> dari 25</div>
+        <div class="question-text" id="question-text">Teks Soal</div>
+        
+        <div id="options-container">
+            </div>
+
+        <div class="explanation" id="explanation-box">
+            <strong>💡 Pembahasan:</strong> <span id="explanation-text"></span>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-blue" id="btn-prev" onclick="soalSebelumnya()">⬅️ Sebelumnya</button>
+            <button class="btn btn-blue" id="btn-next" onclick="soalSelanjutnya()">Selanjutnya ➡️</button>
+            <button class="btn" id="btn-finish" onclick="selesaiKuis()" style="display:none;">Selesai & Simpan 💾</button>
+        </div>
+    </div>
+
+    <footer>
+        @ <span id="tahun"></span> Oleh: Dwi Endrasto, Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        document.getElementById('tahun').innerText = new Date().getFullYear();
+
+        // Kunci Local Storage yang unik agar tidak bentrok
+        const STORAGE_KEY = 'quizHistory_IND_K1_S2_B8_HOTS';
+
+        // Data Soal
+        const dataSoal = [
+            { t: "Andi menghadap matahari terbit di pagi hari. Tangan kanannya menunjuk ke arah mana?", o: ["Arah selatan", "Arah utara", "Arah barat"], a: 0, p: "Matahari terbit di timur. Jika kita menghadap timur, tangan kanan berada di arah selatan." },
+            { t: "Budi berjalan maju dua langkah, lalu mundur lagi dua langkah. Budi sekarang berada di?", o: ["Tempat semula", "Tempat baru", "Tempat lain"], a: 0, p: "Maju dua langkah lalu mundur dua langkah dengan jarak yang sama akan membuat kita kembali ke titik awal." },
+            { t: "Paman pos mengantar paket ke sebelah kanan rumahku. Jika paman keluar dari rumahku, paman harus berbelok?", o: ["Belok kanan", "Belok kiri", "Lurus terus"], a: 0, p: "Karena tujuan paman ada di sebelah kanan rumah, maka paman harus mengarah ke kanan." },
+            { t: "Orang yang memakai seragam dan bertugas menjaga keamanan kompleks rumah di malam hari disebut?", o: ["Bapak satpam", "Bapak dokter", "Bapak guru"], a: 0, p: "Satpam (Satuan Pengamanan) bertugas menjaga keamanan lingkungan perumahan warga." },
+            { t: "Ibu membeli bayam dari orang yang memikul dagangannya lewat depan rumah. Siapakah dia?", o: ["Tukang sayur", "Tukang pos", "Tukang ojek"], a: 0, p: "Orang yang berkeliling menjual sayuran, biasanya dengan gerobak atau dipikul, adalah tukang sayur." },
+            { t: "Matahari mulai tenggelam. Karena membelakangi matahari, bayangan tubuh kita memanjang ke?", o: ["Arah timur", "Arah barat", "Arah utara"], a: 0, p: "Matahari tenggelam di barat. Bayangan selalu jatuh berlawanan arah dari letak cahaya, yaitu ke timur." },
+            { t: "Seekor burung hinggap di atas genting, sedangkan kucing tidur di teras. Siapa yang letaknya lebih tinggi?", o: ["Burung gereja", "Kucing manis", "Ayam jago"], a: 0, p: "Genting (atap) berada di bagian atas rumah, sedangkan teras ada di bawah. Jadi burung berada lebih tinggi." },
+            { t: "Rumah Dito bernomor 5. Rumah Ani bernomor 7. Rumah Budi berada tepat di antara mereka berdua. Berapa nomor rumah Budi?", o: ["Nomor enam", "Nomor empat", "Nomor dua"], a: 0, p: "Angka yang berada tepat di antara 5 dan 7 adalah 6." },
+            { t: "Sebuah peta selalu memiliki tanda panah ke atas. Tanda panah ke atas itu menunjuk arah?", o: ["Arah utara", "Arah selatan", "Arah barat"], a: 0, p: "Dalam membaca peta, bagian atas selalu menunjukkan arah utara." },
+            { t: "Ayah memasukkan mobil ke dalam garasi dengan cara mundur. Berarti bagian mobil yang masuk duluan adalah?", o: ["Bagian belakang", "Bagian depan", "Bagian atas"], a: 0, p: "Saat mobil bergerak mundur, bagian belakangnya akan mencapai tujuan lebih dulu." },
+            { t: "Kakak menyapu dan mengumpulkan debu di pojok ruangan. Pojok ruangan adalah pertemuan antara dua?", o: ["Dua dinding", "Dua pintu", "Dua jendela"], a: 0, p: "Pojok atau sudut ruangan selalu dibentuk oleh pertemuan dua dinding tembok." },
+            { t: "Jika kita ingin membuang bungkus makanan di dalam rumah, kita harus mencarinya di?", o: ["Tong sampah", "Meja makan", "Atas kasur"], a: 0, p: "Bungkus makanan yang sudah menjadi sampah harus dibuang ke tempat yang benar, yaitu tong sampah." },
+            { t: "Ada pipa air di kamar mandi yang bocor. Ayah harus memanggil pekerja, yaitu?", o: ["Tukang ledeng", "Tukang kebun", "Tukang sapu"], a: 0, p: "Tukang ledeng adalah ahli yang bertugas memperbaiki saluran air dan pipa-pipa." },
+            { t: "Sinta berdiri menghadap utara. Lalu ia membalikkan badannya ke belakang penuh. Sinta kini menghadap?", o: ["Arah selatan", "Arah barat", "Arah timur"], a: 0, p: "Arah yang berlawanan persis dengan utara (di belakang kita saat menghadap utara) adalah selatan." },
+            { t: "Angin kencang bertiup dari utara ke selatan. Asap pembakaran sampah akan terbang ke?", o: ["Arah selatan", "Arah utara", "Arah barat"], a: 0, p: "Asap bergerak mengikuti arah hembusan angin. Karena angin menuju selatan, asap pun ke selatan." },
+            { t: "Adik menangkap bola yang dilempar lurus dari arah depannya. Bola itu mengarah ke bagian badan adik, yaitu?", o: ["Dada adik", "Punggung adik", "Kaki adik"], a: 0, p: "Benda yang datang dari depan lurus akan berhadapan dengan bagian depan tubuh, seperti dada." },
+            { t: "Setiap pagi Pak Mamat menyapu daun-daun kering di jalanan depan kompleks. Pekerjaan Pak Mamat adalah?", o: ["Tukang sapu", "Tukang masak", "Tukang kayu"], a: 0, p: "Tukang sapu jalanan bertugas menjaga kebersihan lingkungan dengan menyapu jalan dan selokan." },
+            { t: "Jika kita berdiri di halaman dan melihat bayangan kita sangat pendek di bawah kaki, itu menandakan waktu?", o: ["Siang hari", "Pagi hari", "Malam hari"], a: 0, p: "Bayangan paling pendek terjadi saat matahari berada tepat di atas kepala, yaitu pada siang hari." },
+            { t: "Pintu pagar didorong ke depan untuk membukanya. Maka, untuk menutupnya kembali kita harus?", o: ["Tarik mundur", "Dorong maju", "Geser samping"], a: 0, p: "Untuk mengembalikan pintu ke posisi semula (menutup), gerakannya harus berlawanan dari saat membuka (dorong -> tarik)." },
+            { t: "Awan hitam pekat bergerak dari arah barat menuju ke timur. Berarti hujan akan bergerak ke?", o: ["Arah timur", "Arah barat", "Arah selatan"], a: 0, p: "Hujan turun dari awan. Karena awan bergeser ke timur, hujan juga akan bergeser ke arah timur." },
+            { t: "Doni melihat pelangi di arah timur pada sore hari setelah hujan. Matahari sore bersinar dari?", o: ["Arah barat", "Arah timur", "Arah utara"], a: 0, p: "Sore hari matahari ada di barat. Cahaya matahari dari barat memantul di air hujan menciptakan pelangi di arah timur." },
+            { t: "Tukang bangunan sedang menyelesaikan pembuatan atap rumah. Posisi tukang bangunan itu berada di?", o: ["Bagian atas", "Bagian bawah", "Bagian dalam"], a: 0, p: "Atap merupakan penutup bangunan yang terletak di bagian paling atas." },
+            { t: "Ani duduk menghadap papan tulis di kelas. Budi duduk persis di belakang Ani. Budi menghadap ke?", o: ["Papan tulis", "Tembok belakang", "Jendela samping"], a: 0, p: "Karena duduk di belakang Ani, Budi memiliki arah pandangan yang sama dengan Ani, yaitu ke papan tulis." },
+            { t: "Tukang potong rumput bekerja di halaman belakang rumah. Suara mesinnya terdengar jelas dari?", o: ["Belakang rumah", "Depan rumah", "Samping rumah"], a: 0, p: "Sumber suara berasal dari tempat mesin itu dinyalakan, yaitu halaman belakang rumah." },
+            { t: "Kucing lari dikejar anjing masuk ke sebuah gang. Ternyata ujung gang itu buntu tembok. Kucing terpaksa harus berbalik ke?", o: ["Jalan masuk", "Jalan buntu", "Jalan pintas"], a: 0, p: "Karena ujung gang tertutup tembok (buntu), jalan satu-satunya untuk keluar adalah kembali ke jalan masuk tadi." }
+        ];
+
+        let currentUser = { nama: "", kelas: "" };
+        let currentSoalIndex = 0;
+        let userAnswers = {}; 
+        let shuffledOptionsData = []; 
+
+        function persiapkanSoal() {
+            shuffledOptionsData = [];
+            dataSoal.forEach((soal) => {
+                let options = [
+                    { text: soal.o[0], isCorrect: true, originalIndex: 0 },
+                    { text: soal.o[1], isCorrect: false, originalIndex: 1 },
+                    { text: soal.o[2], isCorrect: false, originalIndex: 2 }
+                ];
+                options.sort(() => Math.random() - 0.5);
+                shuffledOptionsData.push(options);
+            });
+        }
+
+        function mulaiKuis() {
+            const nama = document.getElementById('namaLengkap').value;
+            const kelas = document.getElementById('kelas').value;
+
+            if (!nama || !kelas) {
+                alert("Harap isi Nama dan Kelas terlebih dahulu ya! 😊");
+                return;
+            }
+
+            currentUser.nama = nama;
+            currentUser.kelas = kelas;
+            currentSoalIndex = 0;
+            userAnswers = {};
+            
+            persiapkanSoal();
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            document.getElementById('player-info').innerText = `${nama} - Kelas ${kelas}`;
+            
+            tampilkanSoal();
+            updateSkorSementara();
+        }
+
+        function tampilkanSoal() {
+            const soal = dataSoal[currentSoalIndex];
+            const options = shuffledOptionsData[currentSoalIndex];
+            
+            document.getElementById('question-number').innerText = currentSoalIndex + 1;
+            document.getElementById('question-text').innerText = soal.t;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+
+            const hasAnswered = userAnswers[currentSoalIndex] !== undefined;
+            const answeredData = userAnswers[currentSoalIndex];
+
+            options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                
+                if (hasAnswered) {
+                    btn.classList.add('disabled');
+                    if (opt.isCorrect) {
+                        btn.classList.add('correct');
+                    } else if (answeredData.selectedIndex === index && !opt.isCorrect) {
+                        btn.classList.add('wrong');
+                    }
+                } else {
+                    btn.onclick = () => pilihJawaban(index, opt.isCorrect);
+                }
+                
+                container.appendChild(btn);
+            });
+
+            document.getElementById('btn-prev').style.visibility = currentSoalIndex === 0 ? 'hidden' : 'visible';
+            
+            if (currentSoalIndex === dataSoal.length - 1) {
+                document.getElementById('btn-next').style.display = 'none';
+                document.getElementById('btn-finish').style.display = hasAnswered ? 'inline-block' : 'none';
+            } else {
+                document.getElementById('btn-next').style.display = 'inline-block';
+                document.getElementById('btn-finish').style.display = 'none';
+            }
+
+            const expBox = document.getElementById('explanation-box');
+            if (hasAnswered) {
+                document.getElementById('explanation-text').innerText = soal.p;
+                expBox.style.display = 'block';
+            } else {
+                expBox.style.display = 'none';
+            }
+        }
+
+        function pilihJawaban(selectedIndex, isCorrect) {
+            userAnswers[currentSoalIndex] = {
+                selectedIndex: selectedIndex,
+                isCorrect: isCorrect
+            };
+
+            updateSkorSementara();
+            tampilkanSoal(); 
+            
+            if (currentSoalIndex === dataSoal.length - 1) {
+                document.getElementById('btn-finish').style.display = 'inline-block';
+            }
+        }
+
+        function updateSkorSementara() {
+            let benar = 0;
+            for (let key in userAnswers) {
+                if (userAnswers[key].isCorrect) benar++;
+            }
+            let skor = (benar / dataSoal.length) * 100;
+            document.getElementById('score-info').innerText = `Skor Sementara: ${Math.round(skor)}`;
+        }
+
+        function soalSelanjutnya() {
+            if (currentSoalIndex < dataSoal.length - 1) {
+                currentSoalIndex++;
+                tampilkanSoal();
+            }
+        }
+
+        function soalSebelumnya() {
+            if (currentSoalIndex > 0) {
+                currentSoalIndex--;
+                tampilkanSoal();
+            }
+        }
+
+        function selesaiKuis() {
+            let benar = 0;
+            for (let key in userAnswers) {
+                if (userAnswers[key].isCorrect) benar++;
+            }
+            let skorAkhir = Math.round((benar / dataSoal.length) * 100);
+            
+            // Menggunakan STORAGE_KEY khusus
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            let waktu = new Date().toLocaleString('id-ID');
+            history.push({
+                nama: currentUser.nama,
+                kelas: currentUser.kelas,
+                waktu: waktu,
+                skor: skorAkhir
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+
+            alert(`Selamat ${currentUser.nama}! Kamu telah menyelesaikan kuis dengan skor: ${skorAkhir}`);
+            
+            document.getElementById('namaLengkap').value = '';
+            document.getElementById('kelas').value = '';
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+            muatHistory();
+        }
+
+        function muatHistory() {
+            // Menggunakan STORAGE_KEY khusus
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+            
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">Belum ada riwayat permainan.</td></tr>';
+                return;
+            }
+
+            history.reverse().forEach(h => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${h.nama}</td>
+                    <td>${h.kelas}</td>
+                    <td>${h.waktu}</td>
+                    <td><strong>${h.skor}</strong></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.onload = muatHistory;
+    </script>
+</body>
+</html>

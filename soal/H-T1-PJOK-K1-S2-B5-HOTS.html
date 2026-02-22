@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif PJOK Kelas 1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .header-kode {
+            background: #ff6b81;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            border-bottom: 4px solid #ff4757;
+        }
+
+        .screen {
+            display: none;
+            padding: 30px;
+            flex: 1;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tampilan Login */
+        h1 {
+            color: #2ed573;
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #747d8c;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 3px solid #dfe4ea;
+            border-radius: 10px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #1e90ff;
+        }
+
+        .btn {
+            background: #1e90ff;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            border-bottom: 4px solid #00000030;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            border-bottom-width: 0px;
+        }
+
+        .btn-home {
+            background: #f1f2f6;
+            color: #2f3542;
+            border: 2px solid #dfe4ea;
+            border-bottom: 4px solid #ced6e0;
+        }
+
+        .btn-home:hover {
+            background: #dfe4ea;
+            border-color: #ced6e0;
+        }
+
+        .btn-nav {
+            width: auto;
+            background: #ffa502;
+            margin-bottom: 0;
+        }
+
+        /* History Table */
+        .history-container {
+            margin-top: 20px;
+            border-top: 2px dashed #dfe4ea;
+            padding-top: 20px;
+        }
+
+        .history-container h3 {
+            color: #3742fa;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+
+        table th, table td {
+            border: 1px solid #dfe4ea;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background: #7bed9f;
+            color: #2f3542;
+        }
+
+        /* Tampilan Kuis */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #f1f2f6;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #2f3542;
+        }
+
+        .skor-sementara {
+            color: #ff4757;
+            font-size: 1.2rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #2f3542;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 3px solid #dfe4ea;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: bold;
+            color: #57606f;
+        }
+
+        .option-btn:not(:disabled):hover {
+            border-color: #1e90ff;
+            background: #f1f8ff;
+        }
+
+        .option-btn.correct {
+            background: #2ed573 !important;
+            color: white !important;
+            border-color: #26de81 !important;
+        }
+
+        .option-btn.wrong {
+            background: #ff4757 !important;
+            color: white !important;
+            border-color: #ff6b81 !important;
+        }
+
+        .pembahasan {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #eccc68;
+            border-radius: 10px;
+            color: #2f3542;
+            font-weight: bold;
+            border-left: 5px solid #ffa502;
+            animation: fadeIn 0.5s;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        /* Footer */
+        .app-footer {
+            background: #1e272e;
+            color: #dcdde1;
+            text-align: center;
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        @media (min-width: 600px) {
+            .app-footer {
+                white-space: nowrap;
+            }
+        }
+
+        .app-footer a {
+            color: #7bed9f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .app-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header-kode" id="kode-soal">KODE: PJOK-K1-S2-B5-HOTS</div>
+
+        <div id="login-screen" class="screen active">
+            <h1>Selamat Datang!</h1>
+            <div class="subtitle">
+                SD Kurikulum Merdeka<br>
+                Kelas 1 Semester 2 | PJOK: Sehat dan Bugar
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="input-nama" placeholder="Masukkan Nama Lengkap" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <input type="text" id="input-kelas" placeholder="Masukkan Kelas" autocomplete="off">
+            </div>
+            
+            <button class="btn" onclick="mulaiKuis()">Mulai Kerjakan</button>
+            <button class="btn btn-home" onclick="window.location.href='../index.html'">Kembali ke Home</button>
+
+            <div class="history-container">
+                <h3>History Pencapaian Skor</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Skor</th>
+                            <th>Waktu Pengerjaan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <span id="q-counter">Soal: 1 / 25</span>
+                <span class="skor-sementara" id="skor-display">Skor: 0</span>
+            </div>
+            
+            <div class="question-text" id="question-text">
+                Pertanyaan akan muncul di sini.
+            </div>
+
+            <div class="options-container" id="options-container">
+                </div>
+
+            <div class="pembahasan" id="pembahasan-box">
+                </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-nav" id="btn-prev" onclick="soalSebelumnya()">&#9664; Sebelumnya</button>
+                <button class="btn btn-nav" id="btn-next" onclick="soalSelanjutnya()">Selanjutnya &#9654;</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen" style="text-align: center;">
+            <h1>Kuis Selesai!</h1>
+            <h2 style="color: #747d8c;" id="result-name"></h2>
+            <div style="font-size: 4rem; color: #2ed573; font-weight: 900; margin: 20px 0;" id="final-score">100</div>
+            <p>Terima kasih sudah belajar dengan hebat hari ini!</p>
+            <button class="btn" onclick="kembaliKeAwal()">Kembali ke Halaman Utama</button>
+        </div>
+
+        <div class="app-footer">
+            @ <span id="tahun-footer"></span> Oleh: Dwi Endrasto, Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+        </div>
+    </div>
+
+    <script>
+        // Set Tahun Footer
+        document.getElementById('tahun-footer').innerText = new Date().getFullYear();
+
+        // Mendapatkan Key Storage Unik Berdasarkan Kode Soal
+        function getStorageKey() {
+            const kode = document.getElementById('kode-soal').innerText.replace('KODE:', '').trim();
+            return 'skor_kuis_' + kode;
+        }
+
+        // Data Soal HOTS - 3 Kata per opsi - 25 Soal
+        const bankSoal = [
+            {
+                q: "1. Budi lari keliling lapangan. Apa yang Budi rasakan setelahnya?",
+                options: [
+                    {text: "Napas menjadi cepat", correct: true},
+                    {text: "Perut menjadi lapar", correct: false},
+                    {text: "Mata menjadi ngantuk", correct: false}
+                ],
+                pembahasan: "Pembahasan: Lari adalah aktivitas aerobik yang membuat jantung dan paru-paru bekerja lebih keras, sehingga napas menjadi lebih cepat."
+            },
+            {
+                q: "2. Saat bermain kejar-kejaran, jantung berdetak lebih kuat. Mengapa hal itu terjadi?",
+                options: [
+                    {text: "Darah mengalir cepat", correct: true},
+                    {text: "Kaki terasa kram", correct: false},
+                    {text: "Perut terasa mual", correct: false}
+                ],
+                pembahasan: "Pembahasan: Olahraga memacu jantung memompa darah mengalir cepat untuk mengantarkan oksigen ke seluruh tubuh kita."
+            },
+            {
+                q: "3. Olahraga lari santai setiap pagi sangat berguna. Apa manfaat utamanya?",
+                options: [
+                    {text: "Jantung makin sehat", correct: true},
+                    {text: "Tulang makin lunak", correct: false},
+                    {text: "Kulit makin gelap", correct: false}
+                ],
+                pembahasan: "Pembahasan: Lari santai atau jogging sangat bermanfaat untuk menjaga kekuatan dan kesehatan jantung."
+            },
+            {
+                q: "4. Siti mendorong tembok dengan sekuat tenaga. Apa yang sedang Siti latih?",
+                options: [
+                    {text: "Kekuatan otot tangan", correct: true},
+                    {text: "Kelenturan sendi jari", correct: false},
+                    {text: "Kecepatan gerak kaki", correct: false}
+                ],
+                pembahasan: "Pembahasan: Latihan mendorong sesuatu yang diam dan berat melatih kekuatan otot pada tangan dan dada."
+            },
+            {
+                q: "5. Edo mengangkat kardus berisi buku-buku tebal. Edo membutuhkan apa untuk melakukannya?",
+                options: [
+                    {text: "Tenaga yang besar", correct: true},
+                    {text: "Suara yang keras", correct: false},
+                    {text: "Langkah yang cepat", correct: false}
+                ],
+                pembahasan: "Pembahasan: Untuk memindahkan atau mengangkat benda yang berat, otot tubuh memerlukan tenaga yang besar."
+            },
+            {
+                q: "6. Manakah dari kegiatan ini yang membuat otot kaki menjadi sangat kuat?",
+                options: [
+                    {text: "Lompat tali tinggi", correct: true},
+                    {text: "Tidur siang pulas", correct: false},
+                    {text: "Duduk main gawai", correct: false}
+                ],
+                pembahasan: "Pembahasan: Bermain lompat tali memaksa kaki untuk terus menopang tubuh, sehingga otot kaki menjadi kuat."
+            },
+            {
+                q: "7. Lani berlari zig-zag melewati rintangan kerucut. Lani sedang berlatih apa?",
+                options: [
+                    {text: "Kelincahan gerak tubuh", correct: true},
+                    {text: "Keseimbangan saat diam", correct: false},
+                    {text: "Kekuatan angkat beban", correct: false}
+                ],
+                pembahasan: "Pembahasan: Lari zig-zag atau berbelok-belok dengan cepat adalah latihan utama untuk meningkatkan kelincahan gerak tubuh."
+            },
+            {
+                q: "8. Mengapa kelincahan sangat penting saat kita bermain sepak bola di lapangan?",
+                options: [
+                    {text: "Mudah mengecoh lawan", correct: true},
+                    {text: "Cepat merasa lelah", correct: false},
+                    {text: "Lama menahan napas", correct: false}
+                ],
+                pembahasan: "Pembahasan: Tubuh yang lincah sangat berguna untuk bergerak menghindari atau mengecoh pemain lawan."
+            },
+            {
+                q: "9. Hewan manakah yang gerakannya bisa kita tiru untuk melatih sebuah kelincahan?",
+                options: [
+                    {text: "Kucing kejar tikus", correct: true},
+                    {text: "Siput jalan santai", correct: false},
+                    {text: "Kura-kura sedang makan", correct: false}
+                ],
+                pembahasan: "Pembahasan: Kucing adalah hewan yang terkenal lincah dan cepat, sangat tepat untuk dicontoh gerak cepatnya."
+            },
+            {
+                q: "10. Kamu melihat temanmu jatuh saat berlari di sekolah. Apa tindakan yang paling tepat?",
+                options: [
+                    {text: "Segera menolong teman", correct: true},
+                    {text: "Pergi lari menjauh", correct: false},
+                    {text: "Menertawakan dari jauh", correct: false}
+                ],
+                pembahasan: "Pembahasan: Dalam berolahraga, kita juga diuji untuk bersikap empati, yaitu dengan segera menolong teman yang kesusahan."
+            },
+            {
+                q: "11. Sebelum berolahraga, kita harus melakukan pemanasan. Tujuannya agar otot kita bagaimana?",
+                options: [
+                    {text: "Tidak mudah cedera", correct: true},
+                    {text: "Menjadi sangat kaku", correct: false},
+                    {text: "Cepat terasa lemas", correct: false}
+                ],
+                pembahasan: "Pembahasan: Pemanasan menyiapkan otot yang kaku agar menjadi lebih rileks, siap bergerak, dan tidak mudah cedera."
+            },
+            {
+                q: "12. Air putih sangat penting setelah kita lelah berolahraga. Mengapa demikian?",
+                options: [
+                    {text: "Ganti cairan tubuh", correct: true},
+                    {text: "Bikin perut kembung", correct: false},
+                    {text: "Kurangi rasa lapar", correct: false}
+                ],
+                pembahasan: "Pembahasan: Saat olahraga kita mengeluarkan keringat. Air putih mengganti cairan tubuh yang hilang tersebut."
+            },
+            {
+                q: "13. Makanan apa yang sangat baik dimakan agar tubuh kita menjadi bugar?",
+                options: [
+                    {text: "Sayur dan buah", correct: true},
+                    {text: "Cokelat dan permen", correct: false},
+                    {text: "Keripik bumbu pedas", correct: false}
+                ],
+                pembahasan: "Pembahasan: Sayur dan buah kaya akan vitamin yang sangat dibutuhkan tubuh agar terus sehat dan bugar."
+            },
+            {
+                q: "14. Berapa lama waktu tidur yang sangat baik untuk anak sekolah dasar?",
+                options: [
+                    {text: "Delapan jam sehari", correct: true},
+                    {text: "Empat jam sehari", correct: false},
+                    {text: "Dua jam sehari", correct: false}
+                ],
+                pembahasan: "Pembahasan: Anak-anak membutuhkan waktu istirahat tidur yang cukup, yaitu sekitar delapan jam sehari agar tubuh kembali segar."
+            },
+            {
+                q: "15. Udara yang paling bersih untuk bernapas saat kita berolahraga biasanya ada dimana?",
+                options: [
+                    {text: "Taman banyak pohon", correct: true},
+                    {text: "Jalan raya ramai", correct: false},
+                    {text: "Dalam kamar tidur", correct: false}
+                ],
+                pembahasan: "Pembahasan: Pohon dan tanaman hijau menghasilkan udara (oksigen) yang bersih, segar, dan sehat untuk pernapasan."
+            },
+            {
+                q: "16. Jika kamu merasa sangat lelah saat sedang berlari, apa yang harus dilakukan?",
+                options: [
+                    {text: "Istirahat sejenak dulu", correct: true},
+                    {text: "Paksa lari terus", correct: false},
+                    {text: "Menangis dengan keras", correct: false}
+                ],
+                pembahasan: "Pembahasan: Mengenali kemampuan tubuh sangat penting. Jika lelah, beristirahatlah agar tubuh tidak memaksakan diri."
+            },
+            {
+                q: "17. Setelah berolahraga tubuh akan mengeluarkan banyak keringat. Apa yang sebaiknya segera dilakukan?",
+                options: [
+                    {text: "Mandi sampai bersih", correct: true},
+                    {text: "Langsung tidur pulas", correct: false},
+                    {text: "Pakai baju tebal", correct: false}
+                ],
+                pembahasan: "Pembahasan: Keringat membawa kotoran pada kulit. Mandi menjaga kebersihan dan membuat tubuh segar kembali."
+            },
+            {
+                q: "18. Bermain lompat tali bersama teman-teman bisa membuat tubuh kita menjadi apa?",
+                options: [
+                    {text: "Sehat dan bugar", correct: true},
+                    {text: "Lemas dan sakit", correct: false},
+                    {text: "Gemuk dan lambat", correct: false}
+                ],
+                pembahasan: "Pembahasan: Aktivitas aerobik yang menyenangkan seperti lompat tali melatih jantung dan membugarkan seluruh tubuh."
+            },
+            {
+                q: "19. Gerakan saling mendorong teman dari depan (dorong bahu) melatih otot bagian apa?",
+                options: [
+                    {text: "Otot dada lengan", correct: true},
+                    {text: "Otot leher kepala", correct: false},
+                    {text: "Otot perut kaki", correct: false}
+                ],
+                pembahasan: "Pembahasan: Mendorong beban ke arah depan secara langsung melatih kekuatan otot dada serta kedua lengan."
+            },
+            {
+                q: "20. Bermain tapak gunung (engklek) sangat baik dilakukan. Permainan tradisional ini melatih apa saja?",
+                options: [
+                    {text: "Lompat dan seimbang", correct: true},
+                    {text: "Tidur dan diam", correct: false},
+                    {text: "Makan dan minum", correct: false}
+                ],
+                pembahasan: "Pembahasan: Engklek mewajibkan kita berdiri dan melompat dengan satu kaki, yang melatih keseimbangan dan kelincahan."
+            },
+            {
+                q: "21. Saat cuaca sangat panas terik, kapan waktu yang paling tepat untuk berolahraga?",
+                options: [
+                    {text: "Pagi atau sore", correct: true},
+                    {text: "Siang bolong terik", correct: false},
+                    {text: "Tengah malam gelap", correct: false}
+                ],
+                pembahasan: "Pembahasan: Pagi atau sore hari memiliki suhu yang pas dan udara lebih segar untuk melakukan olahraga."
+            },
+            {
+                q: "22. Tempat yang paling aman untuk anak-anak melakukan olahraga lari adalah dimana?",
+                options: [
+                    {text: "Lapangan yang luas", correct: true},
+                    {text: "Pinggir jalan raya", correct: false},
+                    {text: "Dekat sungai dalam", correct: false}
+                ],
+                pembahasan: "Pembahasan: Lapangan luas bebas dari kendaraan bermotor sehingga sangat aman untuk tempat berlari anak-anak."
+            },
+            {
+                q: "23. Temanmu menang dalam lomba lari cepat di sekolah. Sikapmu yang paling baik adalah?",
+                options: [
+                    {text: "Memberi ucapan selamat", correct: true},
+                    {text: "Marah dan benci", correct: false},
+                    {text: "Diam saja pergi", correct: false}
+                ],
+                pembahasan: "Pembahasan: Sportivitas adalah nilai penting dalam olahraga. Menghargai teman yang menang menunjukkan sikap terpuji."
+            },
+            {
+                q: "24. Bersepeda keliling taman sungguh sangat menyenangkan. Otot apa yang paling banyak bergerak?",
+                options: [
+                    {text: "Otot bagian kaki", correct: true},
+                    {text: "Otot bagian leher", correct: false},
+                    {text: "Otot bagian jari", correct: false}
+                ],
+                pembahasan: "Pembahasan: Gerakan mengayuh pedal sepeda secara terus-menerus sangat mengandalkan kekuatan pada otot bagian kaki."
+            },
+            {
+                q: "25. Olahraga harus dilakukan secara rutin dan teratur. Maksud kata teratur itu bagaimana?",
+                options: [
+                    {text: "Sesuai jadwal waktu", correct: true},
+                    {text: "Hanya saat libur", correct: false},
+                    {text: "Kalau disuruh guru", correct: false}
+                ],
+                pembahasan: "Pembahasan: Teratur artinya kita memiliki kedisiplinan berolahraga, misalnya rutin seminggu tiga kali sesuai jadwal."
+            }
+        ];
+
+        // State Aplikasi
+        let currentSoal = 0;
+        let score = 0;
+        let userName = "";
+        let userClass = "";
+        let shuffledQuestions = [];
+        let userAnswers = [];
+
+        // Inisialisasi Aplikasi
+        window.onload = () => {
+            muatHistory();
+        };
+
+        // Mengacak Array (Fisher-Yates)
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Mulai Kuis
+        function mulaiKuis() {
+            userName = document.getElementById('input-nama').value.trim();
+            userClass = document.getElementById('input-kelas').value.trim();
+
+            if (!userName || !userClass) {
+                alert("Mohon isi Nama Lengkap dan Kelas terlebih dahulu!");
+                return;
+            }
+
+            // Siapkan Soal: Acak opsi di setiap soal pada awal sesi
+            shuffledQuestions = bankSoal.map(soal => {
+                return {
+                    q: soal.q,
+                    pembahasan: soal.pembahasan,
+                    options: shuffleArray(soal.options)
+                };
+            });
+
+            userAnswers = new Array(shuffledQuestions.length).fill(null);
+            currentSoal = 0;
+            score = 0;
+            updateSkor();
+
+            gantiLayar('login-screen', 'quiz-screen');
+            tampilkanSoal();
+        }
+
+        function tampilkanSoal() {
+            const dataSoal = shuffledQuestions[currentSoal];
+            document.getElementById('q-counter').innerText = `Soal: ${currentSoal + 1} / ${shuffledQuestions.length}`;
+            document.getElementById('question-text').innerText = dataSoal.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            document.getElementById('pembahasan-box').style.display = 'none';
+
+            // Cek apakah sudah dijawab sebelumnya di sesi ini
+            const hasAnswered = userAnswers[currentSoal] !== null;
+
+            dataSoal.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                
+                if (hasAnswered) {
+                    btn.disabled = true;
+                    // Warnai sesuai jawaban user yg lalu
+                    if (opt.correct) {
+                        btn.classList.add('correct');
+                    } else if (userAnswers[currentSoal] === index) {
+                        btn.classList.add('wrong');
+                    }
+                } else {
+                    btn.onclick = () => pilihJawaban(index, btn);
+                }
+                
+                optionsContainer.appendChild(btn);
+            });
+
+            // Tampilkan pembahasan jika sudah dijawab
+            if (hasAnswered) {
+                tampilkanPembahasan();
+            }
+
+            // Atur tombol navigasi
+            document.getElementById('btn-prev').style.visibility = currentSoal > 0 ? 'visible' : 'hidden';
+            
+            const btnNext = document.getElementById('btn-next');
+            if (currentSoal === shuffledQuestions.length - 1) {
+                btnNext.innerText = "Selesai & Lihat Hasil";
+                btnNext.style.background = "#2ed573";
+            } else {
+                btnNext.innerHTML = "Selanjutnya &#9654;";
+                btnNext.style.background = "#ffa502";
+            }
+        }
+
+        function pilihJawaban(selectedIndex, btnElement) {
+            const dataSoal = shuffledQuestions[currentSoal];
+            const isCorrect = dataSoal.options[selectedIndex].correct;
+
+            userAnswers[currentSoal] = selectedIndex;
+
+            // Kunci semua tombol
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (dataSoal.options[idx].correct) {
+                    btn.classList.add('correct');
+                } else if (idx === selectedIndex) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            // Update Skor (Masing-masing 4 poin untuk mencapai 100)
+            if (isCorrect) {
+                score += (100 / shuffledQuestions.length);
+                updateSkor();
+            }
+
+            tampilkanPembahasan();
+        }
+
+        function tampilkanPembahasan() {
+            const box = document.getElementById('pembahasan-box');
+            box.innerText = shuffledQuestions[currentSoal].pembahasan;
+            box.style.display = 'block';
+        }
+
+        function updateSkor() {
+            document.getElementById('skor-display').innerText = `Skor: ${Math.round(score)}`;
+        }
+
+        function soalSelanjutnya() {
+            if (userAnswers[currentSoal] === null) {
+                alert("Silakan pilih jawaban terlebih dahulu!");
+                return;
+            }
+
+            if (currentSoal < shuffledQuestions.length - 1) {
+                currentSoal++;
+                tampilkanSoal();
+            } else {
+                akhiriKuis();
+            }
+        }
+
+        function soalSebelumnya() {
+            if (currentSoal > 0) {
+                currentSoal--;
+                tampilkanSoal();
+            }
+        }
+
+        function akhiriKuis() {
+            gantiLayar('quiz-screen', 'result-screen');
+            const finalScore = Math.round(score);
+            document.getElementById('result-name').innerText = `${userName} - Kelas ${userClass}`;
+            document.getElementById('final-score').innerText = finalScore;
+
+            simpanKeHistory(userName, userClass, finalScore);
+        }
+
+        function simpanKeHistory(nama, kelas, skorAkhir) {
+            const waktu = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+            const dataBaru = { nama, kelas, skor: skorAkhir, waktu };
+            
+            const storageKey = getStorageKey();
+            let history = JSON.parse(localStorage.getItem(storageKey)) || [];
+            history.unshift(dataBaru); // Masukkan di paling atas
+            localStorage.setItem(storageKey, JSON.stringify(history));
+            
+            muatHistory();
+        }
+
+        function muatHistory() {
+            const tbody = document.getElementById('history-table-body');
+            tbody.innerHTML = '';
+            
+            const storageKey = getStorageKey();
+            let history = JSON.parse(localStorage.getItem(storageKey)) || [];
+            
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada data pencapaian.</td></tr>';
+                return;
+            }
+
+            history.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.nama}</td>
+                    <td>${item.kelas}</td>
+                    <td><strong>${item.skor}</strong></td>
+                    <td>${item.waktu}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function kembaliKeAwal() {
+            document.getElementById('input-nama').value = '';
+            document.getElementById('input-kelas').value = '';
+            gantiLayar('result-screen', 'login-screen');
+        }
+
+        function gantiLayar(idTutup, idBuka) {
+            document.getElementById(idTutup).classList.remove('active');
+            document.getElementById(idBuka).classList.add('active');
+        }
+    </script>
+</body>
+</html>

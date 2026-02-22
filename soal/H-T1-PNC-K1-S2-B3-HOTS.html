@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Pancasila SD Kelas 1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --text: #2D3436;
+            --bg: #F7FFF7;
+            --correct: #4CAF50;
+            --wrong: #F44336;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(#4ECDC4 2px, transparent 2px), radial-gradient(#FF6B6B 2px, transparent 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 600px;
+            overflow: hidden;
+            border: 5px solid var(--secondary);
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .header-code {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .screen {
+            padding: 30px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        /* Buttons */
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Nunito', sans-serif;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 0 #38B2A9;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 #38B2A9;
+        }
+
+        .btn-home {
+            background: #2D3436;
+            margin-top: 15px;
+            box-shadow: 0 4px 0 #1e272e;
+            font-size: 16px;
+        }
+
+        .btn-home:hover {
+            background: #1e272e;
+        }
+
+        .btn-home:active {
+            box-shadow: 0 0 0 #1e272e;
+        }
+
+        /* History Table */
+        .history-box {
+            margin-top: 30px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #eee;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: var(--accent);
+            color: var(--text);
+            position: sticky;
+            top: 0;
+        }
+
+        /* Quiz Styles */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: var(--accent);
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+        .question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: white;
+            color: var(--text);
+            border: 2px solid #ddd;
+            box-shadow: 0 4px 0 #ddd;
+            text-align: left;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--secondary);
+            background: #f0fbfb;
+        }
+
+        .option-btn.correct {
+            background: var(--correct) !important;
+            color: white !important;
+            border-color: #388E3C !important;
+            box-shadow: 0 4px 0 #388E3C !important;
+        }
+
+        .option-btn.incorrect {
+            background: var(--wrong) !important;
+            color: white !important;
+            border-color: #D32F2F !important;
+            box-shadow: 0 4px 0 #D32F2F !important;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Explanation */
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #E3F2FD;
+            border-left: 5px solid #2196F3;
+            border-radius: 8px;
+            display: none;
+            font-size: 15px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            width: 48%;
+            background: #FF9F43;
+            box-shadow: 0 4px 0 #E67E22;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1A1A1D; /* Latar belakang gelap elegan */
+            color: #E0E0E0;
+            text-align: center;
+            padding: 12px 15px;
+            font-size: 12px;
+            white-space: nowrap; /* Memaksa satu baris */
+            overflow-x: auto; /* Memungkinkan scroll jika layar sangat kecil */
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-code">KODE: PNC-K1-S2-B3-HOTS</div>
+
+        <div id="login-screen" class="screen active">
+            <h1>Halo Juara! 🌟</h1>
+            <p style="text-align:center; margin-top:-10px;">Ayo belajar tentang Indonesia</p>
+            
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" placeholder="Masukkan namamu..." required>
+            </div>
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" placeholder="Contoh: 1A" required>
+            </div>
+            
+            <button onclick="startQuiz()">Mulai Petualangan!</button>
+            
+            <button onclick="window.location.href='../index.html'" class="btn-home">🏠 Kembali ke Home</button>
+
+            <div class="history-box">
+                <h3 style="margin-top:0; color:var(--primary);">Papan Peringkat & Riwayat</h3>
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Skor</th>
+                            <th>Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <span id="q-counter">Soal: 1/25</span>
+                <span id="temp-score">Skor: 0</span>
+            </div>
+
+            <div class="question" id="question-text">Pertanyaan akan muncul di sini</div>
+            
+            <div class="options" id="options-container">
+                </div>
+
+            <div class="explanation" id="explanation-box">
+                <strong>💡 Pembahasan:</strong> <span id="explanation-text"></span>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevQuestion()" id="btn-prev" style="visibility:hidden;">⬅️ Sebelumnya</button>
+                <button class="nav-btn" onclick="nextQuestion()" id="btn-next">Selanjutnya ➡️</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h1>Hebat Sekali! 🎉</h1>
+            <h2 id="final-score" style="font-size: 48px; color: var(--correct);">100</h2>
+            <p style="text-align: center; font-size: 18px;" id="final-message">Kamu sudah menyelesaikan kuis ini.</p>
+            <button onclick="location.reload()" style="margin-top: 20px;">Main Lagi</button>
+        </div>
+
+        <div class="footer">
+            &copy; <span id="year"></span> Oleh: Dwi Endrasto | Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+        </div>
+    </div>
+
+    <script>
+        // Set Year in Footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Data Soal HOTS Pancasila Kelas 1 - 3 Kata per Opsi
+        const questionBank = [
+            // Bendera
+            { q: "Saat upacara bendera berkibar di lapangan, sikap kita yang paling benar adalah...", options: [{t: "Berdiri sikap tegap", c: true}, {t: "Bermain sama teman", c: false}, {t: "Berlari sangat cepat", c: false}], exp: "Sikap tegap menunjukkan kita menghormati bendera merah putih kebanggaan negara kita." },
+            { q: "Warna merah pada bendera kebanggaan kita memberi pesan yang kuat agar kita...", options: [{t: "Selalu berani membela", c: true}, {t: "Suka marah marah", c: false}, {t: "Takut pada musuh", c: false}], exp: "Merah artinya berani. Kita harus berani berbuat benar dan membela negara." },
+            { q: "Warna putih pada bendera mengingatkan hati kita untuk selalu memiliki sifat...", options: [{t: "Berbuat yang suci", c: true}, {t: "Mengotori baju teman", c: false}, {t: "Bermain tanah liat", c: false}], exp: "Putih melambangkan kesucian. Artinya hati kita harus bersih dan suka berbuat baik." },
+            { q: "Jika kamu sedang berjalan dan melihat bendera kotor terjatuh di lantai, kamu akan...", options: [{t: "Mengambil dan melipat", c: true}, {t: "Membiarkan di lantai", c: false}, {t: "Menginjak dengan kaki", c: false}], exp: "Mengambil dan membersihkan bendera adalah wujud rasa cinta kita kepada tanah air." },
+            { q: "Zaman dahulu, kain merah dan putih dijahit oleh Ibu Fatmawati untuk tujuan...", options: [{t: "Menjadi bendera pusaka", c: true}, {t: "Menjadi baju seragam", c: false}, {t: "Menjadi taplak meja", c: false}], exp: "Ibu Fatmawati (istri Ir. Soekarno) berjasa menjahit bendera pusaka Merah Putih pertama." },
+            { q: "Bendera merah putih kebanggaan kita dikibarkan pertama kali saat momen acara penting yaitu...", options: [{t: "Proklamasi kemerdekaan kita", c: true}, {t: "Ulang tahun teman", c: false}, {t: "Lomba lari pagi", c: false}], exp: "Bendera pertama kali berkibar saat pembacaan teks Proklamasi Kemerdekaan 17 Agustus 1945." },
+            { q: "Merawat serta menjaga bendera merah putih dengan baik merupakan salah satu bentuk...", options: [{t: "Cinta tanah air", c: true}, {t: "Suka bermain main", c: false}, {t: "Marah pada teman", c: false}], exp: "Menjaga simbol negara seperti bendera adalah bukti nyata kita mencintai negara Indonesia." },
+            { q: "Saat bendera diturunkan pada sore hari oleh petugas, kita sebaiknya mengambil sikap...", options: [{t: "Hormat dan diam", c: true}, {t: "Lari ke rumah", c: false}, {t: "Terus asyik main", c: false}], exp: "Sama seperti saat dinaikkan, kita juga harus memberi hormat saat bendera diturunkan." },
+            // Lagu Kebangsaan
+            { q: "Lagu Indonesia Raya diciptakan dan dinyanyikan agar hati kita semua selalu merasa...", options: [{t: "Cinta pada negara", c: true}, {t: "Sedih tanpa sebab", c: false}, {t: "Marah pada teman", c: false}], exp: "Lagu Indonesia Raya membangkitkan rasa persatuan dan kecintaan kita pada Indonesia." },
+            { q: "Saat menyanyikan lagu kebangsaan di sekolah, suara dari mulut kita harus terdengar...", options: [{t: "Jelas dan lantang", c: true}, {t: "Sangat pelan sekali", c: false}, {t: "Sambil tertawa tawa", c: false}], exp: "Menyanyi dengan lantang menunjukkan semangat dan kebanggaan kita sebagai anak Indonesia." },
+            { q: "Tahukah kamu, siapa tokoh hebat pahlawan yang menciptakan lagu kebangsaan Indonesia Raya kita?", options: [{t: "Wage Rudolf Supratman", c: true}, {t: "Bapak Soekarno Hatta", c: false}, {t: "Ibu Kita Kartini", c: false}], exp: "W.R. Supratman adalah pahlawan yang menciptakan lagu Indonesia Raya." },
+            { q: "Lagu Indonesia Raya sebagai lagu kebangsaan biasanya selalu dinyanyikan pada saat acara...", options: [{t: "Upacara hari senin", c: true}, {t: "Bermain di taman", c: false}, {t: "Tidur malam hari", c: false}], exp: "Setiap upacara hari Senin, kita menyanyikan lagu Indonesia Raya untuk menghormati pahlawan." },
+            { q: "Apa yang akan kamu lakukan jika melihat temanmu asyik ribut saat menyanyi bersama?", options: [{t: "Menegur dengan sopan", c: true}, {t: "Ikut ribut juga", c: false}, {t: "Memukul meja keras", c: false}], exp: "Kita harus saling mengingatkan teman dengan sopan agar tertib saat lagu kebangsaan diputar." },
+            { q: "Lirik lagu berbunyi 'Indonesia tanah airku' mengingatkan kita semua untuk selalu siap...", options: [{t: "Menjaga negara kita", c: true}, {t: "Pergi ke luar", c: false}, {t: "Merusak alam liar", c: false}], exp: "Sebagai tanah air kita, Indonesia harus selalu kita rawat dan jaga kelestariannya." },
+            { q: "Menyanyikan lagu kebangsaan secara bersama-sama di lapangan membuat kita dan teman menjadi...", options: [{t: "Bersatu dan rukun", c: true}, {t: "Saling benci teman", c: false}, {t: "Ingin selalu marah", c: false}], exp: "Lagu ini menyatukan semua anak dari berbagai suku untuk hidup rukun." },
+            { q: "Saat lagu kebangsaan tiba-tiba diputar di televisi atau radio, sikapmu sebaiknya adalah...", options: [{t: "Duduk dengan tenang", c: true}, {t: "Matikan layar tivi", c: false}, {t: "Teriak teriak keras", c: false}], exp: "Kita tetap harus bersikap tenang dan hormat walau mendengarnya lewat televisi." },
+            // Garuda Pancasila
+            { q: "Bintang emas di dada burung Garuda bercahaya terang untuk memberikan makna yaitu...", options: [{t: "Menyinari bangsa kita", c: true}, {t: "Menakuti musuh kita", c: false}, {t: "Membakar hutan lebat", c: false}], exp: "Bintang emas (Sila 1) melambangkan cahaya rohani dari Tuhan yang menyinari seluruh bangsa." },
+            { q: "Rantai emas pada perisai menyambung kuat, mengajarkan kita untuk selalu membiasakan diri...", options: [{t: "Saling tolong menolong", c: true}, {t: "Saling pukul memukul", c: false}, {t: "Saling ejek mengejek", c: false}], exp: "Rantai (Sila 2) melambangkan manusia yang saling membutuhkan dan harus saling membantu." },
+            { q: "Pohon beringin daunnya sangat besar dan rindang, berguna sebagai perumpamaan tempat untuk...", options: [{t: "Tempat kita berteduh", c: true}, {t: "Tempat buang sampah", c: false}, {t: "Tempat merusak daun", c: false}], exp: "Pohon beringin (Sila 3) melambangkan negara Indonesia tempat berlindung seluruh rakyat." },
+            { q: "Kepala banteng adalah hewan yang suka berkumpul, artinya kita semua harus suka...", options: [{t: "Kumpul untuk rapat", c: true}, {t: "Kumpul untuk nakal", c: false}, {t: "Kumpul untuk tidur", c: false}], exp: "Banteng (Sila 4) suka berkumpul, melambangkan musyawarah (rapat) untuk menyelesaikan masalah bersama." },
+            { q: "Padi dan kapas di perisai melambangkan ketersediaan makanan dan pakaian dengan tujuan agar...", options: [{t: "Semua rakyat makmur", c: true}, {t: "Semua rakyat lapar", c: false}, {t: "Semua rakyat sedih", c: false}], exp: "Padi dan kapas (Sila 5) adalah syarat utama negara yang adil dan makmur sejahtera." },
+            { q: "Burung garuda gagah selalu menoleh ke arah kanan karena kanan melambangkan arah...", options: [{t: "Jalan yang benar", c: true}, {t: "Jalan yang salah", c: false}, {t: "Jalan yang rusak", c: false}], exp: "Arah kanan selalu diartikan sebagai arah kebaikan, kebenaran, dan kejayaan masa depan." },
+            { q: "Tulisan semboyan pada pita di kaki burung Garuda mengajarkan kita walau berbeda namun...", options: [{t: "Tetap satu jua", c: true}, {t: "Harus saling musuh", c: false}, {t: "Boleh saling ejek", c: false}], exp: "Bhinneka Tunggal Ika artinya berbeda-beda (agama, suku, warna kulit) tetapi tetap satu kesatuan." },
+            { q: "Bulu sayap burung garuda berjumlah tepat tujuh belas melambangkan pengingat penting tentang tanggal...", options: [{t: "Hari merdeka kita", c: true}, {t: "Hari lahir kita", c: false}, {t: "Hari libur kita", c: false}], exp: "Sayap berjumlah 17 melambangkan tanggal 17, yaitu tanggal kemerdekaan Indonesia." },
+            { q: "Jika temanmu yang baik memiliki agama yang berbeda, sila pertama mengajarkan kita harus...", options: [{t: "Menghormati teman itu", c: true}, {t: "Menjauhi teman itu", c: false}, {t: "Memarahi teman itu", c: false}], exp: "Sila pertama mengajarkan kita untuk saling toleransi dan menghormati ibadah agama teman." }
+        ];
+
+        let quizData = [];
+        let currentIdx = 0;
+        let score = 0;
+        let studentName = "";
+        let studentClass = "";
+        
+        // Kunci penyimpanan khusus untuk kuis ini agar tidak tumpang tindih dengan file kuis lainnya
+        const HISTORY_KEY = 'quizHistory_PNC-K1-S2-B3-HOTS';
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+            
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada riwayat</td></tr>';
+                return;
+            }
+
+            // Urutkan dari yang terbaru
+            history.reverse().forEach(h => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${h.name}</td>
+                    <td>${h.kelas}</td>
+                    <td style="font-weight:bold; color:var(--correct)">${h.score}</td>
+                    <td style="font-size:12px;">${h.time}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function startQuiz() {
+            const n = document.getElementById('nama').value.trim();
+            const c = document.getElementById('kelas').value.trim();
+
+            if (!n || !c) {
+                alert("Harap isi Nama dan Kelas terlebih dahulu ya!");
+                return;
+            }
+
+            studentName = n;
+            studentClass = c;
+
+            // Prepare quiz data
+            quizData = questionBank.map(q => {
+                const optionsCopy = [...q.options];
+                shuffleArray(optionsCopy); // Acak posisi jawaban di sini!
+                return {
+                    question: q.q,
+                    options: optionsCopy,
+                    exp: q.exp,
+                    answered: false,
+                    selectedIdx: null
+                };
+            });
+
+            currentIdx = 0;
+            score = 0;
+            updateScoreDisplay();
+
+            document.getElementById('login-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const data = quizData[currentIdx];
+            document.getElementById('q-counter').innerText = `Soal: ${currentIdx + 1} / 25`;
+            document.getElementById('question-text').innerText = data.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            data.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.t;
+                
+                // Jika sudah pernah dijawab (saat klik tombol sebelumnya)
+                if (data.answered) {
+                    btn.disabled = true;
+                    if (opt.c) btn.classList.add('correct');
+                    if (data.selectedIdx === idx && !opt.c) btn.classList.add('incorrect');
+                } else {
+                    btn.onclick = () => selectOption(idx, opt.c);
+                }
+                
+                optionsContainer.appendChild(btn);
+            });
+
+            const expBox = document.getElementById('explanation-box');
+            if (data.answered) {
+                document.getElementById('explanation-text').innerText = data.exp;
+                expBox.style.display = 'block';
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Button visibility
+            document.getElementById('btn-prev').style.visibility = currentIdx > 0 ? 'visible' : 'hidden';
+            
+            const btnNext = document.getElementById('btn-next');
+            if (currentIdx === 24) {
+                btnNext.innerText = "Selesai 🏁";
+                // Hanya bisa selesai jika soal terakhir sudah dijawab
+                btnNext.onclick = data.answered ? finishQuiz : () => alert("Jawab dulu soal ini ya!");
+            } else {
+                btnNext.innerText = "Selanjutnya ➡️";
+                btnNext.onclick = data.answered ? nextQuestion : () => alert("Pilih jawabanmu dulu ya!");
+            }
+        }
+
+        function selectOption(idx, isCorrect) {
+            const data = quizData[currentIdx];
+            data.answered = true;
+            data.selectedIdx = idx;
+
+            if (isCorrect) {
+                score += 4; // 25 soal * 4 = 100
+            }
+            updateScoreDisplay();
+
+            // Re-render button states
+            const buttons = document.getElementById('options-container').children;
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+                if (data.options[i].c) {
+                    buttons[i].classList.add('correct');
+                } else if (i === idx && !data.options[i].c) {
+                    buttons[i].classList.add('incorrect');
+                }
+            }
+
+            // Show explanation
+            document.getElementById('explanation-text').innerText = data.exp;
+            document.getElementById('explanation-box').style.display = 'block';
+
+            // Update Next button logic
+            const btnNext = document.getElementById('btn-next');
+            if (currentIdx === 24) {
+                btnNext.onclick = finishQuiz;
+            } else {
+                btnNext.onclick = nextQuestion;
+            }
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('temp-score').innerText = `Skor: ${score}`;
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                loadQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIdx < 24) {
+                currentIdx++;
+                loadQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            let message = "";
+            if(score === 100) message = "Luar biasa! Kamu pintar sekali! 🌟";
+            else if(score >= 80) message = "Bagus sekali! Kamu menguasai materi ini! 👍";
+            else message = "Tetap semangat belajar ya! Kamu pasti bisa lebih baik lagi! 💪";
+            
+            document.getElementById('final-message').innerText = message;
+
+            saveHistory();
+        }
+
+        function saveHistory() {
+            const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+
+            history.push({
+                name: studentName,
+                kelas: studentClass,
+                score: score,
+                time: dateStr
+            });
+
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        }
+
+        // Initialize history on load
+        window.onload = loadHistory;
+
+    </script>
+</body>
+</html>

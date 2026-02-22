@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBS SmartBankSoal - Kelas 1 Semester 2</title>
+    <style>
+        /* Pengaturan Dasar */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Header & Judul */
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 2.6em;
+            margin-bottom: 5px;
+            margin-top: 0;
+            font-weight: 800;
+        }
+
+        h2 {
+            color: #4a5568;
+            font-size: 1.5em;
+            margin-top: 0;
+            font-weight: 600;
+        }
+
+        /* Placeholder Gambar */
+        .image-placeholder {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-color: #e2e8f0;
+            text-align: center;
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Kategori Mata Pelajaran */
+        .mapel-group {
+            margin-bottom: 35px;
+            padding: 20px;
+            border-radius: 15px;
+            background-color: #f8fafc;
+            border-left: 6px solid #cbd5e1;
+        }
+
+        .mapel-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        /* Pengaturan Warna Per Mata Pelajaran */
+        .group-pai { border-left-color: #10b981; } /* Hijau */
+        .group-pai .mapel-title { color: #059669; border-bottom-color: #a7f3d0;}
+        .group-pai .btn-soal { background: linear-gradient(135deg, #10b981, #059669); }
+
+        .group-pancasila { border-left-color: #ef4444; } /* Merah */
+        .group-pancasila .mapel-title { color: #dc2626; border-bottom-color: #fecaca;}
+        .group-pancasila .btn-soal { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        .group-bind { border-left-color: #3b82f6; } /* Biru */
+        .group-bind .mapel-title { color: #2563eb; border-bottom-color: #bfdbfe;}
+        .group-bind .btn-soal { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+        .group-mtk { border-left-color: #f59e0b; } /* Oranye */
+        .group-mtk .mapel-title { color: #d97706; border-bottom-color: #fde68a;}
+        .group-mtk .btn-soal { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .group-pjok { border-left-color: #8b5cf6; } /* Ungu */
+        .group-pjok .mapel-title { color: #7c3aed; border-bottom-color: #ddd6fe;}
+        .group-pjok .btn-soal { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        /* Grid Tombol Soal */
+        .grid-soal {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .btn-soal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 10px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-soal:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            filter: brightness(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 2px dashed #e2e8f0;
+            text-align: center;
+            font-size: 0.9em;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .footer strong {
+            color: #334155;
+        }
+
+        .footer a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .badge-asli {
+            display: inline-block;
+            background-color: #f1f5f9;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 0.85em;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-section">
+            <h1>SBS SmartBankSoal</h1>
+            <h2>Kelas 1 Semester 2</h2>
+        </div>
+
+        <div class="image-placeholder">
+            <img src="baner-sbs.png" alt="Banner SBS SmartBankSoal">
+        </div>
+
+        <div class="mapel-group group-pai">
+            <div class="mapel-title">Pendidikan Agama Islam</div>
+            <div class="grid-soal">
+                <a href="soal/H-T1-PAI-K1-S2-B6-HOTS.html" class="btn-soal">Soal PAI 1</a>
+                <a href="soal/H-T1-PAI-K1-S2-B7-HOTS.html" class="btn-soal">Soal PAI 2</a>
+                <a href="soal/H-T1-PAI-K1-S2-B8-HOTS.html" class="btn-soal">Soal PAI 3</a>
+                <a href="soal/H-T1-PAI-K1-S2-B9-HOTS.html" class="btn-soal">Soal PAI 4</a>
+                <a href="soal/H-T1-PAI-K1-S2-B10-HOTS.html" class="btn-soal">Soal PAI 5</a>
+            </div>
+        </div>
+
+        <div class="mapel-group group-pancasila">
+            <div class="mapel-title">Pancasila</div>
+            <div class="grid-soal">
+                <a href="soal/H-T1-PNC-K1-S2-B3-HOTS.html" class="btn-soal">Soal Pancasila 1</a>
+                <a href="soal/H-T1-PNC-K1-S2-B4-HOTS.html" class="btn-soal">Soal Pancasila 2</a>
+            </div>
+        </div>
+
+        <div class="mapel-group group-bind">
+            <div class="mapel-title">Bahasa Indonesia</div>
+            <div class="grid-soal">
+                <a href="soal/H-T1-IND-K1-S2-B5-HOTS.html" class="btn-soal">Soal B. Ind 1</a>
+                <a href="soal/H-T1-IND-K1-S2-B6-HOTS.html" class="btn-soal">Soal B. Ind 2</a>
+                <a href="soal/H-T1-IND-K1-S2-B7-HOTS.html" class="btn-soal">Soal B. Ind 3</a>
+                <a href="soal/H-T1-IND-K1-S2-B8-HOTS.html" class="btn-soal">Soal B. Ind 4</a>
+            </div>
+        </div>
+
+        <div class="mapel-group group-mtk">
+            <div class="mapel-title">Matematika</div>
+            <div class="grid-soal">
+                <a href="soal/H-T1-MTK-K1-S2-B5-HOTS.html" class="btn-soal">Soal MTK 1</a>
+                <a href="soal/H-T1-MTK-K1-S2-B6-HOTS.html" class="btn-soal">Soal MTK 2</a>
+                <a href="soal/H-T1-MTK-K1-S2-B7-HOTS.html" class="btn-soal">Soal MTK 3</a>
+                <a href="soal/H-T1-MTK-K1-S2-B8-HOTS.html" class="btn-soal">Soal MTK 4</a>
+            </div>
+        </div>
+
+        <div class="mapel-group group-pjok">
+            <div class="mapel-title">PJOK</div>
+            <div class="grid-soal">
+                <a href="soal/H-T1-PJOK-K1-S2-B4-HOTS.html" class="btn-soal">Soal PJOK 1</a>
+                <a href="soal/H-T1-PJOK-K1-S2-B5-HOTS.html" class="btn-soal">Soal PJOK 2</a>
+                <a href="soal/H-T1-PJOK-K1-S2-B6-HOTS.html" class="btn-soal">Soal PJOK 3</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <strong>&copy; 2026 Oleh : Dwi Endrasto - hak cipta dilindungi</strong><br>
+            <div class="badge-asli">
+                Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+            </div>
+        </div>
+
+    </div>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker berhasil didaftarkan!', registration.scope);
+        })
+        .catch(error => {
+          console.log('Service Worker gagal:', error);
+        });
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis PAI Kelas 1 - Hidup Bersih</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+
+        :root {
+            --primary: #4A90E2;
+            --secondary: #FFC107;
+            --success: #2ECC71;
+            --danger: #E74C3C;
+            --background: #F0F8FF;
+            --text-dark: #333333;
+            --white: #FFFFFF;
+            --dark-footer: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--background);
+            background-image: radial-gradient(#FFC107 1px, transparent 1px), radial-gradient(#FFC107 1px, transparent 1px);
+            background-position: 0 0, 20px 20px;
+            background-size: 40px 40px;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header-code {
+            background-color: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            padding-bottom: 60px; 
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            border: 4px solid var(--primary);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: inherit;
+            box-shadow: 0 4px 0 #357ABD;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #357ABD;
+        }
+
+        .btn-home {
+            background-color: #6c757d;
+            box-shadow: 0 4px 0 #495057;
+            font-size: 1rem;
+        }
+        
+        .btn-home:hover {
+            box-shadow: 0 2px 0 #495057;
+        }
+
+        /* History Table */
+        .history-container {
+            margin-top: 25px;
+            border-top: 2px dashed #ddd;
+            padding-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        #quiz-screen {
+            display: none;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--secondary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            color: var(--text-dark);
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #e2e8f0;
+            border-color: var(--primary);
+        }
+
+        .btn-correct {
+            background-color: var(--success) !important;
+            color: white !important;
+            border-color: #27AE60 !important;
+        }
+
+        .btn-incorrect {
+            background-color: var(--danger) !important;
+            color: white !important;
+            border-color: #C0392B !important;
+        }
+
+        .explanation {
+            background-color: #e1f5fe;
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .navigation-buttons .btn {
+            flex: 1;
+        }
+
+        footer {
+            background-color: var(--dark-footer);
+            color: #bbb;
+            text-align: center;
+            padding: 12px 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.8rem;
+            z-index: 100;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .badge {
+            background-color: var(--success);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-code" id="header-code">Kode: PAI-K1-S2-B9-HOTS</div>
+
+    <div class="container">
+        <div class="card" id="login-screen">
+            <h2>Selamat Datang di Kuis PAI! <br>🌟 Kelas 1 🌟</h2>
+            <p style="text-align: center; font-weight: bold; margin-bottom: 20px;">Materi: Membiasakan Hidup Bersih</p>
+            
+            <div class="input-group">
+                <label for="student-name">Nama Lengkap:</label>
+                <input type="text" id="student-name" placeholder="Masukkan nama lengkapmu..." required>
+            </div>
+            
+            <div class="input-group">
+                <label for="student-class">Kelas:</label>
+                <input type="text" id="student-class" placeholder="Contoh: 1A" required>
+            </div>
+            
+            <button class="btn" onclick="startQuiz()">Mulai Kuis Sekarang!</button>
+            <a href="../index.html" class="btn btn-home">🏠 Kembali ke Home</a>
+
+            <div class="history-container">
+                <h3>🏆 Papan Skor Pencapaian 🏆</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Kelas</th>
+                                <th>Waktu</th>
+                                <th>Skor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="quiz-screen">
+            <div class="score-board">
+                <span id="question-counter">Soal: 1/25</span>
+                <span id="current-score">Skor: 0</span>
+            </div>
+
+            <div class="question-text" id="question-text"></div>
+            <div class="options-container" id="options-container"></div>
+
+            <div class="explanation" id="explanation-box">
+                <strong>Pembahasan:</strong> <span id="explanation-text"></span>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn" id="btn-prev" style="background-color: #7f8c8d; box-shadow: 0 4px 0 #636e72;" onclick="prevQuestion()">⬅️ Sebelumnya</button>
+                <button class="btn" id="btn-next" onclick="nextQuestion()">Selanjutnya ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        @<span id="current-year"></span> Oleh: Dwi Endrasto, Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Kunci unik agar data tidak bentrok dengan kuis lain
+        const STORAGE_KEY = 'quizHistory_PAI_K1_B9_HOTS';
+
+        const masterQuizData = [
+            {
+                q: "Sepatu sekolahmu sangat kotor setelah dipakai bermain tanah. Sikap yang paling tepat adalah...",
+                options: [
+                    { text: "Dicuci sampai bersih", isCorrect: true },
+                    { text: "Dibiarkan tetap kotor", isCorrect: false },
+                    { text: "Disimpan dalam lemari", isCorrect: false }
+                ],
+                explanation: "Sepatu yang kotor karena tanah harus dicuci agar kembali bersih dan nyaman dipakai kembali untuk sekolah."
+            },
+            {
+                q: "Baju seragam kesayanganmu terkena tumpahan es krim cokelat. Apa yang harus segera kamu lakukan?",
+                options: [
+                    { text: "Segera ganti baju", isCorrect: true },
+                    { text: "Tetap pakai baju", isCorrect: false },
+                    { text: "Menangis sangat keras", isCorrect: false }
+                ],
+                explanation: "Baju yang kotor harus segera dilepas dan diganti agar badan tetap bersih dan terhindar dari kuman penyakit."
+            },
+            {
+                q: "Kamar tidurmu terlihat sangat berantakan setelah bangun tidur pagi. Kamu sebaiknya...",
+                options: [
+                    { text: "Merapikan tempat tidur", isCorrect: true },
+                    { text: "Membiarkan tetap acak", isCorrect: false },
+                    { text: "Menyuruh ibu merapikan", isCorrect: false }
+                ],
+                explanation: "Anak yang mandiri dan cinta kebersihan akan selalu merapikan tempat tidurnya sendiri setiap pagi."
+            },
+            {
+                q: "Kuku tanganmu sudah terlihat panjang dan berwarna hitam. Tindakan yang harus dilakukan...",
+                options: [
+                    { text: "Mempotong kuku rapi", isCorrect: true },
+                    { text: "Membiarkan kuku kotor", isCorrect: false },
+                    { text: "Menggigit kuku panjang", isCorrect: false }
+                ],
+                explanation: "Kuku yang panjang dan kotor adalah sarang kuman. Kita harus rutin memotongnya menggunakan potong kuku."
+            },
+            {
+                q: "Angin meniup sampah plastik hingga berserakan di halaman rumahmu. Kamu harus tanggap dengan cara...",
+                options: [
+                    { text: "Membuang ke tong", isCorrect: true },
+                    { text: "Menyapu ke jalan", isCorrect: false },
+                    { text: "Membiarkan di tanah", isCorrect: false }
+                ],
+                explanation: "Cara terbaik menjaga kebersihan lingkungan adalah mengumpulkan sampah dan membuangnya langsung ke dalam tong sampah."
+            },
+            {
+                q: "Setelah selesai buang air kecil di toilet, langkah yang wajib kita lakukan adalah...",
+                options: [
+                    { text: "Membersihkan pakai air", isCorrect: true },
+                    { text: "Langsung pakai celana", isCorrect: false },
+                    { text: "Membiarkan tetap kotor", isCorrect: false }
+                ],
+                explanation: "Istinjak (bersuci setelah buang air) wajib dilakukan dengan membersihkan kemaluan menggunakan air yang suci."
+            },
+            {
+                q: "Najis atau kotoran yang menempel di badan kita harus dibersihkan secara tuntas dengan menggunakan...",
+                options: [
+                    { text: "Air yang suci", isCorrect: true },
+                    { text: "Air bekas minum", isCorrect: false },
+                    { text: "Air teh manis", isCorrect: false }
+                ],
+                explanation: "Untuk menghilangkan najis, kita wajib menggunakan air mutlak (suci dan menyucikan), bukan air minuman."
+            },
+            {
+                q: "Pakaian salat yang tidak sengaja terkena kotoran cicak jatuh harus segera...",
+                options: [
+                    { text: "Dicuci sampai bersih", isCorrect: true },
+                    { text: "Dijemur panas matahari", isCorrect: false },
+                    { text: "Disimpan dalam tas", isCorrect: false }
+                ],
+                explanation: "Kotoran cicak adalah najis. Pakaian harus dicuci dengan air agar suci kembali dan sah untuk dipakai salat."
+            },
+            {
+                q: "Jika di tempat kita benar-benar tidak ada air, bersuci dari buang air bisa memakai...",
+                options: [
+                    { text: "Batu yang bersih", isCorrect: true },
+                    { text: "Daun yang basah", isCorrect: false },
+                    { text: "Kertas bekas tulis", isCorrect: false }
+                ],
+                explanation: "Dalam keadaan darurat tanpa air, Islam membolehkan istinjak menggunakan benda padat dan bersih seperti batu."
+            },
+            {
+                q: "Dalam agama Islam, kegiatan bersuci dari najis dan kotoran disebut juga dengan istilah...",
+                options: [
+                    { text: "Thaharah atau suci", isCorrect: true },
+                    { text: "Wudu mau salat", isCorrect: false },
+                    { text: "Mandi pagi sore", isCorrect: false }
+                ],
+                explanation: "Thaharah adalah bahasa Arab yang berarti bersuci, yaitu membersihkan diri, pakaian, dan tempat dari najis."
+            },
+            {
+                q: "Tujuan utama kita melakukan wudu sebelum salat adalah untuk menghilangkan...",
+                options: [
+                    { text: "Hadas yang kecil", isCorrect: true },
+                    { text: "Hadas yang besar", isCorrect: false },
+                    { text: "Kotoran yang lengket", isCorrect: false }
+                ],
+                explanation: "Wudu dikhususkan untuk mengangkat hadas kecil agar ibadah seperti salat dan mengaji menjadi sah."
+            },
+            {
+                q: "Saat mempraktikkan wudu, setelah selesai membasuh muka maka gerakan selanjutnya adalah membasuh...",
+                options: [
+                    { text: "Kedua belah tangan", isCorrect: true },
+                    { text: "Kedua telapak kaki", isCorrect: false },
+                    { text: "Ujung rambut kepala", isCorrect: false }
+                ],
+                explanation: "Rukun wudu setelah niat dan membasuh wajah adalah membasuh kedua tangan sampai melewati siku."
+            },
+            {
+                q: "Jenis air di bawah ini yang paling sah dan boleh dipakai untuk wudu adalah air...",
+                options: [
+                    { text: "Hujan yang suci", isCorrect: true },
+                    { text: "Susu yang manis", isCorrect: false },
+                    { text: "Kopi yang hangat", isCorrect: false }
+                ],
+                explanation: "Air hujan adalah air alami yang suci dan menyucikan (mutlak), sedangkan susu dan kopi sudah berubah sifatnya."
+            },
+            {
+                q: "Jika kamu sedang berwudu, tiba-tiba kamu buang angin (kentut), maka status wudumu menjadi...",
+                options: [
+                    { text: "Batal dan ulang", isCorrect: true },
+                    { text: "Sah dan lanjut", isCorrect: false },
+                    { text: "Boleh terus saja", isCorrect: false }
+                ],
+                explanation: "Buang angin adalah salah satu hal yang membatalkan wudu. Kamu harus mengulang wudu dari awal."
+            },
+            {
+                q: "Saat tiba pada gerakan membasuh kaki dalam wudu, air harus dibasuh minimal sampai pada batas...",
+                options: [
+                    { text: "Kedua mata kaki", isCorrect: true },
+                    { text: "Kedua lutut kaki", isCorrect: false },
+                    { text: "Kedua paha kaki", isCorrect: false }
+                ],
+                explanation: "Batas wajib membasuh kaki saat wudu adalah dari ujung jari kaki hingga melewati kedua mata kaki."
+            },
+            {
+                q: "Gerakan berkumur-kumur saat wudu sangat berguna untuk membersihkan area...",
+                options: [
+                    { text: "Dalam rongga mulut", isCorrect: true },
+                    { text: "Luar bibir atas", isCorrect: false },
+                    { text: "Dalam lubang hidung", isCorrect: false }
+                ],
+                explanation: "Berkumur (madhmadhoh) adalah sunah wudu untuk membersihkan sisa makanan di dalam rongga mulut kita."
+            },
+            {
+                q: "Urutan gerakan wudu harus selalu dilakukan dengan tertib. Tertib itu sendiri artinya...",
+                options: [
+                    { text: "Urut dan benar", isCorrect: true },
+                    { text: "Bebas dan acak", isCorrect: false },
+                    { text: "Cepat dan kilat", isCorrect: false }
+                ],
+                explanation: "Tertib berarti berurutan dari awal sampai akhir tanpa melompati gerakan yang sudah ditentukan."
+            },
+            {
+                q: "Jika terjadi kemarau sangat panjang dan sumur kering tidak ada air, kita bersiap salat dengan...",
+                options: [
+                    { text: "Tayamum pakai debu", isCorrect: true },
+                    { text: "Wudu pakai es", isCorrect: false },
+                    { text: "Mandi pakai daun", isCorrect: false }
+                ],
+                explanation: "Tayamum adalah keringanan dari Allah sebagai pengganti wudu jika benar-benar tidak ditemukan air."
+            },
+            {
+                q: "Debu yang boleh digunakan untuk melakukan tayamum memiliki syarat mutlak, yaitu harus debu yang...",
+                options: [
+                    { text: "Suci dan bersih", isCorrect: true },
+                    { text: "Kotor dan basah", isCorrect: false },
+                    { text: "Halus dan wangi", isCorrect: false }
+                ],
+                explanation: "Debu untuk tayamum haruslah debu yang suci (tidak terkena najis) dan terbebas dari kotoran hewan."
+            },
+            {
+                q: "Anggota badan yang diusap saat kita melakukan ibadah tayamum hanyalah dua bagian, yaitu...",
+                options: [
+                    { text: "Wajah dan tangan", isCorrect: true },
+                    { text: "Kaki dan tangan", isCorrect: false },
+                    { text: "Wajah dan kaki", isCorrect: false }
+                ],
+                explanation: "Berbeda dengan wudu, rukun tayamum sangat ringan, yaitu hanya mengusap wajah dan mengusap kedua tangan."
+            },
+            {
+                q: "Sama seperti wudu, niat tayamum yang paling utama dan sah itu dilakukan di dalam...",
+                options: [
+                    { text: "Hati yang ikhlas", isCorrect: true },
+                    { text: "Mulut yang bersuara", isCorrect: false },
+                    { text: "Telinga yang dengar", isCorrect: false }
+                ],
+                explanation: "Tempatnya niat adalah di dalam hati. Diucapkan di mulut hukumnya sunah untuk memantapkan hati."
+            },
+            {
+                q: "Satu kali tayamum itu aturannya hanya boleh dipakai untuk mengerjakan berapa kali salat fardu?",
+                options: [
+                    { text: "Satu kali salat", isCorrect: true },
+                    { text: "Dua kali salat", isCorrect: false },
+                    { text: "Tiga kali salat", isCorrect: false }
+                ],
+                explanation: "Aturan tayamum adalah satu kali tayamum hanya berlaku untuk satu kali salat wajib (fardu)."
+            },
+            {
+                q: "Orang yang sedang sakit parah di rumah sakit dan dilarang dokter terkena air, maka dia boleh...",
+                options: [
+                    { text: "Tayamum di kasur", isCorrect: true },
+                    { text: "Wudu di kamar", isCorrect: false },
+                    { text: "Mandi di kolam", isCorrect: false }
+                ],
+                explanation: "Orang sakit yang membahayakan nyawanya jika kena air, dibolehkan bertayamum walau di atas tempat tidur sakitnya."
+            },
+            {
+                q: "Ali jatuh, tangannya luka parah dan dilarang kena air. Waktu asar tiba, Ali harus...",
+                options: [
+                    { text: "Melakukan tayamum saja", isCorrect: true },
+                    { text: "Tetap paksa wudu", isCorrect: false },
+                    { text: "Tidak usah salat", isCorrect: false }
+                ],
+                explanation: "Agama Islam tidak memberatkan umatnya. Jika air membahayakan luka, wajib mengganti wudu dengan tayamum."
+            },
+            {
+                q: "Kucing kesayangan pipis di atas sajadah. Siti ingin segera salat. Apa tindakan Siti yang benar?",
+                options: [
+                    { text: "Mengganti sajadah bersih", isCorrect: true },
+                    { text: "Tetap pakai sajadah", isCorrect: false },
+                    { text: "Menjemur sajadah kotor", isCorrect: false }
+                ],
+                explanation: "Air kencing kucing adalah najis. Tempat salat harus suci, maka Siti harus mengganti sajadahnya dengan yang bersih."
+            }
+        ];
+
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let studentName = "";
+        let studentClass = "";
+        let userAnswers = [];
+
+        window.onload = loadHistory;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            const classInput = document.getElementById('student-class').value.trim();
+
+            if (!nameInput || !classInput) {
+                alert("Silakan isi Nama Lengkap dan Kelas terlebih dahulu ya!");
+                return;
+            }
+
+            studentName = nameInput;
+            studentClass = classInput;
+            score = 0;
+            currentQuestionIndex = 0;
+            userAnswers = new Array(masterQuizData.length).fill(null);
+
+            quizData = JSON.parse(JSON.stringify(masterQuizData));
+            quizData.forEach(q => shuffleArray(q.options));
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            window.scrollTo(0, 0);
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = quizData[currentQuestionIndex];
+            document.getElementById('question-counter').innerText = `Soal: ${currentQuestionIndex + 1}/${quizData.length}`;
+            document.getElementById('current-score').innerText = `Skor: ${score}`;
+            document.getElementById('question-text').innerText = `${currentQuestionIndex + 1}. ${q.q}`;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            document.getElementById('explanation-box').style.display = 'none';
+
+            const answeredData = userAnswers[currentQuestionIndex];
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = String.fromCharCode(65 + index) + ". " + opt.text;
+                
+                if (answeredData) {
+                    btn.disabled = true;
+                    if (opt.isCorrect) btn.classList.add('btn-correct');
+                    else if (index === answeredData.selectedIndex) btn.classList.add('btn-incorrect');
+                } else {
+                    btn.onclick = () => selectOption(index, btn);
+                }
+                optionsContainer.appendChild(btn);
+            });
+
+            if (answeredData) {
+                document.getElementById('explanation-text').innerText = q.explanation;
+                document.getElementById('explanation-box').style.display = 'block';
+            }
+
+            document.getElementById('btn-prev').style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+            const nextBtn = document.getElementById('btn-next');
+            nextBtn.innerText = currentQuestionIndex === quizData.length - 1 ? "Selesai & Simpan 💾" : "Selanjutnya ➡️";
+        }
+
+        function selectOption(selectedIndex, btnElement) {
+            const q = quizData[currentQuestionIndex];
+            const isCorrect = q.options[selectedIndex].isCorrect;
+
+            document.querySelectorAll('.option-btn').forEach((btn, idx) => {
+                btn.disabled = true;
+                if (q.options[idx].isCorrect) btn.classList.add('btn-correct');
+            });
+
+            if (!isCorrect) btnElement.classList.add('btn-incorrect');
+            else score += 4;
+
+            userAnswers[currentQuestionIndex] = { selectedIndex, isCorrect };
+            document.getElementById('explanation-text').innerText = q.explanation;
+            document.getElementById('explanation-box').style.display = 'block';
+            document.getElementById('current-score').innerText = `Skor: ${score}`;
+        }
+
+        function nextQuestion() {
+            if (!userAnswers[currentQuestionIndex]) {
+                alert("Pilih salah satu jawaban terlebih dahulu!");
+                return;
+            }
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function finishQuiz() {
+            const now = new Date();
+            const timeString = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
+            const historyItem = { name: studentName, class: studentClass, time: timeString, score: score };
+
+            let historyList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            historyList.unshift(historyItem);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(historyList));
+
+            alert(`Selamat ${studentName}! Skor akhirmu: ${score}`);
+            
+            document.getElementById('student-name').value = '';
+            document.getElementById('student-class').value = '';
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+            
+            loadHistory();
+            window.scrollTo(0, 0);
+        }
+
+        function loadHistory() {
+            const historyBody = document.getElementById('history-body');
+            historyBody.innerHTML = '';
+            const historyList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            if (historyList.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">Belum ada data.</td></tr>';
+                return;
+            }
+
+            historyList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.class}</td>
+                    <td><small>${item.time}</small></td>
+                    <td><span class="badge">${item.score}</span></td>
+                `;
+                historyBody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>

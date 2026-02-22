@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis PAI Kelas 1 - Kasih Sayang</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2C3E50;
+            --light: #F7FFF7;
+            --correct: #2ECC71;
+            --wrong: #E74C3C;
+        }
+
+        body {
+            font-family: 'Nunito', 'Comic Sans MS', sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-bar {
+            background-color: var(--dark);
+            color: var(--accent);
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            font-weight: 800;
+            letter-spacing: 2px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            flex: 1;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 70px;
+            margin-bottom: 60px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 4px solid var(--secondary);
+            text-align: center;
+        }
+
+        h1, h2 { color: var(--primary); margin-top: 0; }
+
+        .input-group { margin: 15px 0; }
+        input {
+            width: 90%;
+            padding: 12px;
+            border: 2px solid var(--secondary);
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Nunito', sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 8px 5px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-home {
+            background-color: var(--dark);
+            font-size: 14px;
+            padding: 8px 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+            opacity: 0.9;
+        }
+
+        .history-box {
+            margin-top: 20px;
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 180px;
+            overflow-y: auto;
+            border: 2px dashed var(--secondary);
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 8px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { color: var(--primary); }
+
+        .hidden { display: none !important; }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background: var(--accent);
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.5; }
+
+        .options-container { display: flex; flex-direction: column; gap: 10px; }
+
+        .option-btn {
+            background-color: white;
+            border: 2px solid var(--secondary);
+            color: var(--dark);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .option-btn.correct { background-color: var(--correct); border-color: var(--correct); color: white; }
+        .option-btn.wrong { background-color: var(--wrong); border-color: var(--wrong); color: white; }
+
+        .explanation {
+            margin-top: 20px;
+            background-color: #e1f5fe;
+            border-left: 5px solid #03a9f4;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+
+        footer {
+            background-color: #1a252f;
+            color: #bdc3c7;
+            text-align: center;
+            padding: 15px 10px;
+            font-size: 11px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 1000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">KODE: PAI-K1-S2-B7-HOTS</div>
+
+    <div class="container">
+        
+        <div id="login-screen" class="card">
+            <h1>🌟 Bintang Kebaikan 🌟</h1>
+            <p>Mari belajar kasih sayang bersama!</p>
+            <div class="input-group">
+                <input type="text" id="nama" placeholder="Tulis Nama Lengkapmu..." autocomplete="off">
+            </div>
+            <div class="input-group">
+                <input type="text" id="kelas" placeholder="Kelas Berapa? (Contoh: 1A)" autocomplete="off">
+            </div>
+            
+            <button class="btn" onclick="mulaiKuis()">Mulai Bermain 🚀</button>
+            <br>
+            <a href="../index.html" class="btn btn-home">🏠 Kembali ke Beranda</a>
+
+            <div class="history-box">
+                <h3>🏆 Papan Juara</h3>
+                <table id="tabel-riwayat">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Skor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body-riwayat"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="card hidden">
+            <div class="score-board">
+                <span id="indikator-soal">Soal: 1/25</span>
+                <span>Skor: <span id="skor-sementara">0</span></span>
+            </div>
+            <div id="teks-soal" class="question-text"></div>
+            <div id="tempat-opsi" class="options-container"></div>
+            <div id="kotak-bahas" class="explanation hidden">
+                <strong>💡 Pembahasan:</strong><br>
+                <span id="teks-bahas"></span>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn" id="btn-prev" onclick="soalSebelumnya()">⬅️</button>
+                <button class="btn" id="btn-next" onclick="soalSelanjutnya()">Lanjut ➡️</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="card hidden">
+            <h1>🎉 Selesai! 🎉</h1>
+            <h2>Skor Akhirmu:</h2>
+            <h1 style="font-size: 60px; margin: 10px 0; color: var(--correct);" id="skor-akhir">0</h1>
+            <p id="pesan-akhir"></p>
+            <button class="btn" onclick="kembaliKeLogin()">🏠 Halaman Utama</button>
+        </div>
+
+    </div>
+
+    <footer>
+        Dwi Endrasto @ <span id="tahun"></span> | Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        document.getElementById('tahun').textContent = new Date().getFullYear();
+
+        // Kunci unik agar data tidak bentrok dengan kuis lain
+        const STORAGE_KEY = "riwayat_PAI_K1_S2_B7";
+
+        const bankSoal = [
+            {
+                soal: "Kucing temanmu sedang lapar. Sebagai anak yang meneladani sifat Ar-Rahman, kamu...",
+                opsi: ["Memberi makan", "Melempar batu", "Pergi jauh"],
+                jawabanBenar: 0,
+                bahasan: "Sifat Ar-Rahman berarti Maha Pengasih. Menyayangi hewan yang lapar dilakukan dengan memberinya makan."
+            },
+            {
+                soal: "Temanmu menangis karena jatuh dari sepeda. Sikap meneladani kasih sayang Nabi adalah...",
+                opsi: ["Segera menolong", "Hanya melihat", "Malah tertawa"],
+                jawabanBenar: 0,
+                bahasan: "Nabi Muhammad SAW mengajarkan kita untuk peduli dan menolong orang yang sedang terkena musibah."
+            },
+            {
+                soal: "Tumbuhan di pot depan kelas tampak layu. Wujud kasih sayangmu adalah...",
+                opsi: ["Rajin menyiram", "Cabut daun", "Biarkan saja"],
+                jawabanBenar: 0,
+                bahasan: "Tumbuhan adalah ciptaan Allah. Kita harus menyayanginya dengan cara rajin menyiram agar tumbuh subur."
+            },
+            {
+                soal: "Adik tidak sengaja merusak mainanmu. Meniru akhlak Nabi, kamu sebaiknya...",
+                opsi: ["Rela memaafkan", "Sangat marah", "Balas merusak"],
+                jawabanBenar: 0,
+                bahasan: "Nabi Muhammad SAW adalah seorang pemaaf. Memaafkan kesalahan orang lain adalah perbuatan yang sangat mulia."
+            },
+            {
+                soal: "Allah memberikan udara segar untuk bernapas kepada semua manusia. Ini bukti Allah bersifat...",
+                opsi: ["Maha Pengasih", "Maha Perkasa", "Maha Besar"],
+                jawabanBenar: 0,
+                bahasan: "Maha Pengasih (Ar-Rahman) berarti Allah memberikan nikmat-Nya kepada semua makhluk tanpa pilih kasih."
+            },
+            {
+                soal: "Ar-Rahim artinya Allah Maha Penyayang. Kasih sayang khusus ini di akhirat diberikan kepada...",
+                opsi: ["Orang beriman", "Orang jahat", "Semua hewan"],
+                jawabanBenar: 0,
+                bahasan: "Ar-Rahim adalah sifat penyayang Allah yang kelak di akhirat hanya diberikan kepada hamba-Nya yang beriman."
+            },
+            {
+                soal: "Saat ibumu sedang sakit dan butuh istirahat, tanda kamu menyayanginya adalah...",
+                opsi: ["Jaga ketenangan", "Main musik", "Minta jajan"],
+                jawabanBenar: 0,
+                bahasan: "Menjaga agar rumah tetap tenang adalah wujud kasih sayang agar ibu bisa beristirahat dengan baik."
+            },
+            {
+                soal: "Nabi Muhammad sangat sayang kepada anak yatim. Kita bisa menirunya dengan sikap...",
+                opsi: ["Suka berbagi", "Suka mengejek", "Suka marah"],
+                jawabanBenar: 0,
+                bahasan: "Menyantuni dan berbagi rezeki dengan anak yatim adalah anjuran langsung dari Nabi Muhammad SAW."
+            },
+            {
+                soal: "Kamu membawa dua roti, sementara temanmu tidak membawa bekal. Sebaiknya kamu...",
+                opsi: ["Berbagi roti", "Makan sendiri", "Sembunyikan roti"],
+                jawabanBenar: 0,
+                bahasan: "Berbagi makanan dengan teman yang tidak membawa bekal adalah penerapan sifat kasih sayang di sekolah."
+            },
+            {
+                soal: "Tubuh kita adalah titipan Allah. Bukti kita sayang pada diri sendiri adalah...",
+                opsi: ["Rajin mandi", "Malas mandi", "Main kotor"],
+                jawabanBenar: 0,
+                bahasan: "Menjaga kebersihan tubuh dengan rajin mandi adalah wujud syukur dan sayang terhadap diri sendiri."
+            },
+            {
+                soal: "Allah Ar-Rahman menyayangi semua makhluk-Nya di bumi. Makhluk ciptaan Allah itu termasuk...",
+                opsi: ["Hewan tumbuhan", "Batu kerikil", "Meja kursi"],
+                jawabanBenar: 0,
+                bahasan: "Hewan dan tumbuhan adalah makhluk hidup ciptaan Allah yang mendapat kasih sayang (Ar-Rahman) dari-Nya."
+            },
+            {
+                soal: "Temanmu diejek oleh anak dari kelas lain. Anak yang penyayang akan...",
+                opsi: ["Berani membela", "Ikut mengejek", "Lari ketakutan"],
+                jawabanBenar: 0,
+                bahasan: "Membela teman yang diperlakukan tidak baik adalah wujud persaudaraan dan kasih sayang sesama teman."
+            },
+            {
+                soal: "Nabi Muhammad tidak pernah menyimpan dendam. Jika disakiti, beliau selalu...",
+                opsi: ["Mendoakan baik", "Membalas pukul", "Marah besar"],
+                jawabanBenar: 0,
+                bahasan: "Meskipun sering disakiti, Nabi membalasnya dengan mendoakan kebaikan agar orang tersebut mendapat hidayah."
+            },
+            {
+                soal: "Agar Allah yang bersifat Ar-Rahim menyayangi kita di akhirat, di dunia kita harus...",
+                opsi: ["Rajin salat", "Suka bolos", "Bantah orangtua"],
+                jawabanBenar: 0,
+                bahasan: "Rajin beribadah (seperti salat) adalah syarat agar kita mendapat kasih sayang Allah (Ar-Rahim) di akhirat kelak."
+            },
+            {
+                soal: "Menyayangi lingkungan sekolah bisa kita lakukan bersama-sama dengan cara...",
+                opsi: ["Sapu kelas", "Coret dinding", "Patahkan ranting"],
+                jawabanBenar: 0,
+                bahasan: "Menjaga kebersihan dengan menyapu kelas adalah tindakan nyata menyayangi lingkungan tempat kita belajar."
+            },
+            {
+                soal: "Nabi sangat menyayangi binatang. Saat kucing kesayangannya tidur di atas jubahnya, beliau...",
+                opsi: ["Potong jubah", "Usir kucing", "Pukul kucing"],
+                jawabanBenar: 0,
+                bahasan: "Nabi rela memotong lengan jubahnya agar kucing yang sedang tidur di atasnya tidak terbangun."
+            },
+            {
+                soal: "Saat melihat pengemis yang tua dan kelaparan di jalan, hati kita seharusnya merasa...",
+                opsi: ["Sangat kasihan", "Sangat benci", "Sangat senang"],
+                jawabanBenar: 0,
+                bahasan: "Rasa kasihan dan empati adalah tanda bahwa di dalam hati kita terdapat sifat kasih sayang."
+            },
+            {
+                soal: "Wujud syukur karena selalu disayangi Allah adalah dengan rajin mengucapkan...",
+                opsi: ["Kalimat hamdalah", "Kalimat kotor", "Kalimat bohong"],
+                jawabanBenar: 0,
+                bahasan: "Mengucapkan hamdalah (Alhamdulillah) adalah cara kita berterima kasih atas segala kasih sayang Allah."
+            },
+            {
+                soal: "Tidak mengganggu teman yang sedang beribadah adalah wujud dari sikap...",
+                opsi: ["Saling menyayangi", "Saling membenci", "Saling bertengkar"],
+                jawabanBenar: 0,
+                bahasan: "Menghormati agama dan ibadah orang lain menciptakan kerukunan, yang bersumber dari rasa saling menyayangi."
+            },
+            {
+                soal: "Allah memberi kita tubuh yang sehat dan kuat. Kita harus menyayanginya dengan...",
+                opsi: ["Makan bergizi", "Makan permen", "Jajan sembarangan"],
+                jawabanBenar: 0,
+                bahasan: "Mengonsumsi makanan sehat dan bergizi adalah cara merawat dan menyayangi anugerah tubuh dari Allah."
+            },
+            {
+                soal: "Guru mengajar kita dengan penuh kesabaran. Tanda kita sayang kepada guru adalah...",
+                opsi: ["Tertib belajar", "Main sendiri", "Tidur kelas"],
+                jawabanBenar: 0,
+                bahasan: "Mendengarkan dan tertib saat pelajaran berlangsung adalah adab dan tanda bakti/sayang kepada guru."
+            },
+            {
+                soal: "Jika kita melakukan kesalahan yang merugikan teman, wujud kasih sayang kita adalah...",
+                opsi: ["Minta maaf", "Cari alasan", "Tuduh teman"],
+                jawabanBenar: 0,
+                bahasan: "Berani meminta maaf akan menghapus permusuhan dan mengembalikan kasih sayang sesama teman."
+            },
+            {
+                soal: "Sifat Ar-Rahman dan Ar-Rahim selalu kita baca dalam basmalah setiap kali kita...",
+                opsi: ["Mulai belajar", "Selesai belajar", "Sedang bermain"],
+                jawabanBenar: 0,
+                bahasan: "Membaca basmalah (Bismillahir-rahmanir-rahim) dilakukan sebelum memulai amal baik seperti belajar."
+            },
+            {
+                soal: "Menunjukkan rasa sayang kepada adik kecil di rumah bisa dilakukan dengan cara...",
+                opsi: ["Ajak bermain", "Rebut mainan", "Buat menangis"],
+                jawabanBenar: 0,
+                bahasan: "Mengajak adik bermain dengan rukun adalah contoh perilaku kasih sayang di dalam keluarga."
+            },
+            {
+                soal: "Anak yang senantiasa memiliki sifat kasih sayang di dalam hatinya, kelak akan mempunyai...",
+                opsi: ["Banyak teman", "Banyak musuh", "Sedikit teman"],
+                jawabanBenar: 0,
+                bahasan: "Orang yang penyayang akan disukai banyak orang, sehingga ia akan memiliki banyak teman."
+            }
+        ];
+
+        let soalDiacak = [];
+        let indexSoal = 0;
+        let skor = 0;
+        let riwayatJawaban = [];
+        let siswa = { nama: "", kelas: "" };
+
+        tampilkanRiwayat();
+
+        function acakArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function mulaiKuis() {
+            const nama = document.getElementById("nama").value.trim();
+            const kelas = document.getElementById("kelas").value.trim();
+            if(nama === "" || kelas === "") {
+                alert("Isi nama dan kelas dulu ya!");
+                return;
+            }
+            siswa.nama = nama;
+            siswa.kelas = kelas;
+            soalDiacak = bankSoal.map(soal => ({ ...soal, urutanOpsi: acakArray([0, 1, 2]) }));
+            indexSoal = 0;
+            skor = 0;
+            riwayatJawaban = new Array(bankSoal.length).fill(null);
+            updateSkorTampil();
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            renderSoal();
+        }
+
+        function renderSoal() {
+            const dataSoal = soalDiacak[indexSoal];
+            const jawabanSiswa = riwayatJawaban[indexSoal];
+            document.getElementById("indikator-soal").innerText = `Soal: ${indexSoal + 1}/${bankSoal.length}`;
+            document.getElementById("teks-soal").innerText = dataSoal.soal;
+            const tempatOpsi = document.getElementById("tempat-opsi");
+            tempatOpsi.innerHTML = "";
+            const kotakBahas = document.getElementById("kotak-bahas");
+            const teksBahas = document.getElementById("teks-bahas");
+
+            dataSoal.urutanOpsi.forEach((indexAsli) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = dataSoal.opsi[indexAsli];
+                if (jawabanSiswa !== null) {
+                    btn.disabled = true;
+                    if (indexAsli === dataSoal.jawabanBenar) btn.classList.add("correct");
+                    else if (indexAsli === jawabanSiswa) btn.classList.add("wrong");
+                } else {
+                    btn.onclick = () => cekJawaban(indexAsli, btn);
+                }
+                tempatOpsi.appendChild(btn);
+            });
+
+            if (jawabanSiswa !== null) {
+                teksBahas.innerText = dataSoal.bahasan;
+                kotakBahas.classList.remove("hidden");
+            } else {
+                kotakBahas.classList.add("hidden");
+            }
+
+            document.getElementById("btn-prev").disabled = (indexSoal === 0);
+            const btnNext = document.getElementById("btn-next");
+            if (indexSoal === bankSoal.length - 1) {
+                btnNext.innerText = "Selesai 🏁";
+                btnNext.onclick = akhiriKuis;
+            } else {
+                btnNext.innerText = "Lanjut ➡️";
+                btnNext.onclick = soalSelanjutnya;
+            }
+        }
+
+        function cekJawaban(indexAsliTerpilih, btnElement) {
+            const dataSoal = soalDiacak[indexSoal];
+            riwayatJawaban[indexSoal] = indexAsliTerpilih;
+            const semuaTombol = document.querySelectorAll(".option-btn");
+            semuaTombol.forEach(btn => btn.disabled = true);
+
+            if (indexAsliTerpilih === dataSoal.jawabanBenar) {
+                btnElement.classList.add("correct");
+                skor += 4;
+                updateSkorTampil();
+            } else {
+                btnElement.classList.add("wrong");
+                semuaTombol.forEach((btn, i) => {
+                    if (dataSoal.urutanOpsi[i] === dataSoal.jawabanBenar) btn.classList.add("correct");
+                });
+            }
+            document.getElementById("teks-bahas").innerText = dataSoal.bahasan;
+            document.getElementById("kotak-bahas").classList.remove("hidden");
+        }
+
+        function updateSkorTampil() { document.getElementById("skor-sementara").innerText = skor; }
+        function soalSelanjutnya() { if (indexSoal < bankSoal.length - 1) { indexSoal++; renderSoal(); } }
+        function soalSebelumnya() { if (indexSoal > 0) { indexSoal--; renderSoal(); } }
+
+        function akhiriKuis() {
+            if (riwayatJawaban.includes(null)) {
+                alert("Ada soal yang belum dijawab!");
+                return;
+            }
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            document.getElementById("skor-akhir").innerText = skor;
+            let pesan = skor === 100 ? "Luar Biasa!" : (skor >= 80 ? "Hebat!" : "Semangat Belajar!");
+            document.getElementById("pesan-akhir").innerText = pesan;
+            simpanKeRiwayat();
+        }
+
+        function simpanKeRiwayat() {
+            const dataBaru = { nama: siswa.nama, kelas: siswa.kelas, skor: skor };
+            let riwayatLama = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            riwayatLama.unshift(dataBaru);
+            if(riwayatLama.length > 50) riwayatLama.pop();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(riwayatLama));
+        }
+
+        function tampilkanRiwayat() {
+            const riwayat = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            const tbody = document.getElementById("body-riwayat");
+            tbody.innerHTML = "";
+            if(riwayat.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Belum ada data.</td></tr>";
+                return;
+            }
+            riwayat.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${item.nama}</td><td>${item.kelas}</td><td><strong>${item.skor}</strong></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function kembaliKeLogin() {
+            document.getElementById("result-screen").classList.add("hidden");
+            document.getElementById("login-screen").classList.remove("hidden");
+            document.getElementById("nama").value = "";
+            document.getElementById("kelas").value = "";
+            tampilkanRiwayat();
+        }
+    </script>
+</body>
+</html>

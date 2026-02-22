@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bahasa Indonesia - Kelas 1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --bg: #f7fff7;
+            --text: #2f3542;
+            --correct: #2ed573;
+            --wrong: #ff4757;
+            --dark: #2f3542; /* Warna gelap elegan untuk footer & tombol home */
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 30px auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            position: relative;
+            box-sizing: border-box;
+            border: 5px solid var(--secondary);
+        }
+
+        .header-code {
+            background: var(--accent);
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: 900;
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            border: 2px dashed #ff9f43;
+            color: #d35400;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* --- LOG IN SCREEN --- */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .login-form input {
+            padding: 12px 20px;
+            border: 2px solid #ced6e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-family: 'Nunito', sans-serif;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: #ff5252;
+        }
+
+        .btn-start {
+            background: var(--secondary);
+            margin-top: 10px;
+        }
+        .btn-start:hover {
+            background: #45b7d1;
+        }
+
+        .btn-home {
+            background: var(--dark);
+            margin-top: -5px; /* Sedikit merapatkan dengan tombol mulai */
+        }
+        .btn-home:hover {
+            background: #576574;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .history-table th, .history-table td {
+            border: 2px solid #f1f2f6;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .history-table th {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .history-wrapper {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #f1f2f6;
+            border-radius: 10px;
+        }
+
+        /* --- QUIZ SCREEN --- */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.2em;
+            background: #f1f2f6;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question-box {
+            font-size: 1.4em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 3px solid #dfe4ea;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+            color: var(--text);
+            font-weight: bold;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #eccc68;
+            border-color: #ffa502;
+        }
+
+        .option-btn.correct {
+            background: var(--correct) !important;
+            color: white !important;
+            border-color: #26de81 !important;
+        }
+
+        .option-btn.wrong {
+            background: var(--wrong) !important;
+            color: white !important;
+            border-color: #ff6b81 !important;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .explanation-box {
+            background: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: #7bed9f;
+            color: #2f3542;
+        }
+        .nav-btn:hover { background: #2ed573; color: white; }
+
+        /* --- RESULT SCREEN --- */
+        .result-box {
+            text-align: center;
+        }
+        .final-score {
+            font-size: 4em;
+            font-weight: 900;
+            color: var(--correct);
+            margin: 20px 0;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 15px 20px;
+            font-size: 0.95em;
+            color: #ffffff;
+            background: var(--dark);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* Menjaga agar tetap rapi di layar HP */
+            gap: 5px;
+            box-sizing: border-box;
+        }
+        
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #fff;
+        }
+
+        .hidden { display: none !important; }
+
+        /* DECORATIONS */
+        .deco {
+            font-size: 2em;
+            position: absolute;
+            opacity: 0.8;
+        }
+        .d1 { top: -20px; left: -20px; }
+        .d2 { top: -20px; right: -20px; }
+        .d3 { bottom: -20px; left: -20px; }
+        .d4 { bottom: -20px; right: -20px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" class="container">
+        <div class="deco d1">🎈</div>
+        <div class="deco d2">🌟</div>
+        <div class="deco d3">🎨</div>
+        <div class="deco d4">🚀</div>
+        
+        <div class="header-code">Kode Soal: IND-K1-S2-B5-HOTS</div>
+        <h1>Ayo Belajar Bersama! 📚</h1>
+        <p style="text-align: center;">Materi: Teman Baru (Bahasa Indonesia Kelas 1)</p>
+        
+        <div class="login-form">
+            <input type="text" id="input-nama" placeholder="Masukkan Nama Lengkapmu..." required>
+            <input type="text" id="input-kelas" placeholder="Masukkan Kelasmu..." required>
+            <button class="btn btn-start" onclick="startQuiz()">Mulai Mengerjakan Kuis!</button>
+            <button class="btn btn-home" onclick="window.location.href='../index.html'">🏠 Kembali ke Home</button>
+        </div>
+
+        <h3>🏆 History Nilai Teman-Teman</h3>
+        <div class="history-wrapper">
+            <table class="history-table" id="history-table">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="container hidden">
+        <div class="header-code">Kode Soal: IND-K1-S2-B5-HOTS</div>
+        
+        <div class="status-bar">
+            <span id="question-number">Soal 1 / 25</span>
+            <span id="current-score">Skor Sementara: 0</span>
+        </div>
+
+        <div class="question-box" id="question-text">
+            Pertanyaan dimuat di sini...
+        </div>
+
+        <div class="options-container" id="options-container">
+            </div>
+
+        <div class="explanation-box" id="explanation-box">
+            <strong>Pembahasan: </strong><span id="explanation-text"></span>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn nav-btn" id="btn-prev" onclick="prevQuestion()">⬅️ Soal Sebelumnya</button>
+            <button class="btn nav-btn" id="btn-next" onclick="nextQuestion()">Soal Selanjutnya ➡️</button>
+            <button class="btn nav-btn hidden" id="btn-finish" onclick="finishQuiz()">Selesai & Lihat Nilai 🎉</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="container hidden">
+        <div class="deco d1">🏆</div>
+        <div class="deco d2">✨</div>
+        <div class="header-code">Kode Soal: IND-K1-S2-B5-HOTS</div>
+        
+        <div class="result-box">
+            <h1>Hebat Sekali, <span id="display-nama"></span>!</h1>
+            <p>Kamu dari kelas <span id="display-kelas"></span> sudah menyelesaikan kuis dengan baik.</p>
+            <div class="final-score" id="final-score">100</div>
+            <button class="btn btn-start" onclick="location.reload()">Kerjakan Ulang Kuis</button>
+            <button class="btn btn-home" style="margin-top: 15px; width: 100%;" onclick="window.location.href='../index.html'">🏠 Kembali ke Home</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>&copy; <span id="current-year"></span>, Oleh: Dwi Endrasto | Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a></span>
+    </div>
+
+<script>
+    // Atur Tahun Footer
+    document.getElementById('current-year').innerText = new Date().getFullYear();
+
+    // --- PENTING: Kunci Storage Unik per Kuis ---
+    // Menggunakan kode soal sebagai bagian dari key agar tidak bentrok dengan kuis lain
+    const STORAGE_KEY = 'quizHistory_IND_K1_S2_B5_HOTS';
+
+    // Database Soal (25 Soal, HOTS, Kurikulum Merdeka, Bab Teman Baru, Jumlah Kata Tiap Opsi Sama = 4 kata)
+    const rawQuestions = [
+        {
+            q: "Budi tidak sengaja menginjak kaki Andi saat bermain. Apa yang sebaiknya Budi ucapkan agar Andi tidak marah?",
+            options: ["Maafkan aku ya Andi", "Biarkan saja ya Andi", "Jangan menangis ya Andi"],
+            answer: 0,
+            exp: "Saat kita melakukan kesalahan, mengucapkan kata maaf adalah cara paling sopan untuk menebusnya."
+        },
+        {
+            q: "Siti diberi hadiah buku oleh ibu guru karena rajin. Kalimat mana yang paling sopan diucapkan Siti?",
+            options: ["Terima kasih banyak ibu", "Sama sama ya ibu", "Tolong ambilkan ya ibu"],
+            answer: 0,
+            exp: "Saat kita menerima sesuatu atau bantuan dari orang lain, kita harus mengucapkan terima kasih."
+        },
+        {
+            q: "Cara menulis kalimat yang benar dan tanda bacanya tepat jika Doni sedang membaca buku adalah...",
+            options: ["Doni sedang membaca buku.", "Doni sedang membaca buku?", "Doni sedang membaca buku!"],
+            answer: 0,
+            exp: "Tanda titik (.) selalu digunakan untuk mengakhiri kalimat pernyataan atau kalimat berita biasa."
+        },
+        {
+            q: "Hewan ini suka bergelantungan, suka makan pisang, dan namanya diawali suku kata 'mo'. Hewan apakah itu?",
+            options: ["Hewan itu adalah monyet", "Hewan itu adalah merpati", "Hewan itu adalah musang"],
+            answer: 0,
+            exp: "Monyet adalah hewan pemakan pisang yang namanya diawali suku kata mo-nyet."
+        },
+        {
+            q: "Kamu ingin meminjam pensil teman sebangkumu karena pensilmu patah. Cara bicara yang paling baik adalah...",
+            options: ["Tolong pinjamkan pensilmu padaku", "Cepat berikan pensilmu padaku", "Aku minta pensilmu padaku"],
+            answer: 0,
+            exp: "Kata 'tolong' adalah kata sopan yang harus dipakai saat kita meminta bantuan atau meminjam barang."
+        },
+        {
+            q: "Tanda titik digunakan pada akhir kalimat berita. Kalimat mana yang menceritakan teman baru dengan tepat?",
+            options: ["Nama teman baruku Budi.", "Siapa nama teman baruku.", "Tolong panggil teman baruku."],
+            answer: 0,
+            exp: "Kalimat pertama adalah pernyataan sehingga diakhiri titik. Kalimat kedua pertanyaan, kalimat ketiga perintah."
+        },
+        {
+            q: "Ibu memasak sup di dapur. Kata yang diawali dengan suku kata 'me' pada kalimat tersebut adalah...",
+            options: ["Kata itu adalah memasak", "Kata itu adalah dapur", "Kata itu adalah sup"],
+            answer: 0,
+            exp: "Kata me-ma-sak diawali dengan suku kata 'me'."
+        },
+        {
+            q: "Edo ingin lewat di depan orang tua yang sedang duduk. Sikap dan ucapan Edo yang benar adalah...",
+            options: ["Permisi saya numpang lewat", "Minggir saya mau lewat", "Tolong saya mau lewat"],
+            answer: 0,
+            exp: "Mengucapkan 'Permisi' sambil menundukkan badan adalah sikap hormat saat lewat di depan orang."
+        },
+        {
+            q: "Rina sedang menceritakan hobi teman barunya. Kalimat Rina yang benar cara menulisnya di bawah ini adalah...",
+            options: ["Hobi temanku adalah membaca.", "Hobi temanku adalah membaca,", "Hobi temanku adalah membaca"],
+            answer: 0,
+            exp: "Kalimat berita yang sudah selesai harus selalu ditutup dengan tanda baca titik (.)."
+        },
+        {
+            q: "Saat udara sangat panas, kita biasanya membeli cairan dingin yang rasanya manis. Benda ini diawali huruf 'mi'.",
+            options: ["Benda itu adalah minuman", "Benda itu adalah makanan", "Benda itu adalah mainan"],
+            answer: 0,
+            exp: "Cairan yang kita minum disebut mi-nu-man, berawalan dengan suku kata 'mi'."
+        },
+        {
+            q: "Saat teman barumu menyapa 'Selamat Pagi' di sekolah, balasan yang paling sopan dan membuat temanmu senang adalah...",
+            options: ["Selamat pagi juga teman", "Jangan sapa aku teman", "Maaf aku sibuk teman"],
+            answer: 0,
+            exp: "Menjawab sapaan dengan sapaan yang sama dan senyuman adalah tindakan ramah kepada teman baru."
+        },
+        {
+            q: "Penggunaan tanda titik yang benar saat kamu menuliskan nama panggilan teman sebangkumu di buku tulis adalah...",
+            options: ["Teman sebangkuku bernama Siti.", "Teman sebangkuku bernama Siti", "Teman sebangkuku bernama Siti?"],
+            answer: 0,
+            exp: "Tulisan di buku yang berupa kalimat informasi wajib diberi tanda titik di ujung kalimatnya."
+        },
+        {
+            q: "Kendaraan roda empat yang biasa kamu lihat berjalan di jalan raya dan diawali suku kata 'mo' adalah...",
+            options: ["Kendaraan itu adalah mobil", "Kendaraan itu adalah motor", "Kendaraan itu adalah mesin"],
+            answer: 0,
+            exp: "Mobil berawalan 'mo' dan roda empat, sedangkan motor rodanya hanya dua."
+        },
+        {
+            q: "Kamu tidak sengaja menjatuhkan botol minum teman barumu sampai tumpah. Apa yang harus kamu sampaikan kepadanya?",
+            options: ["Maafkan aku teman baru", "Terima kasih teman baru", "Tolong ambilkan teman baru"],
+            answer: 0,
+            exp: "Kita harus segera meminta maaf dan membantu merapikan jika kita merugikan orang lain."
+        },
+        {
+            q: "Ibu guru meminta Udin menulis cerita tentang kawan sebangkunya. Mana kalimat yang sudah diberi tanda titik?",
+            options: ["Udin punya teman baru.", "Udin punya teman baru", "Siapa nama teman baru."],
+            answer: 0,
+            exp: "Kalimat pertama adalah kalimat yang menyampaikan informasi (berita) yang diakhiri tanda titik."
+        },
+        {
+            q: "Hewan buas berbelang yang hidup di hutan dan penulisan kata depannya memakai suku kata 'ma' adalah...",
+            options: ["Hewan itu adalah macan", "Hewan itu adalah merak", "Hewan itu adalah monyet"],
+            answer: 0,
+            exp: "Macan adalah hewan buas di hutan yang namanya diawali oleh suku kata 'ma'."
+        },
+        {
+            q: "Dodi ingin pergi ke toilet saat ibu guru sedang menjelaskan pelajaran. Dodi mengangkat tangan lalu berkata...",
+            options: ["Permisi izin ke toilet", "Maaf ibu saya marah", "Tolong ambilkan tas saya"],
+            answer: 0,
+            exp: "Mengucapkan 'permisi' adalah tata krama saat kita meminta izin menyela kegiatan di kelas."
+        },
+        {
+            q: "Tanda titik diletakkan di akhir kalimat berita. Dari pilihan di bawah ini, mana penulisan yang tepat?",
+            options: ["Kami bermain bola basket.", "Kami bermain bola basket", "Ayo bermain bola basket."],
+            answer: 0,
+            exp: "Kalimat berita harus diakhiri titik. Kata 'Ayo' adalah ajakan, biasanya diakhiri tanda seru (!)."
+        },
+        {
+            q: "Jika kamu ingin melihat benda yang bentuknya sangat kecil sekali, kamu membutuhkan alat berawalan 'mi' yaitu...",
+            options: ["Nama alat itu mikroskop", "Nama alat itu meteran", "Nama alat itu makaroni"],
+            answer: 0,
+            exp: "Mikroskop (mi-kros-kop) adalah alat laboratorium untuk melihat benda super kecil."
+        },
+        {
+            q: "Ibu membawakan kue bolu untuk teman-teman barumu di kelas. Apa yang diucapkan teman-temanmu kepada ibu?",
+            options: ["Terima kasih banyak ibu", "Permisi kami mau kue", "Tolong potongkan kue ini"],
+            answer: 0,
+            exp: "Mendapat pemberian dari orang lain harus selalu dibalas dengan ucapan terima kasih."
+        },
+        {
+            q: "Penulisan cerita tentang perasaanmu di hari pertama masuk sekolah yang diakhiri dengan tanda titik yang benar adalah...",
+            options: ["Hari ini sangat menyenangkan.", "Apakah hari ini menyenangkan.", "Hari ini sangat menyenangkan"],
+            answer: 0,
+            exp: "Kalimat pernyataan mengenai perasaan adalah kalimat berita, sehingga diakhiri dengan titik."
+        },
+        {
+            q: "Buah ini besar berbentuk bulat, kulit luar dan dagingnya hijau tua terang, serta berawalan suku kata 'me'.",
+            options: ["Buah itu adalah melon", "Buah itu adalah mangga", "Buah itu adalah markisa"],
+            answer: 0,
+            exp: "Melon (me-lon) adalah buah hijau berukuran besar dan bulat."
+        },
+        {
+            q: "Kamu tidak mengerti pelajaran yang diajarkan ibu guru di kelas. Cara bertanyanya yang paling sopan adalah...",
+            options: ["Permisi saya mau bertanya", "Maaf saya mau pulang", "Tolong kerjakan soal saya"],
+            answer: 0,
+            exp: "Memulai ucapan dengan 'Permisi' saat hendak bertanya menunjukkan rasa hormat kepada guru."
+        },
+        {
+            q: "Lani bercerita bahwa ia duduk sebangku dengan Siti. Kalimat yang membuktikan Lani selesai bercerita dan ditulis dengan benar adalah...",
+            options: ["Aku duduk dengan Siti.", "Aku duduk dengan Siti", "Siapa yang duduk bersamamu."],
+            answer: 0,
+            exp: "Akhir dari sebuah cerita atau pernyataan tertulis selalu ditandai dengan tanda titik."
+        },
+        {
+            q: "Benda yang ada di kelas, sering dipasangkan dengan kursi dan biasa dipakai untuk alas menulis buku berawalan 'me' adalah...",
+            options: ["Benda tersebut adalah meja", "Benda tersebut adalah mistar", "Benda tersebut adalah mesin"],
+            answer: 0,
+            exp: "Meja (me-ja) adalah perabotan kelas untuk alas belajar menulis."
+        }
+    ];
+
+    // Persiapan State Kuis
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let userScore = 0;
+    let userAnswers = [];
+    let currentUser = { nama: '', kelas: '' };
+
+    // Fungsi Pengacak Array
+    function shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // Inisialisasi Tampilan Awal
+    function initApp() {
+        loadHistory();
+    }
+
+    function loadHistory() {
+        // Menggunakan STORAGE_KEY unik
+        const historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const tbody = document.getElementById('history-body');
+        tbody.innerHTML = '';
+        historyData.forEach(data => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${data.time}</td>
+                <td>${data.nama}</td>
+                <td>${data.kelas}</td>
+                <td><strong>${data.skor}</strong></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function saveToHistory(nama, kelas, skor) {
+        // Menggunakan STORAGE_KEY unik
+        const historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const now = new Date();
+        const timeStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        historyData.unshift({ nama, kelas, skor, time: timeStr });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(historyData));
+    }
+
+    function startQuiz() {
+        const nama = document.getElementById('input-nama').value.trim();
+        const kelas = document.getElementById('input-kelas').value.trim();
+
+        if (!nama || !kelas) {
+            alert("Harap isi Nama dan Kelas terlebih dahulu ya!");
+            return;
+        }
+
+        currentUser.nama = nama;
+        currentUser.kelas = kelas;
+
+        // Persiapkan dan acak soal dan opsi
+        currentQuestions = rawQuestions.map(rq => {
+            let optionsObj = rq.options.map((opt, index) => ({ text: opt, isCorrect: index === rq.answer }));
+            return {
+                q: rq.q,
+                exp: rq.exp,
+                options: shuffleArray(optionsObj)
+            };
+        });
+
+        currentQuestionIndex = 0;
+        userAnswers = new Array(25).fill(null); 
+        userScore = 0;
+
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const qData = currentQuestions[currentQuestionIndex];
+        
+        document.getElementById('question-number').innerText = `Soal ${currentQuestionIndex + 1} / 25`;
+        document.getElementById('question-text').innerText = qData.q;
+        
+        // Update Skor Sementara
+        let points = 0;
+        userAnswers.forEach(ans => { if(ans && ans.isCorrect) points += 4; });
+        document.getElementById('current-score').innerText = `Skor Sementara: ${points}`;
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        document.getElementById('explanation-box').style.display = 'none';
+
+        // Render Pilihan Jawaban
+        qData.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.text;
+            
+            // Jika soal sudah pernah dijawab sebelumnya
+            if (userAnswers[currentQuestionIndex] !== null) {
+                btn.disabled = true;
+                if (opt.isCorrect) {
+                    btn.classList.add('correct');
+                } else if (index === userAnswers[currentQuestionIndex].selectedIndex) {
+                    btn.classList.add('wrong');
+                }
+            } else {
+                btn.onclick = () => handleAnswer(index, opt.isCorrect, btn);
+            }
+            
+            optionsContainer.appendChild(btn);
+        });
+
+        // Tampilkan Pembahasan jika sudah dijawab
+        if (userAnswers[currentQuestionIndex] !== null) {
+            document.getElementById('explanation-text').innerText = qData.exp;
+            document.getElementById('explanation-box').style.display = 'block';
+        }
+
+        // Navigasi Tombol
+        document.getElementById('btn-prev').style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+        
+        if (currentQuestionIndex === 24) {
+            document.getElementById('btn-next').classList.add('hidden');
+            document.getElementById('btn-finish').classList.remove('hidden');
+        } else {
+            document.getElementById('btn-next').classList.remove('hidden');
+            document.getElementById('btn-finish').classList.add('hidden');
+        }
+    }
+
+    function handleAnswer(selectedIndex, isCorrect, btnElement) {
+        // Matikan semua tombol
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => btn.disabled = true);
+
+        // Rekam Jawaban
+        userAnswers[currentQuestionIndex] = { selectedIndex, isCorrect };
+
+        // Warnai tombol
+        if (isCorrect) {
+            btnElement.classList.add('correct');
+        } else {
+            btnElement.classList.add('wrong');
+            // Cari dan warnai yang benar
+            currentQuestions[currentQuestionIndex].options.forEach((opt, idx) => {
+                if (opt.isCorrect) buttons[idx].classList.add('correct');
+            });
+        }
+
+        // Tampilkan Pembahasan
+        document.getElementById('explanation-text').innerText = currentQuestions[currentQuestionIndex].exp;
+        document.getElementById('explanation-box').style.display = 'block';
+
+        // Update skor real-time
+        let points = 0;
+        userAnswers.forEach(ans => { if(ans && ans.isCorrect) points += 4; });
+        document.getElementById('current-score').innerText = `Skor Sementara: ${points}`;
+    }
+
+    function nextQuestion() {
+        if (currentQuestionIndex < 24) {
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            renderQuestion();
+        }
+    }
+
+    function finishQuiz() {
+        // Hitung skor final
+        let correctCount = 0;
+        userAnswers.forEach(ans => {
+            if (ans && ans.isCorrect) correctCount++;
+        });
+        
+        const finalScore = correctCount * 4; // 25 soal x 4 = 100
+
+        // Simpan ke History
+        saveToHistory(currentUser.nama, currentUser.kelas, finalScore);
+
+        // Pindah ke layar akhir
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+
+        document.getElementById('display-nama').innerText = currentUser.nama;
+        document.getElementById('display-kelas').innerText = currentUser.kelas;
+        document.getElementById('final-score').innerText = finalScore;
+    }
+
+    // Jalankan inisialisasi awal
+    initApp();
+</script>
+
+</body>
+</html>

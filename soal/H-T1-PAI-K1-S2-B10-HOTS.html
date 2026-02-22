@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif PAI - Nabi Adam a.s.</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+        :root {
+            --primary: #4CAF50;
+            --secondary: #FFC107;
+            --danger: #F44336;
+            --success: #8BC34A;
+            --dark-footer: #212121;
+            --text-dark: #333;
+            --bg-color: #E8F5E9;
+            --white: #FFFFFF;
+            --info: #2196F3;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-image: radial-gradient(#C8E6C9 20%, transparent 20%),
+                              radial-gradient(#C8E6C9 20%, transparent 20%);
+            background-position: 0 0, 25px 25px;
+            background-size: 50px 50px;
+        }
+
+        .header-code {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #388E3C;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 700px;
+            border: 5px solid var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before, .card::after {
+            content: '⭐';
+            position: absolute;
+            top: 10px;
+            font-size: 1.5rem;
+        }
+        .card::before { left: 10px; }
+        .card::after { right: 10px; }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2rem; color: #2E7D32; }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 4px 0 #388E3C;
+            margin-top: 10px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #388E3C;
+        }
+
+        .btn-home {
+            background-color: var(--info);
+            box-shadow: 0 4px 0 #1976D2;
+        }
+        .btn-home:hover {
+            box-shadow: 0 2px 0 #1976D2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            background-color: var(--secondary);
+            box-shadow: 0 4px 0 #FF9800;
+            color: #333;
+            width: 48%;
+        }
+
+        .history-section {
+            margin-top: 30px;
+            border-top: 2px dashed #ccc;
+            padding-top: 20px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .history-table th, .history-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .history-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .history-table tr:nth-child(even) {background-color: #f9f9f9;}
+
+        .hidden { display: none !important; }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary);
+            text-align: center;
+            margin-bottom: 15px;
+            background: #FFF3E0;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: justify;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background-color: #f1f1f1;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn.correct { background-color: var(--success); color: white; border-color: #689F38; }
+        .option-btn.wrong { background-color: var(--danger); color: white; border-color: #D32F2F; }
+
+        .pembahasan {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #E3F2FD;
+            border-left: 5px solid #2196F3;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        footer {
+            background-color: var(--dark-footer);
+            color: #bbb;
+            text-align: center;
+            padding: 12px;
+            font-size: 0.85rem;
+            border-top: 3px solid var(--secondary);
+        }
+
+        footer a { color: var(--secondary); text-decoration: none; font-weight: bold; }
+
+        .badge-info {
+            background: var(--info);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 2px 2px #C8E6C9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-code">Kode: PAI-K1-S2-B10-HOTS</div>
+
+    <div class="container">
+        <div id="login-screen" class="card">
+            <h1>🕌 Kuis PAI Kelas 1 </h1>
+            <h3>Bab: Nabi Adam a.s. Manusia Pertama</h3>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <span class="badge-info">Kurikulum Merdeka</span>
+                <span class="badge-info">Tingkat: HOTS</span>
+            </div>
+
+            <div class="form-group">
+                <label for="namaLengkap">Nama Lengkap:</label>
+                <input type="text" id="namaLengkap" placeholder="Masukkan nama lengkapmu...">
+            </div>
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" placeholder="Contoh: 1 A">
+            </div>
+            
+            <button class="btn" onclick="mulaiKuis()">🚀 Mulai Kuis!</button>
+            <a href="../index.html" class="btn btn-home">🏠 Kembali ke Beranda Utama</a>
+
+            <div class="history-section">
+                <h3>📜 Papan Skor (History)</h3>
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Nama</th>
+                                <th>Kelas</th>
+                                <th>Skor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="card hidden">
+            <div class="question-number" id="q-number">Soal 1 / 25</div>
+            <div class="question-text" id="q-text"></div>
+            <div class="options-container" id="options-container"></div>
+            <div id="pembahasan-container" class="pembahasan hidden">
+                <strong>💡 Pembahasan:</strong>
+                <span id="pembahasan-text"></span>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-nav" id="btn-prev" onclick="soalSebelumnya()">⬅️ Sebelumnya</button>
+                <button class="btn btn-nav" id="btn-next" onclick="soalSelanjutnya()">Selanjutnya ➡️</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="card hidden">
+            <h1>🎉 Kuis Selesai! 🎉</h1>
+            <div class="score-display" id="final-score">0</div>
+            <h3 id="pesan-akhir"></h3>
+            <button class="btn" onclick="kembaliKeBeranda()">🏠 Selesai & Kembali</button>
+        </div>
+    </div>
+
+    <footer>
+        @2026 | Oleh: Dwi Endrasto | Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        // Kunci unik agar data tidak bentrok dengan modul lain
+        const STORAGE_KEY = "SMART_BANK_SOAL_PAI_K1_S2_B10";
+
+        const bankSoal = [
+            {
+                q: "Allah Swt. menciptakan Nabi Adam a.s. dari tanah. Jika temanmu mengejek karena seragammu kotor kena tanah saat istirahat, apa sikapmu?",
+                options: [
+                    { text: "Marah dan membalas", correct: false },
+                    { text: "Sabar dan membersihkan", correct: true },
+                    { text: "Menangis lalu pulang", correct: false }
+                ],
+                pembahasan: "Kita harus bersabar dan menjaga kebersihan karena Allah menciptakan manusia dari tanah suci."
+            },
+            {
+                q: "Nabi Adam a.s. diajarkan nama-nama benda oleh Allah. Apa yang sebaiknya kamu lakukan jika belum tahu nama suatu benda di kelas?",
+                options: [
+                    { text: "Diam saja terus", correct: false },
+                    { text: "Malu untuk bertanya", correct: false },
+                    { text: "Berani terus bertanya", correct: true }
+                ],
+                pembahasan: "Nabi Adam a.s. belajar nama benda dari Allah. Kita juga harus berani belajar dan bertanya."
+            },
+            {
+                q: "Malaikat bersujud menghormati Nabi Adam a.s. atas perintah Allah. Bagaimana cara kita menghormati guru saat bertemu di sekolah?",
+                options: [
+                    { text: "Sapa dan senyum", correct: true },
+                    { text: "Lari dan sembunyi", correct: false },
+                    { text: "Diam dan cemberut", correct: false }
+                ],
+                pembahasan: "Menghormati guru dapat dilakukan dengan menyapa dan tersenyum."
+            },
+            {
+                q: "Iblis sombong dan tidak mau bersujud. Apa akibatnya jika kita bersikap sombong kepada teman-teman di sekolah?",
+                options: [
+                    { text: "Disukai banyak teman", correct: false },
+                    { text: "Dijauhi banyak teman", correct: true },
+                    { text: "Ditemani banyak teman", correct: false }
+                ],
+                pembahasan: "Sombong adalah sifat iblis yang dibenci Allah. Anak yang sombong pasti akan dijauhi teman."
+            },
+            {
+                q: "Nabi Adam a.s. berbuat salah lalu segera bertaubat. Jika kamu tidak sengaja mematahkan pensil temanmu, apa tindakanmu?",
+                options: [
+                    { text: "Cepat minta maaf", correct: true },
+                    { text: "Pura pura lupa", correct: false },
+                    { text: "Lari sangat jauh", correct: false }
+                ],
+                pembahasan: "Nabi Adam a.s. langsung meminta maaf kepada Allah saat bersalah."
+            },
+            {
+                q: "Allah Menerima taubat Nabi Adam a.s. Jika ada temanmu yang berbuat salah lalu menangis meminta maaf padamu, apa yang kamu lakukan?",
+                options: [
+                    { text: "Maafkan dengan ikhlas", correct: true },
+                    { text: "Tolak dengan marah", correct: false },
+                    { text: "Diam dengan kesal", correct: false }
+                ],
+                pembahasan: "Allah Maha Pemaaf. Sebagai anak yang baik, kita juga harus mudah memaafkan teman."
+            },
+            {
+                q: "Di surga Nabi Adam a.s. merasa kesepian sehingga Allah menciptakan Hawa. Mengapa dalam hidup ini kita membutuhkan teman?",
+                options: [
+                    { text: "Agar bisa berkelahi", correct: false },
+                    { text: "Agar saling membantu", correct: true },
+                    { text: "Agar bisa bermusuhan", correct: false }
+                ],
+                pembahasan: "Manusia butuh teman untuk saling tolong menolong."
+            },
+            {
+                q: "Iblis berhasil menggoda Nabi Adam a.s. memakan buah khuldi. Jika ada teman yang berbisik mengajakmu bolos sekolah, bagaimana sikapmu?",
+                options: [
+                    { text: "Ikut bolos saja", correct: false },
+                    { text: "Tolak dengan tegas", correct: true },
+                    { text: "Ragu lalu ikut", correct: false }
+                ],
+                pembahasan: "Kita harus tegas menolak ajakan yang buruk."
+            },
+            {
+                q: "Nabi Adam a.s. dan Hawa diturunkan ke bumi lalu mereka harus bekerja keras. Bagaimana sikapmu saat diberi tugas oleh guru?",
+                options: [
+                    { text: "Malas dan mengeluh", correct: false },
+                    { text: "Giat dan semangat", correct: true },
+                    { text: "Tidur dan bermain", correct: false }
+                ],
+                pembahasan: "Kita harus rajin dan penuh semangat mengerjakan tugas."
+            },
+            {
+                q: "Nabi Adam a.s. sangat menyesali perbuatannya melanggar larangan. Menyesal atau bertaubat artinya kita berjanji untuk...",
+                options: [
+                    { text: "Tidak mengulang salah", correct: true },
+                    { text: "Terus berbuat salah", correct: false },
+                    { text: "Pura pura lupa", correct: false }
+                ],
+                pembahasan: "Bertaubat atau menyesal berarti berjanji tidak mengulangi kesalahan."
+            },
+            {
+                q: "Allah selalu mengawasi kita seperti melihat Nabi Adam a.s. Jika kamu menemukan uang di lantai kelas, apa sikapmu?",
+                options: [
+                    { text: "Ambil untuk jajan", correct: false },
+                    { text: "Kasih ke guru", correct: true },
+                    { text: "Simpan dalam tas", correct: false }
+                ],
+                pembahasan: "Kita harus jujur karena Allah Maha Melihat."
+            },
+            {
+                q: "Nabi Adam a.s. menjaga kelestarian bumi dengan baik. Cara terbaik kita menjaga lingkungan sekolah adalah...",
+                options: [
+                    { text: "Buang sampah sembarangan", correct: false },
+                    { text: "Buang ke selokan", correct: false },
+                    { text: "Buang pada tempatnya", correct: true }
+                ],
+                pembahasan: "Kita wajib merawat kebersihan lingkungan."
+            },
+            {
+                q: "Meskipun pernah berbuat salah, Nabi Adam a.s. tetap disayangi Allah. Hal ini karena beliau selalu...",
+                options: [
+                    { text: "Rajin berdoa memohon", correct: true },
+                    { text: "Suka berbuat jahat", correct: false },
+                    { text: "Malas untuk berdoa", correct: false }
+                ],
+                pembahasan: "Allah menyayangi hamba-Nya yang rajin berdoa memohon ampun."
+            },
+            {
+                q: "Nabi Adam a.s. adalah manusia pertama yang cerdas. Cara yang harus kita lakukan agar menjadi anak yang cerdas adalah...",
+                options: [
+                    { text: "Main setiap hari", correct: false },
+                    { text: "Rajin baca buku", correct: true },
+                    { text: "Tidur setiap hari", correct: false }
+                ],
+                pembahasan: "Kita akan pintar dengan cara rajin belajar dan membaca."
+            },
+            {
+                q: "Setan akan selalu berbisik agar manusia berbuat keburukan. Cara kita berlindung dari godaan setan adalah...",
+                options: [
+                    { text: "Baca doa taawudz", correct: true },
+                    { text: "Nyanyi lagu pop", correct: false },
+                    { text: "Main hape terus", correct: false }
+                ],
+                pembahasan: "Mengucapkan doa taawudz adalah cara memohon perlindungan Allah."
+            },
+            {
+                q: "Hawa diciptakan untuk menemani Nabi Adam a.s. Sikap yang paling baik kepada saudara kandung di rumah adalah...",
+                options: [
+                    { text: "Sayang dan rukun", correct: true },
+                    { text: "Jahil dan nakal", correct: false },
+                    { text: "Marah dan benci", correct: false }
+                ],
+                pembahasan: "Sesama anggota keluarga harus senantiasa hidup rukun."
+            },
+            {
+                q: "Nabi Adam a.s. berpisah sangat lama dengan Hawa di bumi, tapi beliau terus mencari. Hikmahnya adalah memiliki sifat...",
+                options: [
+                    { text: "Mudah putus asa", correct: false },
+                    { text: "Sabar pantang menyerah", correct: true },
+                    { text: "Malas dan cengeng", correct: false }
+                ],
+                pembahasan: "Nabi Adam a.s. tidak pernah putus asa dan sabar berdoa."
+            },
+            {
+                q: "Ketika berbuat salah, iblis menyalahkan takdir Allah. Sedangkan Nabi Adam a.s. dengan jujur menyalahkan...",
+                options: [
+                    { text: "Diri sendiri terus", correct: true },
+                    { text: "Teman teman lain", correct: false },
+                    { text: "Orang orang disekitar", correct: false }
+                ],
+                pembahasan: "Nabi Adam a.s. berani mengakui kesalahan diri sendiri."
+            },
+            {
+                q: "Bumi adalah tempat tinggal kita sementara waktu. Bekal utama kita untuk bisa kembali masuk ke surga adalah...",
+                options: [
+                    { text: "Uang yang banyak", correct: false },
+                    { text: "Amal yang baik", correct: true },
+                    { text: "Harta yang melimpah", correct: false }
+                ],
+                pembahasan: "Amal shalih membawa manusia kembali ke surga Allah."
+            },
+            {
+                q: "Nabi Adam a.s. berdoa: 'Rabbana dhalamna anfusana'. Doa tersebut terus dibaca siang malam untuk memohon...",
+                options: [
+                    { text: "Minta uang banyak", correct: false },
+                    { text: "Minta ampun dosa", correct: true },
+                    { text: "Minta mainan baru", correct: false }
+                ],
+                pembahasan: "Doa tersebut memohon pengampunan dosa dari Allah Swt."
+            },
+            {
+                q: "Kata Adam berarti tanah, karena memang manusia diciptakan berasal dari tanah. Sikap kita seharusnya...",
+                options: [
+                    { text: "Rendah hati selalu", correct: true },
+                    { text: "Sombong setiap saat", correct: false },
+                    { text: "Bangga diri terus", correct: false }
+                ],
+                pembahasan: "Asal usul dari tanah mengajarkan kita untuk rendah hati."
+            },
+            {
+                q: "Saat diturunkan ke bumi, Nabi Adam a.s. harus belajar mencari makanannya sendiri. Pesannya untuk kita adalah...",
+                options: [
+                    { text: "Harus mandiri selalu", correct: true },
+                    { text: "Terus minta tolong", correct: false },
+                    { text: "Malas gerak saja", correct: false }
+                ],
+                pembahasan: "Kita harus melatih diri mengurus keperluan sendiri (mandiri)."
+            },
+            {
+                q: "Hukuman akibat memakan buah khuldi adalah dikeluarkan dari surga. Pelajaran pentingnya, setiap pelanggaran pasti akan mendatangkan...",
+                options: [
+                    { text: "Hadiah yang besar", correct: false },
+                    { text: "Akibat yang buruk", correct: true },
+                    { text: "Pujian yang banyak", correct: false }
+                ],
+                pembahasan: "Setiap larangan yang dilanggar mendatangkan kerugian."
+            },
+            {
+                q: "Nabi Adam a.s. bertobat dengan sangat tulus kepada Allah. Maksud dari kata tulus berarti kita menyesal...",
+                options: [
+                    { text: "Dari dalam hati", correct: true },
+                    { text: "Karena dipaksa orang", correct: false },
+                    { text: "Pura pura saja", correct: false }
+                ],
+                pembahasan: "Bertaubat tulus artinya menyesal dari lubuk hati terdalam."
+            },
+            {
+                q: "Kisah hidup Nabi Adam a.s. diceritakan berulang kali dalam Al-Qur'an. Tujuan kita membaca dan mengetahuinya adalah untuk...",
+                options: [
+                    { text: "Diingat nama saja", correct: false },
+                    { text: "Diteladani sifat baiknya", correct: true },
+                    { text: "Dilupakan begitu saja", correct: false }
+                ],
+                pembahasan: "Kita mempelajari kisah nabi untuk meneladani sifat baiknya."
+            }
+        ];
+
+        let indexSoalSaatIni = 0;
+        let skor = 0;
+        let namaSiswa = "";
+        let kelasSiswa = "";
+        let jawabanUser = [];
+        let dataSoalAcak = [];
+
+        function acakArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        document.addEventListener("DOMContentLoaded", tampilkanHistory);
+
+        function mulaiKuis() {
+            namaSiswa = document.getElementById('namaLengkap').value.trim();
+            kelasSiswa = document.getElementById('kelas').value.trim();
+
+            if (!namaSiswa || !kelasSiswa) {
+                alert("Isi Nama dan Kelas dulu ya!");
+                return;
+            }
+
+            indexSoalSaatIni = 0;
+            skor = 0;
+            jawabanUser = new Array(bankSoal.length).fill(null);
+            
+            dataSoalAcak = bankSoal.map(soal => ({
+                ...soal,
+                options: acakArray(soal.options)
+            }));
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            tampilkanSoal();
+        }
+
+        function tampilkanSoal() {
+            const soalData = dataSoalAcak[indexSoalSaatIni];
+            document.getElementById('q-number').innerText = `Soal ${indexSoalSaatIni + 1} / ${bankSoal.length}`;
+            document.getElementById('q-text').innerText = soalData.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const statusJawaban = jawabanUser[indexSoalSaatIni];
+
+            soalData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                const huruf = String.fromCharCode(65 + idx); 
+                btn.innerHTML = `<strong>${huruf}.</strong> &nbsp; ${opt.text}`;
+                btn.className = 'option-btn';
+                
+                if (statusJawaban !== null) {
+                    btn.disabled = true;
+                    if (opt.correct) btn.classList.add('correct');
+                    else if (statusJawaban.terjawab === opt.text) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => cekJawaban(btn, opt);
+                }
+                optionsContainer.appendChild(btn);
+            });
+
+            const boxPembahasan = document.getElementById('pembahasan-container');
+            if (statusJawaban !== null) {
+                document.getElementById('pembahasan-text').innerText = soalData.pembahasan;
+                boxPembahasan.classList.remove('hidden');
+                document.getElementById('btn-next').style.display = 'block';
+            } else {
+                boxPembahasan.classList.add('hidden');
+                document.getElementById('btn-next').style.display = 'none';
+            }
+
+            document.getElementById('btn-prev').style.visibility = indexSoalSaatIni === 0 ? 'hidden' : 'visible';
+            const btnNext = document.getElementById('btn-next');
+            btnNext.innerText = (indexSoalSaatIni === bankSoal.length - 1) ? 'Selesai 🏁' : 'Selanjutnya ➡️';
+            btnNext.onclick = (indexSoalSaatIni === bankSoal.length - 1) ? selesaikanKuis : soalSelanjutnya;
+        }
+
+        function cekJawaban(btnTerpilih, opsiData) {
+            const currentOptions = dataSoalAcak[indexSoalSaatIni].options;
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (currentOptions[idx].correct) btn.classList.add('correct');
+            });
+
+            if (opsiData.correct) {
+                skor += (100 / bankSoal.length);
+            } else {
+                btnTerpilih.classList.add('wrong');
+            }
+
+            jawabanUser[indexSoalSaatIni] = { terjawab: opsiData.text, benar: opsiData.correct };
+            document.getElementById('pembahasan-text').innerText = dataSoalAcak[indexSoalSaatIni].pembahasan;
+            document.getElementById('pembahasan-container').classList.remove('hidden');
+            document.getElementById('btn-next').style.display = 'block';
+        }
+
+        function soalSelanjutnya() { if (indexSoalSaatIni < bankSoal.length - 1) { indexSoalSaatIni++; tampilkanSoal(); } }
+        function soalSebelumnya() { if (indexSoalSaatIni > 0) { indexSoalSaatIni--; tampilkanSoal(); } }
+
+        function selesaikanKuis() {
+            simpanHistory();
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            let skorBulat = Math.round(skor);
+            document.getElementById('final-score').innerText = skorBulat;
+            document.getElementById('pesan-akhir').innerText = skorBulat >= 70 ? "Hebat! Terus semangat!" : "Belajar lagi ya!";
+        }
+
+        function simpanHistory() {
+            const dataBaru = {
+                waktu: new Date().toLocaleString('id-ID', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}),
+                nama: namaSiswa,
+                kelas: kelasSiswa,
+                skor: Math.round(skor)
+            };
+            let historyList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            historyList.unshift(dataBaru);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(historyList.slice(0, 50)));
+        }
+
+        function tampilkanHistory() {
+            let historyList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = historyList.length ? '' : '<tr><td colspan="4">Belum ada data nilai</td></tr>';
+            historyList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${item.waktu}</td><td>${item.nama}</td><td>${item.kelas}</td><td><strong>${item.skor}</strong></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function kembaliKeBeranda() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('namaLengkap').value = "";
+            document.getElementById('kelas').value = "";
+            tampilkanHistory();
+        }
+    </script>
+</body>
+</html>
