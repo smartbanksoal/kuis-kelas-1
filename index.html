@@ -180,6 +180,12 @@
             <img src="baner-sbs.png" alt="Banner SBS SmartBankSoal">
         </div>
 
+        <div style="text-align: center; margin: 20px auto;">
+  <button id="tombol-instal" style="display: none; background-color: #4CAF50; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+    📥 Instal Aplikasi Kuis ke HP/Laptop
+  </button>
+</div>
+        
         <div class="mapel-group group-pai">
             <div class="mapel-title">Pendidikan Agama Islam</div>
             <div class="grid-soal">
@@ -248,9 +254,42 @@
         });
     });
   }
+        // --- Logika Tombol Instal PWA ---
+    let promptInstalasi;
+    const tombolInstal = document.getElementById('tombol-instal');
+
+    // Browser Chrome akan mendeteksi apakah aplikasi siap diinstal
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Tahan pop-up bawaan browser
+      e.preventDefault();
+      // Simpan event-nya untuk dipanggil saat tombol diklik
+      promptInstalasi = e;
+      // Munculkan tombol instal keren buatan kita!
+      tombolInstal.style.display = 'inline-block';
+    });
+
+    // Apa yang terjadi saat tombol kita diklik?
+    tombolInstal.addEventListener('click', async () => {
+      if (promptInstalasi) {
+        // Tampilkan pop-up instalasi resmi dari sistem perangkat
+        promptInstalasi.prompt();
+        
+        // Tunggu respons pengguna (apakah klik 'Instal' atau 'Batal')
+        const { outcome } = await promptInstalasi.userChoice;
+        if (outcome === 'accepted') {
+          console.log('Pengguna setuju menginstal!');
+          // Sembunyikan tombol setelah berhasil diinstal
+          tombolInstal.style.display = 'none'; 
+        }
+        
+        // Bersihkan memori prompt
+        promptInstalasi = null;
+      }
+    });
 </script>
 
 </body>
 
 </html>
+
 
