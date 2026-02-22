@@ -2,7 +2,7 @@
   "name": "Kuis Seru Kelas 1",
   "short_name": "Kuis Kelas 1",
   "description": "Aplikasi kuis interaktif untuk anak kelas 1",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
@@ -13,4 +13,5 @@
       "type": "image/png"
     }
   ]
+
 }
