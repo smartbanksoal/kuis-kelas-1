@@ -1,6 +1,6 @@
 {
   "name": "Kuis Seru Kelas 1",
-  "short_name": "Kuis Kelas 1",
+  "short_name": "SmartBankSoal K1S2",
   "description": "Aplikasi kuis interaktif untuk anak kelas 1",
   "start_url": "./index.html",
   "display": "standalone",
@@ -16,4 +16,5 @@
   ]
 
 }
+
 
