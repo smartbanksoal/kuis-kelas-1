@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika Kelas 5 - Sudut</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #F39C12;
+            --bg-color: #F4F7F6;
+            --dark: #2C3E50;
+            --light: #ECF0F1;
+            --correct: #27AE60;
+            --incorrect: #E74C3C;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            user-select: none; /* Anti block/copy */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        /* Header & Footer */
+        header, footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h2 { margin: 0; font-size: 1.2rem; letter-spacing: 1px; }
+        
+        footer {
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover { text-decoration: underline; }
+
+        /* Container */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        /* Login Screen */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark); }
+        .input-group input { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; 
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .btn-primary { background-color: var(--primary); color: white; width: 100%; margin-top: 10px; }
+        .btn-primary:hover { background-color: #357ABD; }
+        
+        .btn-home { background-color: var(--secondary); color: white; width: 100%; margin-bottom: 20px; }
+        .btn-home:hover { background-color: #D68910; }
+
+        .btn-nav { background-color: var(--dark); color: white; }
+        .btn-nav:hover { background-color: #1A252F; }
+        .btn-nav:disabled { background-color: #95A5A6; cursor: not-allowed; }
+
+        /* History */
+        .history-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .history-item { border-bottom: 1px solid #ccc; padding: 5px 0; font-size: 0.9rem; }
+
+        /* Quiz UI */
+        .score-display { text-align: right; font-weight: bold; color: var(--primary); margin-bottom: 15px; }
+        .question-text { font-size: 1.2rem; margin-bottom: 15px; color: var(--dark); line-height: 1.5; }
+        .question-image { max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 15px; display: none; }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .option-btn {
+            background-color: var(--light);
+            color: var(--dark);
+            border: 2px solid #ccc;
+            text-align: left;
+            padding: 12px;
+        }
+        .option-btn:hover:not(:disabled) { background-color: #D6EAF8; border-color: var(--primary); }
+        .option-btn.correct { background-color: var(--correct); color: white; border-color: var(--correct); }
+        .option-btn.incorrect { background-color: var(--incorrect); color: white; border-color: var(--incorrect); }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #E8F8F5;
+            border-left: 4px solid var(--correct);
+            border-radius: 4px;
+            display: none;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
+
+    <header>
+        <h2>Kode Soal: MTK -K5-S2-B6-HOTS</h2>
+    </header>
+
+    <div id="login-screen" class="container">
+        <h3 style="text-align: center; color: var(--dark);">Selamat Datang di Kuis Interaktif</h3>
+        <button class="btn btn-home" onclick="window.location.href='../index.html'">Kembali ke Home</button>
+        
+        <div class="input-group">
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" id="nama" placeholder="Masukkan nama Anda" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label for="kelas">Kelas</label>
+            <input type="text" id="kelas" placeholder="Masukkan kelas Anda" autocomplete="off">
+        </div>
+        <button class="btn btn-primary" onclick="startQuiz()">Mulai Kuis</button>
+
+        <div class="history-box">
+            <h4>Riwayat Skor</h4>
+            <div id="history-list">Belum ada riwayat.</div>
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="container hidden">
+        <div class="score-display">Skor Sementara: <span id="current-score">0</span></div>
+        <div class="question-info" style="font-weight: bold; margin-bottom: 10px;">Soal <span id="q-num">1</span> dari <span id="q-total"></span></div>
+        
+        <img id="q-img" class="question-image" src="" alt="Gambar Soal">
+        
+        <div id="q-text" class="question-text">Teks soal akan muncul di sini...</div>
+        
+        <div id="options-container" class="options-grid">
+            </div>
+
+        <div id="explanation-box" class="explanation">
+            <strong>Pembahasan:</strong> <span id="exp-text"></span>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="btn-prev" class="btn btn-nav" onclick="prevQuestion()" disabled>Soal Sebelumnya</button>
+            <button id="btn-next" class="btn btn-nav" onclick="nextQuestion()" disabled>Soal Selanjutnya</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="container hidden" style="text-align: center;">
+        <h2 style="color: var(--dark);">Kuis Selesai!</h2>
+        <h1 style="font-size: 4rem; color: var(--primary); margin: 20px 0;" id="final-score">100</h1>
+        <p>Terima kasih telah mengerjakan, <span id="display-nama" style="font-weight:bold;"></span> dari kelas <span id="display-kelas" style="font-weight:bold;"></span>!</p>
+        <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Kembali ke Awal</button>
+    </div>
+
+    <footer>
+        &COPY;<span id="year"></span> Oleh: Dwi Endrasto<br>
+        Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        // Set Tahun Otomatis
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        // KUNCI STORAGE KHUSUS AGAR TIDAK BENTROK
+        const STORAGE_KEY = "history_MTK_K5_S2_B6_HOTS";
+
+        // BANK SOAL (HOTS, Kelas 5, Sudut)
+        // Kata dalam pilihan jawaban dibuat mirip jumlahnya sesuai instruksi
+        const originalQuestions = [
+            // 5 SOAL BERGAMBAR
+            {
+                type: "image",
+                img: "gambar/sudut_meja.jpg", // Jalur input gambar untuk diedit offline
+                q: "Perhatikan gambar ujung meja belajar di atas. Jika diukur menggunakan busur derajat, kemungkinan besar sudut yang terbentuk pada ujung meja tersebut adalah...",
+                options: ["Tepat sebesar 90 derajat", "Tepat sebesar 45 derajat", "Lebih dari 90 derajat", "Kurang dari 90 derajat"],
+                answer: "Tepat sebesar 90 derajat",
+                pembahasan: "Ujung meja yang berbentuk persegi atau persegi panjang selalu membentuk sudut siku-siku, yang besarnya tepat 90 derajat."
+            },
+            {
+                type: "image",
+                img: "gambar/jam_0400.jpg",
+                q: "Gambar di atas menunjukkan pukul 04.00. Jenis sudut terkecil yang dibentuk oleh kedua jarum jam tersebut termasuk ke dalam kategori sudut...",
+                options: ["Sudut tumpul yang besar", "Sudut lancip yang kecil", "Sudut siku-siku yang pas", "Sudut lurus yang panjang"],
+                answer: "Sudut tumpul yang besar",
+                pembahasan: "Pada pukul 04.00, jarum jam menunjuk angka 12 dan 4. Jaraknya 4 ruas (4 x 30 derajat = 120 derajat). Karena >90 derajat, maka disebut sudut tumpul."
+            },
+            {
+                type: "image",
+                img: "gambar/gunting_terbuka.jpg",
+                q: "Sebuah gunting sedang dibuka seperti pada gambar. Untuk memperbesar sudut potongan benda yang tebal, apa yang harus dilakukan pada gagang gunting?",
+                options: ["Menarik gagang lebih lebar", "Menutup gagang lebih rapat", "Membiarkan gagang gunting", "Mendorong gagang ke depan"],
+                answer: "Menarik gagang lebih lebar",
+                pembahasan: "Semakin lebar gagang gunting ditarik, sudut yang terbentuk di antara kedua mata pisau gunting akan semakin besar pula."
+            },
+            {
+                type: "image",
+                img: "gambar/atap_rumah.jpg",
+                q: "Perhatikan gambar kerangka atap rumah tersebut. Mengapa arsitek sering merancang sudut puncak atap berbentuk sudut tumpul atau lancip, dan bukan sudut datar?",
+                options: ["Agar air hujan mudah turun", "Agar atap rumah sangat berat", "Agar angin mudah masuk rumah", "Agar matahari tertahan di atap"],
+                answer: "Agar air hujan mudah turun",
+                pembahasan: "Sudut miring (lancip atau tumpul) pada atap dirancang agar air hujan memiliki gaya gravitasi untuk mengalir turun dan tidak menggenang."
+            },
+            {
+                type: "image",
+                img: "gambar/busur_derajat.jpg",
+                q: "Andi mengukur sebuah sudut menggunakan busur pada gambar. Garis pertama ada di angka 0 dan garis kedua di antara angka 40 dan 50. Berapa taksiran ukurannya?",
+                options: ["Tepat berada di 45 derajat", "Tepat berada di 90 derajat", "Tepat berada di 55 derajat", "Tepat berada di 35 derajat"],
+                answer: "Tepat berada di 45 derajat",
+                pembahasan: "Garis yang berada tepat di tengah-tengah antara skala 40 dan 50 pada busur derajat menunjukkan ukuran 45 derajat."
+            },
+            // SOAL TEKS (HOTS)
+            {
+                type: "text",
+                q: "Budi sedang melukis sudut. Ia membuat garis lurus mendatar, lalu meletakkan titik tengah busur di ujung garis. Ia menandai angka 135 dan menarik garis. Sudut apa yang dibuat Budi?",
+                options: ["Sudut tumpul yang mekar", "Sudut lancip yang sempit", "Sudut lurus yang mendatar", "Sudut siku-siku yang tegak"],
+                answer: "Sudut tumpul yang mekar",
+                pembahasan: "Sudut 135 derajat lebih besar dari 90 derajat dan lebih kecil dari 180 derajat, sehingga diklasifikasikan sebagai sudut tumpul."
+            },
+            {
+                type: "text",
+                q: "Di sebuah ruangan kelas terdapat pintu, jendela, lantai, dan papan tulis. Di bagian manakah kamu paling tidak mungkin menemukan sudut siku-siku?",
+                options: ["Pada roda kursi pak guru", "Pada pojok kanan papan tulis", "Pada pertemuan dinding lantai", "Pada ujung buku tulis siswa"],
+                answer: "Pada roda kursi pak guru",
+                pembahasan: "Roda berbentuk lingkaran, dan lingkaran tidak memiliki sudut siku-siku (ujung tajam 90 derajat) di sepanjang sisinya."
+            },
+            {
+                type: "text",
+                q: "Rani memutar badannya sejauh seperempat lingkaran penuh ke arah kanan. Jika diukur dalam satuan derajat, seberapa besar sudut putaran tubuh Rani tersebut?",
+                options: ["Putaran sebesar 90 derajat", "Putaran sebesar 45 derajat", "Putaran sebesar 180 derajat", "Putaran sebesar 360 derajat"],
+                answer: "Putaran sebesar 90 derajat",
+                pembahasan: "Satu lingkaran penuh adalah 360 derajat. Seperempat dari lingkaran adalah 360 dibagi 4, yang hasilnya adalah 90 derajat (siku-siku)."
+            },
+            {
+                type: "text",
+                q: "Dua buah sudut lancip jika digabungkan ukurannya menjadi satu, maka kemungkinan jenis sudut baru yang terbentuk dari gabungan tersebut adalah...",
+                options: ["Bisa lancip siku atau tumpul", "Pasti selalu jadi sudut lurus", "Pasti selalu jadi sudut tumpul", "Hanya bisa jadi sudut lancip"],
+                answer: "Bisa lancip siku atau tumpul",
+                pembahasan: "Misal: 30+40=70 (lancip). 45+45=90 (siku). 50+60=110 (tumpul). Namun tidak mungkin mencapai 180 (lurus) karena lancip maksimal 89."
+            },
+            {
+                type: "text",
+                q: "Dalam tugas proyek, Siti diminta melukis sudut 75 derajat tanpa busur, melainkan menggunakan penggaris segitiga siku-siku sama kaki. Apakah hal tersebut mungkin dilakukan?",
+                options: ["Tidak, karena segitiga itu 45", "Ya, dengan menggabungkan dua", "Tidak, harus selalu pakai busur", "Ya, karena semua sudut sama"],
+                answer: "Tidak, karena segitiga itu 45",
+                pembahasan: "Penggaris segitiga siku-siku sama kaki memiliki sudut 90, 45, dan 45. Tidak ada kombinasi yang bisa membentuk tepat 75 derajat dari penggaris itu saja tanpa busur."
+            },
+            {
+                type: "text",
+                q: "Dika memiliki potongan pizza yang sudutnya 45 derajat, sedangkan Rina memiliki potongan pizza 60 derajat. Jika kedua potongan tersebut digabungkan tepat di pinggirannya, jenis sudut apakah yang terbentuk dari gabungan pizza mereka?",
+                options: ["Membentuk sudut tumpul mekar", "Membentuk sudut siku tegak", "Membentuk sudut lancip sempit", "Membentuk sudut lurus datar"],
+                answer: "Membentuk sudut tumpul mekar",
+                pembahasan: "Gabungan sudut 45 derajat dan 60 derajat adalah 105 derajat. Angka 105 derajat lebih besar dari 90 derajat sehingga membentuk sudut tumpul."
+            },
+            {
+                type: "text",
+                q: "Sebuah kipas lipat dibuka penuh hingga membentuk garis lurus mendatar. Jika kipas tersebut ditutup perlahan hingga tepat setengahnya, jenis sudut apa yang terlihat pada bagian bawah kipas tersebut?",
+                options: ["Menjadi sudut siku tegak", "Menjadi sudut tumpul lebar", "Menjadi sudut lancip kecil", "Menjadi sudut lurus datar"],
+                answer: "Menjadi sudut siku tegak",
+                pembahasan: "Kipas yang terbuka lurus membentuk sudut 180 derajat. Jika ditutup setengahnya, maka 180 dibagi 2 sama dengan 90 derajat, yaitu sudut siku-siku."
+            },
+            {
+                type: "text",
+                q: "Bayu mengukur sudut menggunakan busur. Garis alasnya berimpit dengan angka nol pada skala bagian dalam. Garis lainnya menunjuk angka 110 pada skala dalam dan 70 pada skala luar. Berapa besaran sudut tersebut?",
+                options: ["Tepat seratus sepuluh derajat", "Tepat di tujuh puluh derajat", "Tepat sembilan puluh derajat", "Tepat seratus delapan derajat"],
+                answer: "Tepat seratus sepuluh derajat",
+                pembahasan: "Karena Bayu menggunakan acuan angka nol pada skala bagian dalam, maka hasil ukurannya juga harus dibaca menggunakan angka pada skala bagian dalam, yaitu 110 derajat."
+            },
+            {
+                type: "text",
+                q: "Seorang tukang kayu memasang bingkai jendela. Alat ukur apakah yang paling tepat dan praktis digunakan untuk memastikan pojok jendela tersebut benar-benar tidak miring dan membentuk sudut siku-siku sempurna?",
+                options: ["Menggunakan penggaris bentuk siku", "Menggunakan penggaris bentuk lurus", "Menggunakan tali ukur panjang", "Menggunakan pita ukur baju"],
+                answer: "Menggunakan penggaris bentuk siku",
+                pembahasan: "Penggaris siku (waterpas siku) dirancang khusus memiliki sudut tetap 90 derajat untuk memastikan sudut pojok pada benda seperti jendela atau pintu terpasang dengan presisi."
+            },
+            {
+                type: "text",
+                q: "Tiga anak membuat sudut dari dua bilah tongkat. Ali membuat 85 derajat, Beni 90 derajat, dan Caca 95 derajat. Siapakah yang tongkatnya memiliki bukaan paling lebar atau paling mekar?",
+                options: ["Tongkat milik anak Caca", "Tongkat milik anak Beni", "Tongkat milik anak Ali", "Semua tongkat sama mekar"],
+                answer: "Tongkat milik anak Caca",
+                pembahasan: "Semakin besar angka derajatnya, maka semakin lebar bukaan sudutnya. 95 derajat adalah yang paling besar di antara ketiganya, sehingga bukaan sudut Caca paling lebar."
+            },
+            {
+                type: "text",
+                q: "Lani diminta melukis sudut 150 derajat. Ia sudah menarik garis lurus mendatar ke arah kanan. Untuk menandai titik lengkungnya, di manakah ia harus memberi tanda pada busur derajatnya?",
+                options: ["Tepat pada angka 150 derajat", "Tepat pada angka 30 derajat", "Tepat pada angka 90 derajat", "Tepat pada angka 180 derajat"],
+                answer: "Tepat pada angka 150 derajat",
+                pembahasan: "Karena garis alas ditarik ke kanan, titik nol berada di sebelah kanan. Lani harus mencari dan menandai angka 150 pada skala yang dimulai dari nol sebelah kanan."
+            },
+            {
+                type: "text",
+                q: "Jarum panjang dan pendek pada jam dinding menunjukkan tepat pukul 03.30. Jika diamati dengan teliti, sudut yang terbentuk bukanlah 90 derajat. Mengapa hal matematis ini bisa terjadi?",
+                options: ["Jarum pendek bergerak lewat angka tiga", "Jarum panjang bergerak lewat angka enam", "Jarum pendek diam pada angka tiga", "Jarum jam dinding tersebut sedang rusak"],
+                answer: "Jarum pendek bergerak lewat angka tiga",
+                pembahasan: "Pada pukul 03.30, jarum panjang menunjuk angka 6, sedangkan jarum pendek tidak tepat di angka 3, melainkan sudah bergerak setengah jalan menuju angka 4. Sudut sebenarnya adalah 75 derajat (lancip)."
+            },
+            {
+                type: "text",
+                q: "Andi ingin melukis sudut lancip menggunakan dua buah penggaris lurus tanpa bantuan busur derajat sama sekali. Bagaimanakah posisi kedua penggaris tersebut agar pasti menghasilkan sudut lancip?",
+                options: ["Merapatkan kedua ujung sangat dekat", "Membuat posisi persis tegak lurus", "Membuka ujung penggaris sangat lebar", "Menyambung lurus ujung kedua penggaris"],
+                answer: "Merapatkan kedua ujung sangat dekat",
+                pembahasan: "Sudut lancip adalah sudut yang kurang dari 90 derajat. Dengan merapatkan kedua ujung penggaris agar bukaannya saling berdekatan (sempit), akan dipastikan terbentuk sudut lancip."
+            },
+            {
+                type: "text",
+                q: "Perhatikan bayangan tiang bendera pada pagi hari dan siang hari bolong. Jika ujung bayangan di tanah dihubungkan ke puncak tiang, kapankah sudut antara bayangan dan tanah menjadi paling besar?",
+                options: ["Saat tepat pada siang hari", "Saat tepat pada pagi hari", "Saat tepat pada sore hari", "Saat tepat pada malam hari"],
+                answer: "Saat tepat pada siang hari",
+                pembahasan: "Pada siang hari, matahari berada lurus di atas kepala, bayangan sangat pendek. Sudut elevasi (sudut antara bayangan di tanah ditarik ke puncak) mendekati tegak lurus (90 derajat), lebih besar dari pagi/sore."
+            },
+            {
+                type: "text",
+                q: "Sebuah huruf V kapital memiliki sudut di bagian bawahnya. Jika dibandingkan dengan huruf L kapital, manakah pernyataan yang paling tepat dan benar mengenai ukuran sudut kedua huruf tersebut?",
+                options: ["Huruf V lebih kecil ukurannya", "Huruf L lebih kecil ukurannya", "Kedua huruf memiliki sudut sama", "Kedua huruf tidak memiliki sudut"],
+                answer: "Huruf V lebih kecil ukurannya",
+                pembahasan: "Huruf L tegak membentuk sudut siku-siku (90 derajat). Huruf V membentuk bukaan sudut lancip yang besarnya di bawah 90 derajat. Jadi ukuran sudut V lebih kecil."
+            },
+            {
+                type: "text",
+                q: "Sebuah kertas origami berbentuk persegi dilipat rapi menjadi dua bagian membentuk segitiga. Berapakah besar sudut pada pojok lipatan kertas yang sebelumnya merupakan pojok sudut siku-siku dari persegi tersebut?",
+                options: ["Menjadi empat puluh lima derajat", "Menjadi sembilan puluh derajat pas", "Menjadi enam puluh derajat pas", "Menjadi tiga puluh derajat pas"],
+                answer: "Menjadi empat puluh lima derajat",
+                pembahasan: "Kertas persegi memiliki sudut 90 derajat di tiap pojoknya. Saat dilipat diagonal membentuk segitiga, sudut 90 derajat tersebut terbagi sama besar menjadi dua bagian, yaitu 45 derajat."
+            },
+            {
+                type: "text",
+                q: "Sebuah kapal laut berlayar menghadap Utara, kemudian nakhoda memutar kemudi kapal ke arah Timur. Jika dihitung, berapa derajat besar sudut putaran yang telah dilewati oleh kapal laut tersebut?",
+                options: ["Tepat sebesar 90 derajat putaran", "Tepat sebesar 180 derajat putaran", "Tepat sebesar 270 derajat putaran", "Tepat sebesar 360 derajat putaran"],
+                answer: "Tepat sebesar 90 derajat putaran",
+                pembahasan: "Pada acuan arah mata angin kompas, arah Utara dan Timur saling tegak lurus. Pergerakan dari arah Utara ke arah Timur membentuk tepat seperempat putaran lingkaran, yaitu 90 derajat."
+            },
+            {
+                type: "text",
+                q: "Busur derajat Edo patah di bagian ujungnya sehingga angka nol hilang. Ia mengakalinya dengan meletakkan salah satu garis di angka 20 dan garis lainnya di angka 80. Berapa besar sudutnya?",
+                options: ["Ukurannya adalah enam puluh derajat", "Ukurannya adalah delapan puluh derajat", "Ukurannya adalah seratus derajat pas", "Ukurannya adalah dua puluh derajat"],
+                answer: "Ukurannya adalah enam puluh derajat",
+                pembahasan: "Meskipun angka nol hilang terpotong, besar sudut tetap bisa dihitung secara logis dari selisih kedua angka yang ditunjuk oleh garis sudut tersebut. 80 dikurangi 20 sama dengan 60 derajat."
+            },
+            {
+                type: "text",
+                q: "Jika kamu menjumlahkan sudut siku-siku (90 derajat), sudut lancip terkecil (1 derajat), dan sudut tumpul terbesar (179 derajat), total ukurannya akan melebihi satu putaran penuh. Benarkah pernyataan logis ini?",
+                options: ["Tidak, jumlahnya kurang satu putaran", "Ya, jumlahnya melebihi satu putaran", "Tidak, jumlahnya pas satu putaran", "Ya, jumlahnya sangat jauh melebihi"],
+                answer: "Tidak, jumlahnya kurang satu putaran",
+                pembahasan: "Sudut siku (90) + lancip (1) + tumpul (179) = 270 derajat. Mengingat satu putaran penuh pada lingkaran adalah 360 derajat, maka 270 derajat masih terhitung kurang dari satu putaran."
+            },
+            {
+                type: "text",
+                q: "Seekor burung elang menukik tajam dari udara untuk menangkap mangsa di tanah datar. Lintasan terbangnya terlihat miring dan tidak tegak lurus. Jenis sudut apa yang dibentuk antara lintasan dan tanah?",
+                options: ["Membentuk sebuah sudut lancip tajam", "Membentuk sebuah sudut tumpul lebar", "Membentuk sebuah sudut siku tegak", "Membentuk sebuah sudut lurus datar"],
+                answer: "Membentuk sebuah sudut lancip tajam",
+                pembahasan: "Karena burung elang terbang menukik secara miring perlahan ke arah hamparan tanah datar, ruang sudut yang terbentuk antara garis lintasan miring dan permukaan tanah pasti kurang dari 90 derajat (lancip)."
+            }
+            // TAMBAHKAN SOAL LAINNYA DI SINI HINGGA 25 SOAL
+        ];
+
+        let questions = [];
+        let currentQIndex = 0;
+        let score = 0;
+        let userData = { nama: "", kelas: "" };
+        let answeredQuestions = []; // Menyimpan status apakah soal sudah dijawab
+
+        // Fungsi Mengacak Array (Fisher-Yates)
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Tampilkan Riwayat
+        function loadHistory() {
+            const historyList = document.getElementById("history-list");
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            if (data.length === 0) {
+                historyList.innerHTML = "Belum ada riwayat.";
+            } else {
+                historyList.innerHTML = data.map(item => 
+                    `<div class="history-item"><b>${item.nama}</b> (Kls ${item.kelas}) - Skor: <b>${item.skor}</b> <br><small>${item.waktu}</small></div>`
+                ).join('');
+            }
+        }
+        loadHistory();
+
+        function startQuiz() {
+            userData.nama = document.getElementById('nama').value.trim();
+            userData.kelas = document.getElementById('kelas').value.trim();
+
+            if (!userData.nama || !userData.kelas) {
+                alert("Harap isi Nama dan Kelas terlebih dahulu!");
+                return;
+            }
+
+            // Acak kemunculan soal
+            questions = shuffleArray(originalQuestions).map(q => {
+                return {
+                    ...q,
+                    options: shuffleArray(q.options) // Acak posisi pilihan jawaban
+                };
+            });
+
+            currentQIndex = 0;
+            score = 0;
+            answeredQuestions = new Array(questions.length).fill(null);
+            
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('q-total').innerText = questions.length;
+            
+            updateScoreDisplay();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            let q = questions[currentQIndex];
+            document.getElementById('q-num').innerText = currentQIndex + 1;
+            document.getElementById('q-text').innerText = q.q;
+
+            // Handle Gambar
+            let imgEl = document.getElementById('q-img');
+            if (q.type === "image" && q.img) {
+                imgEl.src = q.img;
+                imgEl.style.display = "block";
+            } else {
+                imgEl.style.display = "none";
+            }
+
+            // Handle Pilihan Jawaban
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = "";
+            
+            q.options.forEach((opt, index) => {
+                let btn = document.createElement('button');
+                btn.className = "btn option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, btn);
+                
+                // Jika sudah pernah dijawab
+                if (answeredQuestions[currentQIndex] !== null) {
+                    btn.disabled = true;
+                    if (opt === q.answer) {
+                        btn.classList.add("correct");
+                    } else if (opt === answeredQuestions[currentQIndex].selected) {
+                        btn.classList.add("incorrect");
+                    }
+                }
+                optionsContainer.appendChild(btn);
+            });
+
+            // Handle Pembahasan
+            const expBox = document.getElementById('explanation-box');
+            if (answeredQuestions[currentQIndex] !== null) {
+                expBox.style.display = "block";
+                document.getElementById('exp-text').innerText = q.pembahasan;
+            } else {
+                expBox.style.display = "none";
+            }
+
+            // Handle Navigasi Buttons
+            document.getElementById('btn-prev').disabled = currentQIndex === 0;
+            document.getElementById('btn-next').innerText = (currentQIndex === questions.length - 1) ? "Selesai" : "Soal Selanjutnya";
+            document.getElementById('btn-next').disabled = answeredQuestions[currentQIndex] === null;
+        }
+
+        function checkAnswer(selectedOpt, btnElement) {
+            let q = questions[currentQIndex];
+            let isCorrect = (selectedOpt === q.answer);
+            
+            answeredQuestions[currentQIndex] = { selected: selectedOpt, correct: isCorrect };
+
+            // Kunci semua tombol
+            let allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(btn => {
+                btn.disabled = true;
+                if (btn.innerText === q.answer) {
+                    btn.classList.add("correct"); // Hijau untuk yang benar
+                }
+            });
+
+            if (!isCorrect) {
+                btnElement.classList.add("incorrect"); // Merah untuk yang salah
+            } else {
+                // Tambah skor dinamis (Skor maksimal 100)
+                let pointPerQuestion = 100 / questions.length;
+                score += pointPerQuestion;
+                updateScoreDisplay();
+            }
+
+            // Tampilkan pembahasan
+            document.getElementById('explanation-box').style.display = "block";
+            document.getElementById('exp-text').innerText = q.pembahasan;
+
+            // Buka tombol next
+            document.getElementById('btn-next').disabled = false;
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('current-score').innerText = Math.round(score);
+        }
+
+        function prevQuestion() {
+            if (currentQIndex > 0) {
+                currentQIndex--;
+                showQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < questions.length - 1) {
+                currentQIndex++;
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            let finalScore = Math.round(score);
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('display-nama').innerText = userData.nama;
+            document.getElementById('display-kelas').innerText = userData.kelas;
+
+            // Simpan ke localStorage
+            let historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            historyData.unshift({
+                nama: userData.nama,
+                kelas: userData.kelas,
+                skor: finalScore,
+                waktu: new Date().toLocaleString('id-ID')
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(historyData));
+        }
+    </script>
+</body>
+</html>

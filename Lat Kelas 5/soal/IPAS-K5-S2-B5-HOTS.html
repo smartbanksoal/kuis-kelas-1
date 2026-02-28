@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPAS Kelas 5</title>
+    <style>
+        /* Mencegah Copy Paste dan Blok Teks */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            color: #333;
+            user-select: none; /* Anti copy paste */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background-color: #ffffffcc;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #2c3e50;
+        }
+
+        /* Kontainer Utama */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            flex: 1;
+            width: 90%;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: #f1f1f1;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+        footer a {
+            color: #74ebd5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Tombol Umum */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.3s;
+            margin: 5px;
+        }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: #95a5a6; color: white; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+        .btn-home { background-color: #e74c3c; color: white; display: block; margin: 0 auto 20px auto; text-decoration: none; width: fit-content;}
+        .btn-home:hover { background-color: #c0392b; }
+
+        /* Login Screen */
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        /* Tabel Riwayat */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #3498db; color: white; }
+
+        /* Area Kuis */
+        #quiz-screen { display: none; }
+        .score-display { font-size: 1.1rem; font-weight: bold; color: #e67e22; margin-bottom: 15px; text-align: right; }
+        .question-text { font-size: 1.2rem; margin-bottom: 20px; }
+        .question-image { max-width: 100%; height: auto; margin-bottom: 15px; border-radius: 8px; display: none; }
+        .options-container { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn { 
+            background-color: #ecf0f1; 
+            color: #2c3e50; 
+            text-align: left; 
+            padding: 15px; 
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+        .option-btn:hover { background-color: #d5dbdb; }
+        .option-btn.correct { background-color: #2ecc71 !important; color: white; }
+        .option-btn.wrong { background-color: #e74c3c !important; color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+
+        /* Pembahasan */
+        .pembahasan {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9e79f;
+            border-left: 5px solid #f1c40f;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Kode Soal: IPAS -K5-S2-B5-HOTS
+    </header>
+
+    <div class="container" id="login-screen">
+        <a href="../index.html" class="btn-home" style="padding: 10px 20px; border-radius: 8px;">🏠 Kembali ke Home</a>
+        
+        <h2 style="text-align: center; color: #2c3e50;">Selamat Datang di Kuis Interaktif</h2>
+        <div class="input-group">
+            <label for="nama">Nama Lengkap:</label>
+            <input type="text" id="nama" placeholder="Masukkan nama lengkap Anda" required>
+        </div>
+        <div class="input-group">
+            <label for="kelas">Kelas:</label>
+            <input type="text" id="kelas" placeholder="Masukkan kelas Anda" required>
+        </div>
+        <div style="text-align: center;">
+            <button class="btn-primary" onclick="startQuiz()">Mulai Kuis</button>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <h3>Riwayat Pencapaian Skor</h3>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Waktu</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container" id="quiz-screen">
+        <div class="score-display">Skor Sementara: <span id="current-score">0</span></div>
+        <div style="font-weight: bold; margin-bottom: 10px;">Soal <span id="question-number">1</span> dari 25</div>
+        
+        <img id="q-image" class="question-image" src="" alt="">
+        <div class="question-text" id="q-text">Teks soal akan muncul di sini.</div>
+        
+        <div class="options-container" id="options-area">
+            </div>
+
+        <div class="pembahasan" id="pembahasan-area">
+            <strong>Pembahasan:</strong> <span id="pembahasan-text"></span>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn-secondary" id="btn-prev" onclick="prevQuestion()" style="display: none;">⬅️ Sebelumnya</button>
+            <button class="btn-primary" id="btn-next" onclick="nextQuestion()" style="display: none;">Selanjutnya ➡️</button>
+            <button class="btn-primary" id="btn-finish" onclick="finishQuiz()" style="display: none;">Selesai & Simpan 💾</button>
+        </div>
+    </div>
+
+    <footer>
+        Oleh: Dwi Endrasto<br>
+        Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        // Mencegah klik kanan (View Source)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Kunci unik penyimpanan lokal agar tidak bentrok dengan kuis lain
+        const STORAGE_KEY = "history_IPAS_K5_S2_B5_HOTS";
+
+        // Data Soal (25 Soal, 5 bergambar)
+        const soalData = [
+            // 5 SOAL BERGAMBAR
+            {
+                img: "gambar/gambar_paru_paru.jpg", // Jalur gambar 1 (Edit secara offline)
+                text: "Perhatikan gambar organ pernapasan di atas! Ketika seseorang menghirup udara yang banyak mengandung debu, organ bagian mana dan mekanisme apa yang bekerja paling awal untuk menyaring kotoran tersebut sebelum masuk lebih dalam?",
+                options: ["Bulu hidung menahan debu kotor", "Tenggorokan menyaring kotoran", "Paru-paru memompa udara bersih", "Alveolus menyerap oksigen murni"],
+                answer: 0,
+                pembahasan: "Rambut atau bulu hidung dan lendir di rongga hidung adalah pertahanan pertama yang menyaring kotoran dan debu dari udara yang kita hirup."
+            },
+            {
+                img: "gambar/gambar_orang_berlari.jpg", // Jalur gambar 2
+                text: "Berdasarkan aktivitas pada gambar, mengapa frekuensi napas orang tersebut menjadi jauh lebih cepat dibandingkan saat ia sedang duduk bersantai di taman?",
+                options: ["Tubuh menuntut asupan oksigen tinggi", "Jantung berhenti memompa darah merah", "Otot tubuh memproduksi karbon dioksida", "Suhu udara sekitar menjadi sangat panas"],
+                answer: 0,
+                pembahasan: "Saat berolahraga berat, otot bekerja lebih keras sehingga membutuhkan lebih banyak energi dan oksigen, memicu paru-paru bernapas lebih cepat."
+            },
+            {
+                img: "gambar/gambar_sistem_pencernaan.jpg", // Jalur gambar 3
+                text: "Amati gambar sistem pencernaan ini. Proses kimiawi yang mengubah protein menjadi pepton dengan bantuan enzim pepsin terjadi secara intensif pada organ yang ditunjukkan oleh huruf X. Organ apakah itu?",
+                options: ["Lambung mencerna secara mekanik dan kimiawi", "Usus halus menyerap seluruh sari makanan", "Kerongkongan mendorong dengan gerak peristaltik", "Usus besar menyerap kandungan air berlebih"],
+                answer: 0,
+                pembahasan: "Lambung menghasilkan enzim pepsin yang berfungsi memecah protein menjadi pepton dalam proses pencernaan kimiawi."
+            },
+            {
+                img: "gambar/gambar_piramida_makanan.jpg", // Jalur gambar 4
+                text: "Berdasarkan piramida makanan di atas, apabila seorang anak yang sedang dalam masa pertumbuhan kekurangan asupan dari kelompok makanan di tingkat kedua dari bawah (protein), apa dampak jangka panjangnya?",
+                options: ["Pertumbuhan sel dan jaringan tubuh melambat", "Tubuh menjadi sangat gemuk karena karbohidrat", "Tulang menjadi sangat kuat namun otot melemah", "Sistem pernapasan mengalami gangguan pernapasan"],
+                answer: 0,
+                pembahasan: "Protein sangat penting untuk pertumbuhan, perbaikan, dan pembentukan sel-sel baru. Kekurangannya akan menghambat pertumbuhan anak."
+            },
+            {
+                img: "gambar/gambar_siklus_pertumbuhan.jpg", // Jalur gambar 5
+                text: "Gambar tersebut menunjukkan tahapan pertumbuhan manusia. Perubahan fisik yang sangat cepat, emosi yang fluktuatif, serta aktifnya hormon reproduksi merupakan ciri utama pada fase yang ditunjukkan oleh nomor 3. Fase ini disebut masa...",
+                options: ["Pubertas pada masa awal remaja", "Kanak-kanak awal menuju sekolah", "Dewasa yang telah matang emosi", "Lanjut usia dengan penurunan fisik"],
+                answer: 0,
+                pembahasan: "Fase pubertas (remaja) ditandai dengan perubahan fisik yang cepat dan kematangan fungsi alat reproduksi."
+            },
+            // 20 SOAL TIDAK BERGAMBAR (Teks)
+            { text: "Budi tersedak saat makan sambil berbicara santai. Secara biologis, peristiwa tersedaknya Budi terjadi karena adanya kesalahan mekanisme pada saluran di tenggorokan, yaitu...", options: ["Katup epiglotis terlambat menutup tenggorokan", "Kerongkongan menyempit menolak masuk makanan", "Udara pernapasan bertabrakan dengan makanan", "Lambung memompa asam lambung ke atas tiba-tiba"], answer: 0, pembahasan: "Saat menelan, katup epiglotis harusnya menutup saluran pernapasan. Jika berbicara sambil makan, katup bisa terbuka dan makanan masuk ke saluran napas." },
+            { text: "Jika sistem pencernaan manusia tidak memiliki usus besar, apa konsekuensi logis terbesar yang akan dialami oleh tubuh manusia tersebut?", options: ["Feses akan berwujud sangat cair dan encer", "Tubuh kekurangan asupan protein hewani", "Makanan gagal diserap oleh pembuluh darah", "Lambung akan bekerja dua kali lebih berat"], answer: 0, pembahasan: "Fungsi utama usus besar adalah menyerap air dari sisa makanan. Tanpanya, sisa makanan tidak memadat." },
+            { text: "Mengapa menghirup udara melalui hidung jauh lebih menyehatkan dibandingkan menghirup udara langsung melalui rongga mulut?", options: ["Udara disaring, dihangatkan, dan diatur kelembapannya", "Hidung memiliki kapasitas udara yang lebih banyak", "Mulut tidak memiliki otot untuk menarik oksigen", "Hidung langsung terhubung dengan pembuluh darah"], answer: 0, pembahasan: "Hidung memiliki bulu hidung dan selaput lendir untuk menyaring debu, mengatur suhu, dan melembapkan udara." },
+            { text: "Karbohidrat merupakan sumber energi utama. Namun, jika konsumsinya berlebihan dan tidak diimbangi dengan aktivitas fisik, yang terjadi di dalam tubuh adalah...", options: ["Kelebihan energi disimpan dalam wujud lemak", "Otot-otot tubuh akan membesar secara otomatis", "Organ paru-paru kesulitan memompa udara murni", "Tinggi badan anak akan bertambah secara drastis"], answer: 0, pembahasan: "Karbohidrat yang tidak dibakar menjadi energi oleh tubuh akan diubah dan disimpan sebagai lemak." },
+            { text: "Pada proses pernapasan dada, ketika tulang rusuk terangkat ke atas karena kontraksi otot antar tulang rusuk, apa yang terjadi pada rongga dada dan udara?", options: ["Rongga membesar dan udara dari luar masuk", "Rongga mengecil dan udara dari paru keluar", "Paru-paru mengempis menekan udara ke luar", "Tekanan udara di dada meningkat sangat tajam"], answer: 0, pembahasan: "Otot antar tulang rusuk berkontraksi -> tulang rusuk naik -> rongga dada membesar -> tekanan mengecil -> udara masuk (inspirasi)." },
+            { text: "Seorang atlet lari maraton sangat membutuhkan energi yang tahan lama. Makanan jenis apa yang sebaiknya ia konsumsi beberapa jam sebelum pertandingan dimulai?", options: ["Karbohidrat kompleks seperti nasi gandum", "Gula sederhana seperti permen manis", "Lemak jenuh seperti daging sapi berlemak", "Vitamin murni dalam bentuk suplemen cair"], answer: 0, pembahasan: "Karbohidrat kompleks dipecah perlahan, memberikan energi yang stabil dan tahan lama untuk ketahanan fisik." },
+            { text: "Penyakit asma menyebabkan penderitanya kesulitan bernapas. Secara spesifik, gangguan ini terjadi karena penyempitan pada bagian saluran pernapasan yang disebut...", options: ["Bronkus atau bronkiolus akibat suatu alergi", "Alveolus yang dipenuhi oleh cairan kental", "Rongga hidung yang tersumbat lendir tebal", "Tenggorokan yang terluka oleh benda tajam"], answer: 0, pembahasan: "Asma adalah penyempitan saluran pernapasan (bronkus/bronkiolus) yang biasanya dipicu oleh alergi, udara dingin, atau stres." },
+            { text: "Sari-sari makanan yang telah diserap oleh jonjot-jonjot usus halus selanjutnya akan diedarkan ke seluruh jaringan tubuh. Proses pengedaran ini dilakukan oleh...", options: ["Sistem peredaran darah melalui pembuluh", "Sistem saraf tepi yang menuju langsung", "Kelenjar getah bening di seluruh tubuh", "Sistem pernapasan bersamaan oksigen"], answer: 0, pembahasan: "Darah berfungsi mengangkut sari-sari makanan dari usus halus ke seluruh sel-sel di dalam tubuh." },
+            { text: "Besi merupakan mineral yang sangat penting bagi tubuh. Kekurangan zat besi dalam menu makan sehari-hari dapat memicu penyakit yang disebut...", options: ["Anemia karena kurang sel darah merah", "Busung lapar akibat kurang gizi buruk", "Rakhitis karena tulang menjadi rapuh", "Sembelit akibat kurangnya serat sayur"], answer: 0, pembahasan: "Zat besi adalah komponen penting pembentuk hemoglobin dalam sel darah merah. Kekurangannya menyebabkan anemia." },
+            { text: "Manakah pernyataan yang paling tepat menggambarkan perbedaan antara pertumbuhan dan perkembangan pada manusia dari bayi hingga dewasa?", options: ["Pertumbuhan soal fisik, perkembangan soal kemampuan", "Pertumbuhan tidak bisa diukur, perkembangan bisa", "Pertumbuhan terjadi di akhir, perkembangan di awal", "Pertumbuhan soal pikiran, perkembangan soal tinggi"], answer: 0, pembahasan: "Pertumbuhan bersifat kuantitatif (tinggi/berat badan), sedangkan perkembangan bersifat kualitatif (kematangan mental, emosi, organ fungsional)." },
+            { text: "Enzim ptialin yang terdapat di dalam air liur rongga mulut berfungsi untuk memulai pencernaan kimiawi dengan cara mengubah...", options: ["Zat tepung amilum menjadi zat gula sederhana", "Lemak jenuh menjadi asam lemak dan gliserol", "Protein hewani maupun nabati menjadi pepton", "Serat kasar pada sayuran menjadi nutrisi halus"], answer: 0, pembahasan: "Enzim ptialin (amilase) di mulut mengubah karbohidrat (amilum) menjadi zat gula yang lebih sederhana." },
+            { text: "Saat kita tidur terlelap, proses pernapasan tetap berjalan secara teratur dan otomatis tanpa kita sadari. Hal ini dikendalikan oleh sistem organ...", options: ["Sistem saraf pusat pada otak dan sumsum", "Sistem otot rangka di seluruh tubuh manusia", "Sistem pencernaan yang mencerna sisa makan", "Sistem peredaran darah yang berdetak lambat"], answer: 0, pembahasan: "Pernapasan otomatis dikendalikan oleh medula oblongata di batang otak yang merupakan bagian dari sistem saraf pusat." },
+            { text: "Mengapa bayi yang baru lahir tidak memiliki gigi, namun seiring bertambahnya usia, gigi mulai tumbuh dan organ pencernaannya semakin sempurna?", options: ["Makanan awal hanyalah ASI yang wujudnya cair", "Bayi tidak membutuhkan asupan kalsium tinggi", "Gigi bayi disembunyikan di dalam gusi rahang", "Organ pencernaan belum berfungsi sama sekali"], answer: 0, pembahasan: "Sistem pencernaan bayi dirancang khusus untuk mencerna cairan (ASI), seiring pertumbuhan tulang dan kebutuhan nutrisi padat, gigi mulai tumbuh." },
+            { text: "Vitamin C sangat esensial bagi tubuh kita, namun tubuh tidak dapat memproduksinya sendiri. Fungsi utama vitamin C yang kita dapatkan dari buah jeruk adalah untuk...", options: ["Meningkatkan sistem imun atau kekebalan tubuh", "Mempercepat proses pembekuan darah di luka", "Menjaga kesehatan tulang dan gigi manusia", "Mencegah penyakit rabun senja pada mata"], answer: 0, pembahasan: "Vitamin C sangat berperan penting dalam menjaga daya tahan tubuh dari infeksi dan memperbaiki jaringan tubuh." },
+            { text: "Jika pertukaran gas oksigen dan karbon dioksida di dalam alveolus terhambat karena adanya cairan seperti pada penyakit pneumonia, hal terburuk yang terjadi adalah...", options: ["Tubuh kekurangan oksigen untuk proses energi", "Darah menjadi terlalu encer dan mengalir cepat", "Lambung berhenti memproduksi asam klorida", "Detak jantung menjadi sangat lambat dan stabil"], answer: 0, pembahasan: "Alveolus adalah tempat pertukaran gas. Jika terisi cairan, oksigen tidak bisa masuk ke darah, menyebabkan tubuh hipoksia (kurang oksigen)." },
+            { text: "Manusia membutuhkan air dalam jumlah yang cukup setiap harinya. Fungsi utama air dalam hubungannya dengan sistem ekskresi dan pencernaan adalah...", options: ["Melarutkan zat makanan dan membuang racun", "Membentuk cadangan lemak di bawah permukaan kulit", "Mengeraskan struktur tulang rawan pada telinga", "Menggantikan sel darah merah yang telah mati"], answer: 0, pembahasan: "Air melarutkan nutrisi agar mudah diserap (pencernaan) dan membawa sisa metabolisme/racun keluar tubuh melalui urin dan keringat (ekskresi)." },
+            { text: "Perhatikan menu makan siang berikut: Nasi putih, tempe goreng, sayur bayam, dan sepotong pepaya. Dari menu tersebut, zat gizi yang mendominasi untuk pembangun tubuh berasal dari...", options: ["Tempe goreng yang mengandung protein nabati", "Nasi putih yang mengandung karbohidrat padat", "Sayur bayam yang kaya akan mineral zat besi", "Potongan pepaya yang memiliki banyak vitamin"], answer: 0, pembahasan: "Zat pembangun tubuh adalah protein. Tempe, yang terbuat dari kedelai, merupakan sumber protein nabati yang sangat baik." },
+            { text: "Kapasitas vital paru-paru seseorang berbeda-beda tergantung beberapa faktor. Seorang perenang profesional umumnya memiliki kapasitas paru-paru yang lebih besar karena...", options: ["Otot dadanya sering dilatih untuk mengembang", "Terlalu banyak minum air saat sedang berenang", "Suhu air kolam memaksa paru-paru meregang", "Mereka lahir dengan genetik paru-paru besar"], answer: 0, pembahasan: "Latihan pernapasan secara teratur (seperti pada perenang) memperkuat otot pernapasan, sehingga paru-paru bisa mengembang lebih maksimal menampung udara." },
+            { text: "Gigi seri berfungsi untuk memotong makanan, sedangkan gigi geraham untuk mengunyah. Kesesuaian bentuk gigi dengan fungsinya ini bertujuan utama agar...", options: ["Makanan menjadi lebih halus dan mudah dicerna", "Gigi tidak cepat rusak atau berlubang parah", "Kelenjar ludah memproduksi enzim lebih banyak", "Makanan tidak menyangkut di dalam kerongkongan"], answer: 0, pembahasan: "Pencernaan mekanik di mulut oleh gigi memecah makanan jadi partikel kecil agar luas permukaan makanan bertambah, sehingga enzim mudah bekerja." },
+            { text: "Saat seseorang mengalami masa pubertas, kelenjar keringat dan kelenjar minyak menjadi lebih aktif. Cara terbaik beradaptasi dengan perubahan ini demi menjaga kesehatan adalah...", options: ["Menjaga kebersihan badan dengan mandi teratur", "Menghindari segala macam aktivitas di luar ruangan", "Memakai pakaian tebal agar keringat tidak terlihat", "Mengurangi asupan air putih agar tidak berkeringat"], answer: 0, pembahasan: "Peningkatan produksi keringat dan minyak rentan menyebabkan bau badan dan jerawat, sehingga kebersihan diri sangat mutlak dijaga." }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalQuestions = soalData.length;
+        let userName = "";
+        let userClass = "";
+        let answersState = []; // menyimpan jawaban pengguna
+
+        // Inisialisasi Riwayat di awal
+        renderHistory();
+
+        function renderHistory() {
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            if(history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada riwayat</td></tr>';
+            } else {
+                history.forEach(item => {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${item.nama}</td><td>${item.kelas}</td><td>${item.waktu}</td><td>${item.skor} / ${totalQuestions * 4}</td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function startQuiz() {
+            userName = document.getElementById('nama').value.trim();
+            userClass = document.getElementById('kelas').value.trim();
+
+            if (!userName || !userClass) {
+                alert("Harap isi Nama dan Kelas terlebih dahulu!");
+                return;
+            }
+
+            // Inisialisasi state jawaban
+            answersState = new Array(totalQuestions).fill(null);
+            currentQuestionIndex = 0;
+            score = 0;
+            updateScoreDisplay();
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'flex';
+            document.getElementById('quiz-screen').style.flexDirection = 'column';
+
+            loadQuestion();
+        }
+
+        function shuffleArray(array) {
+            // Fisher-Yates shuffle yang mengembalikan array objek berisi teks dan index asli
+            let newArr = array.map((val, index) => ({ text: val, originalIndex: index }));
+            for (let i = newArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+            }
+            return newArr;
+        }
+
+        function loadQuestion() {
+            let qData = soalData[currentQuestionIndex];
+            
+            document.getElementById('question-number').innerText = currentQuestionIndex + 1;
+            document.getElementById('q-text').innerText = qData.text;
+
+            let imgEl = document.getElementById('q-image');
+            if (qData.img) {
+                imgEl.src = qData.img;
+                imgEl.style.display = "block";
+            } else {
+                imgEl.style.display = "none";
+                imgEl.src = "";
+            }
+
+            let optionsArea = document.getElementById('options-area');
+            optionsArea.innerHTML = "";
+
+            // Sembunyikan pembahasan saat pindah soal
+            let pembArea = document.getElementById('pembahasan-area');
+            pembArea.style.display = "none";
+            document.getElementById('pembahasan-text').innerText = qData.pembahasan;
+
+            // Acak posisi pilihan jawaban
+            let shuffledOptions = shuffleArray(qData.options);
+
+            shuffledOptions.forEach((optObj, index) => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optObj.text;
+                
+                // Cek apakah sudah dijawab sebelumnya
+                if (answersState[currentQuestionIndex] !== null) {
+                    btn.disabled = true;
+                    if (optObj.originalIndex === qData.answer) {
+                        btn.classList.add('correct');
+                    } else if (answersState[currentQuestionIndex] === optObj.originalIndex) {
+                        btn.classList.add('wrong');
+                    }
+                } else {
+                    btn.onclick = () => selectOption(btn, optObj.originalIndex, qData.answer);
+                }
+                
+                optionsArea.appendChild(btn);
+            });
+
+            // Tampilkan pembahasan jika soal ini sudah pernah dijawab (saat back/next)
+            if (answersState[currentQuestionIndex] !== null) {
+                pembArea.style.display = "block";
+            }
+
+            updateNavButtons();
+        }
+
+        function selectOption(clickedBtn, selectedOriginalIndex, correctOriginalIndex) {
+            let buttons = document.querySelectorAll('.option-btn');
+            
+            // Kunci semua tombol
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Simpan jawaban
+            answersState[currentQuestionIndex] = selectedOriginalIndex;
+
+            // Warnai tombol
+            if (selectedOriginalIndex === correctOriginalIndex) {
+                clickedBtn.classList.add('correct');
+                score += 4; // Misalnya 1 soal bernilai 4 (total 100)
+                updateScoreDisplay();
+            } else {
+                clickedBtn.classList.add('wrong');
+                // Cari tombol yang benar dan warnai hijau
+                // Karena tombol sudah diacak, kita cari berdasarkan innerText atau logika lain,
+                // Namun cara paling gampang adalah memeriksa state correctOriginalIndex pada logic saat klik.
+                // Mari kita re-render opsi untuk mempermudah pewarnaan
+            }
+
+            // Tampilkan Pembahasan
+            document.getElementById('pembahasan-area').style.display = "block";
+
+            // Reload ulang view pilihan untuk pewarnaan yang pasti
+            let qData = soalData[currentQuestionIndex];
+            let optionsArea = document.getElementById('options-area');
+            let allBtns = optionsArea.children;
+            for(let i=0; i < allBtns.length; i++) {
+                let btnText = allBtns[i].innerText;
+                // Cek apakah teks tombol ini adalah jawaban benar
+                if(btnText === qData.options[correctOriginalIndex]) {
+                    allBtns[i].classList.add('correct');
+                }
+            }
+            updateNavButtons();
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('current-score').innerText = score;
+        }
+
+        function updateNavButtons() {
+            let btnPrev = document.getElementById('btn-prev');
+            let btnNext = document.getElementById('btn-next');
+            let btnFinish = document.getElementById('btn-finish');
+
+            btnPrev.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
+
+            let isAnswered = answersState[currentQuestionIndex] !== null;
+
+            if (currentQuestionIndex < totalQuestions - 1) {
+                btnNext.style.display = isAnswered ? "inline-block" : "none";
+                btnFinish.style.display = "none";
+            } else {
+                btnNext.style.display = "none";
+                btnFinish.style.display = isAnswered ? "inline-block" : "none";
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            // Simpan ke local storage
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            let now = new Date();
+            let timeString = now.toLocaleDateString('id-ID') + " " + now.getHours() + ":" + now.getMinutes();
+
+            history.push({
+                nama: userName,
+                kelas: userClass,
+                waktu: timeString,
+                skor: score
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+
+            alert(`Selamat ${userName}! Anda telah menyelesaikan kuis dengan skor ${score}`);
+            
+            // Kembali ke layar login
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+            
+            // Bersihkan form
+            document.getElementById('nama').value = '';
+            document.getElementById('kelas').value = '';
+            
+            renderHistory();
+        }
+    </script>
+</body>
+</html>

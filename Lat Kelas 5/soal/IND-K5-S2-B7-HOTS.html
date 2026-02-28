@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif: Sayangi Bumi</title>
+    <style>
+        /* CSS Styling */
+        :root {
+            --primary: #4CAF50;
+            --secondary: #FFC107;
+            --background: #F0F8FF;
+            --text-dark: #333;
+            --footer-bg: #1a1a1a;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            user-select: none; /* Anti copy-paste */
+            -webkit-user-select: none;
+        }
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        footer {
+            background-color: var(--footer-bg);
+            color: #ddd;
+            text-align: center;
+            padding: 15px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 800px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border: 3px solid #FFDEE9;
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--primary);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        button {
+            background-color: var(--secondary);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .btn-home {
+            background-color: #ff4757;
+            color: white;
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .history-table th, .history-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .history-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        /* Quiz Area */
+        #quiz-screen { display: none; }
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .option-btn {
+            background-color: #f1f2f6;
+            border: 2px solid #dfe4ea;
+            text-align: left;
+            padding: 15px;
+            font-size: 1em;
+            font-weight: normal;
+        }
+        .option-btn.correct {
+            background-color: #2ed573;
+            color: white;
+            border-color: #2ed573;
+        }
+        .option-btn.wrong {
+            background-color: #ff4757;
+            color: white;
+            border-color: #ff4757;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            transform: none;
+        }
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eccc68;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .score-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: right;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Kode Soal: IND-K5-S2-B7-HOTS
+    </header>
+
+    <div class="container" id="login-screen">
+        <h2>Selamat Datang di Kuis Pintar!</h2>
+        <button class="btn-home" onclick="window.location.href='../index.html'">Kembali ke Home</button>
+        
+        <div class="form-group">
+            <label for="nama">Nama Lengkap:</label>
+            <input type="text" id="nama" placeholder="Masukkan nama lengkapmu..." required>
+        </div>
+        <div class="form-group">
+            <label for="kelas">Kelas:</label>
+            <input type="text" id="kelas" placeholder="Masukkan kelasmu..." required>
+        </div>
+        <button onclick="startQuiz()" style="width:100%; background-color: var(--primary); color: white;">Mulai Kuis</button>
+
+        <h3>Riwayat Skor</h3>
+        <table class="history-table" id="history-table">
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Skor</th>
+                </tr>
+            </thead>
+            <tbody id="history-body">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="quiz-screen">
+        <div class="score-display" id="live-score">Skor Sementara: 0</div>
+        <h3 id="question-number">Soal 1/25</h3>
+        <div id="image-container"></div>
+        <div class="question-text" id="question-text">Teks Soal</div>
+        <div class="options-grid" id="options-container">
+            </div>
+        <div class="explanation" id="explanation"></div>
+        
+        <div class="nav-buttons">
+            <button id="btn-prev" onclick="prevQuestion()" style="display:none;">Soal Sebelumnya</button>
+            <button id="btn-next" onclick="nextQuestion()" style="display:none;">Soal Selanjutnya</button>
+            <button id="btn-finish" onclick="finishQuiz()" style="display:none; background-color: var(--primary); color: white;">Selesai & Simpan</button>
+        </div>
+    </div>
+
+    <footer>
+        Oleh: Dwi Endrasto | Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        // Keamanan Anti Klik Kanan & Anti Copy Paste
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('copy', event => event.preventDefault());
+        document.addEventListener('selectstart', event => event.preventDefault());
+
+        // Kunci penyimpanan unik agar tidak bentrok dengan kuis lain
+        const STORAGE_KEY = "quiz_history_IND-K5-S2-B7-HOTS";
+
+        // Database Soal (25 Soal, HOTS, 5 Gambar, Jumlah kata pilihan jawaban SAMA)
+        const questions = [
+            // Materi: Menyusun Informasi Lengkap dari Beberapa Teks
+            {
+                text: "Teks 1 membahas polusi udara. Teks 2 membahas penanaman pohon. Kesimpulan dari kedua teks tersebut adalah...",
+                image: "", // Tanpa gambar
+                options: [
+                    { text: "Pohon dapat mengurangi polusi udara", isCorrect: true },
+                    { text: "Udara kotor merusak daun pepohonan", isCorrect: false },
+                    { text: "Kota besar selalu memiliki polusi", isCorrect: false },
+                    { text: "Warga wajib menanam pohon besar", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Menggabungkan informasi dari penyebab (polusi) dan solusi (pohon)."
+            },
+            {
+                text: "Jika teks berita menyebutkan sungai mengering dan sumur warga surut, informasi utamanya berkaitan dengan peristiwa...",
+                image: "",
+                options: [
+                    { text: "Bencana kekeringan di musim kemarau", isCorrect: true },
+                    { text: "Kesulitan mencari air sangat terasa", isCorrect: false },
+                    { text: "Bantuan air bersih belum dibagikan", isCorrect: false },
+                    { text: "Masyarakat harus segera mengungsi jauh", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Informasi digabungkan untuk menyimpulkan topik utama yaitu kekeringan."
+            },
+            {
+                text: "Perhatikan gambar berikut! Berdasarkan gambar, simpulan yang paling tepat untuk teks laporan pengamatan adalah...",
+                image: "gambar/gambar_soal3_sampah.jpg", // Ganti dengan jalur gambar lokal Anda
+                imageAlt: "",
+                options: [
+                    { text: "Sungai meluap karena tumpukan sampah", isCorrect: true },
+                    { text: "Warga membersihkan saluran air bersama", isCorrect: false },
+                    { text: "Pemerintah membangun tanggul penahan banjir", isCorrect: false },
+                    { text: "Air mengalir deras menuju hilir", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Gambar menunjukkan sebab-akibat langsung berupa sampah dan potensi banjir."
+            },
+            {
+                text: "Teks A menyatakan harimau sumatera hampir punah. Teks B menyatakan pembukaan lahan terus terjadi. Hubungan informasinya adalah...",
+                image: "",
+                options: [
+                    { text: "Pembukaan lahan memicu kepunahan hewan", isCorrect: true },
+                    { text: "Harimau sumatera mencari tempat baru", isCorrect: false },
+                    { text: "Hutan lindung harus dijaga ketat", isCorrect: false },
+                    { text: "Manusia membutuhkan lahan untuk bertani", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Menyintesis dua informasi berbeda menjadi satu hubungan logis."
+            },
+            {
+                text: "Dari selebaran tentang daur ulang, langkah pertama yang wajib dilakukan sebelum membuang sampah botol adalah...",
+                image: "",
+                options: [
+                    { text: "Memilah sampah sesuai jenis bahannya", isCorrect: true },
+                    { text: "Mencuci botol hingga sangat bersih", isCorrect: false },
+                    { text: "Menjual botol kepada pengepul barang", isCorrect: false },
+                    { text: "Membakar botol di tempat terbuka", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Pemilahan adalah tahap paling awal dari proses daur ulang."
+            },
+
+            // Materi: Menganalisis Hubungan Sebab Akibat & Kalimat Majemuk Bertingkat
+            {
+                text: "Kalimat majemuk bertingkat yang menunjukkan hubungan sebab-akibat dengan tepat pada tema lingkungan adalah...",
+                image: "",
+                options: [
+                    { text: "Hutan gundul sehingga terjadi tanah longsor", isCorrect: true },
+                    { text: "Ayah menanam pohon lalu menyiram bunganya", isCorrect: false },
+                    { text: "Ibu membeli pupuk dan bibit tanaman", isCorrect: false },
+                    { text: "Kakak menyapu halaman bahkan mengepel lantai", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Kata 'sehingga' merupakan konjungsi sebab-akibat dalam kalimat majemuk bertingkat."
+            },
+            {
+                text: "Hujan turun sangat deras, [...] sungai di ujung desa itu meluap. Konjungsi yang tepat adalah...",
+                image: "",
+                options: [
+                    { text: "Akibatnya, air merendam rumah warga", isCorrect: true },
+                    { text: "Walaupun, air merendam rumah warga", isCorrect: false },
+                    { text: "Sedangkan, air merendam rumah warga", isCorrect: false },
+                    { text: "Bahkan, air merendam rumah warga", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Konjungsi 'akibatnya' paling tepat untuk menghubungkan sebab dan akibat."
+            },
+            {
+                text: "Perhatikan gambar ini! Kalimat majemuk yang paling sesuai untuk menjelaskan peristiwa dalam gambar tersebut adalah...",
+                image: "gambar/gambar_soal8_asappabrik.jpg",
+                imageAlt: "",
+                options: [
+                    { text: "Pabrik beroperasi sehingga udara menjadi kotor", isCorrect: true },
+                    { text: "Pabrik dibangun karena banyak warga menganggur", isCorrect: false },
+                    { text: "Pekerja datang ketika mesin mulai dinyalakan", isCorrect: false },
+                    { text: "Asap membubung meskipun hari mulai sore", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Gambar pabrik berasap memiliki sebab-akibat langsung dengan polusi udara."
+            },
+            {
+                text: "Kalimat: 'Karena terus-menerus membuang limbah sembarangan, ekosistem laut menjadi rusak.' Anak kalimat pada pernyataan tersebut adalah...",
+                image: "",
+                options: [
+                    { text: "Karena terus membuang limbah sembarangan", isCorrect: true },
+                    { text: "Ekosistem laut menjadi sangat rusak", isCorrect: false },
+                    { text: "Terus membuang limbah secara sembarangan", isCorrect: false },
+                    { text: "Limbah sembarangan membuat ekosistem rusak", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Anak kalimat keterangan sebab diawali oleh konjungsi 'karena'."
+            },
+            {
+                text: "Manakah pernyataan di bawah ini yang memuat hubungan sebab-akibat akibat kelalaian menjaga alam?",
+                image: "",
+                options: [
+                    { text: "Membakar hutan menyebabkan hilangnya habitat hewan", isCorrect: true },
+                    { text: "Mendaur ulang sampah membantu melestarikan bumi", isCorrect: false },
+                    { text: "Menanam pohon bakau mencegah abrasi pantai", isCorrect: false },
+                    { text: "Mematikan listrik menghemat energi di rumah", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Pilihan A menunjukkan kelalaian (membakar) dan akibat buruknya."
+            },
+
+            // Materi: Menggunakan Imbuhan ‘pe-an’
+            {
+                text: "Kata dasar 'hijau' jika diberi imbuhan 'pe-an' yang bermakna 'proses' pada tema alam menjadi...",
+                image: "",
+                options: [
+                    { text: "Penghijauan lahan kritis sangatlah penting", isCorrect: true },
+                    { text: "Pehijauan lahan kritis sangatlah penting", isCorrect: false },
+                    { text: "Menghijaukan lahan kritis sangatlah penting", isCorrect: false },
+                    { text: "Penghijau lahan kritis sangatlah penting", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Imbuhan pe-an pada 'hijau' menjadi 'penghijauan' (proses menghijaukan)."
+            },
+            {
+                text: "Berdasarkan gambar, proses yang sedang dilakukan oleh para relawan pelestari lingkungan ini disebut...",
+                image: "gambar/gambar_soal12_bersihpantai.jpg",
+                imageAlt: "Gambar relawan memungut sampah di pantai",
+                options: [
+                    { text: "Pembersihan pantai dari tumpukan sampah", isCorrect: true },
+                    { text: "Perawatan pantai dari tumpukan sampah", isCorrect: false },
+                    { text: "Pengelolaan pantai dari tumpukan sampah", isCorrect: false },
+                    { text: "Pembangunan pantai dari tumpukan sampah", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Membersihkan -> Pembersihan (proses menjadikan bersih)."
+            },
+            {
+                text: "Kalimat yang menggunakan kata berimbuhan pe-an dengan makna 'tempat' secara tepat adalah...",
+                image: "",
+                options: [
+                    { text: "Pembuangan akhir sampah berada di ujung kota", isCorrect: true },
+                    { text: "Pembakaran sampah liar membuat nafas sesak", isCorrect: false },
+                    { text: "Pengolahan limbah pabrik diawasi oleh petugas", isCorrect: false },
+                    { text: "Penebangan pohon liar merusak fungsi hutan", isCorrect: false }
+                ],
+                explanation: "Pembahasan: 'Pembuangan' bermakna tempat membuang."
+            },
+            {
+                text: "Kata 'tanam' mendapat imbuhan pe-an menjadi penanaman. Makna imbuhan pe-an pada kata tersebut adalah...",
+                image: "",
+                options: [
+                    { text: "Menyatakan proses atau cara menanam", isCorrect: true },
+                    { text: "Menyatakan tempat untuk mulai menanam", isCorrect: false },
+                    { text: "Menyatakan alat yang dipakai menanam", isCorrect: false },
+                    { text: "Menyatakan hasil dari kegiatan menanam", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Penanaman berarti proses, cara, atau perbuatan menanam."
+            },
+            {
+                text: "Imbuhan pe-an yang salah ejaannya terdapat pada kalimat pelestarian alam di bawah ini, yaitu...",
+                image: "",
+                options: [
+                    { text: "Pengrusakan terumbu karang harus segera dihentikan", isCorrect: true },
+                    { text: "Perusakan terumbu karang harus segera dihentikan", isCorrect: false },
+                    { text: "Pelestarian terumbu karang harus terus dilanjutkan", isCorrect: false },
+                    { text: "Penjagaan terumbu karang butuh banyak relawan", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Kata dasar 'rusak' + pe-an seharusnya 'perusakan', bukan 'pengrusakan'."
+            },
+
+            // Materi: Menulis Teks Eksposisi
+            {
+                text: "Langkah pertama yang paling tepat sebelum menulis teks eksposisi tentang pentingnya menghemat air adalah...",
+                image: "",
+                options: [
+                    { text: "Menentukan tema dan gagasan utamanya", isCorrect: true },
+                    { text: "Mengumpulkan data dan fakta pendukung", isCorrect: false },
+                    { text: "Menyusun kerangka tulisan secara rinci", isCorrect: false },
+                    { text: "Menulis kalimat penutup yang menarik", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Menentukan tema/topik adalah fondasi awal sebelum menulis eksposisi."
+            },
+            {
+                text: "Perhatikan gambar alat ini! Untuk menulis teks eksposisi tentang fungsinya, argumen terkuat yang bisa ditulis adalah...",
+                image: "gambar/gambar_soal17_panel_surya.jpg",
+                imageAlt: "Gambar panel surya di atas atap rumah",
+                options: [
+                    { text: "Panel surya menghasilkan energi sangat ramah lingkungan", isCorrect: true },
+                    { text: "Panel surya membuat atap rumah terlihat sangat mewah", isCorrect: false },
+                    { text: "Panel surya sangat mudah dipasang di segala tempat", isCorrect: false },
+                    { text: "Panel surya harganya sangat murah dan terjangkau warga", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Argumen utama panel surya adalah ramah lingkungan (energi alternatif)."
+            },
+            {
+                text: "Dalam struktur teks eksposisi, bagian yang memuat fakta dan alasan untuk memperkuat pandangan penulis disebut...",
+                image: "",
+                options: [
+                    { text: "Bagian argumentasi atau alasan logis", isCorrect: true },
+                    { text: "Bagian tesis atau pernyataan pendapat", isCorrect: false },
+                    { text: "Bagian penegasan ulang atau simpulan", isCorrect: false },
+                    { text: "Bagian orientasi atau pengenalan topik", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Argumentasi berisi alasan, bukti, dan data untuk mendukung tesis."
+            },
+            {
+                text: "Kalimat penegasan ulang yang tepat untuk teks eksposisi bertema 'Dampak Buruk Sampah Plastik' adalah...",
+                image: "",
+                options: [
+                    { text: "Oleh karena itu, kurangi penggunaan plastik", isCorrect: true },
+                    { text: "Sampah plastik sangat sulit untuk terurai", isCorrect: false },
+                    { text: "Banyak hewan laut mati menelan plastik", isCorrect: false },
+                    { text: "Plastik terbuat dari bahan minyak bumi", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Penegasan ulang berisi ajakan atau simpulan dari argumen yang dibahas."
+            },
+            {
+                text: "Fakta yang paling relevan untuk mendukung argumen bahwa 'Hutan adalah paru-paru dunia' dalam teks eksposisi adalah...",
+                image: "",
+                options: [
+                    { text: "Pohon di hutan menyerap gas karbon dioksida", isCorrect: true },
+                    { text: "Hutan menyediakan kayu untuk bahan bangunan", isCorrect: false },
+                    { text: "Banyak hewan liar menjadikan hutan habitatnya", isCorrect: false },
+                    { text: "Hutan lebat memiliki pemandangan sangat asri", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Paru-paru dunia berkaitan dengan siklus udara (oksigen dan karbon dioksida)."
+            },
+
+            // Campuran HOTS Keseluruhan Bab
+            {
+                text: "Seorang anak membuang baterai bekas ke tanah. Secara logika sains dan bahasa, akibatnya terhadap lingkungan adalah...",
+                image: "",
+                options: [
+                    { text: "Zat kimia beracun mencemari sumber air", isCorrect: true },
+                    { text: "Baterai tersebut akan cepat hancur terurai", isCorrect: false },
+                    { text: "Tanah menjadi sangat subur untuk ditanami", isCorrect: false },
+                    { text: "Akar tanaman menyerap energi dari baterai", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Baterai mengandung logam berat beracun yang meresap dan mencemari air tanah."
+            },
+            {
+                text: "Apa simpulan yang menghubungkan kalimat 'Global warming mencairkan es kutub' dan 'Permukaan air laut naik'?",
+                image: "",
+                options: [
+                    { text: "Pemanasan global mengancam daratan tepi pantai", isCorrect: true },
+                    { text: "Es kutub mencair karena sinar matahari", isCorrect: false },
+                    { text: "Air laut naik membuat ikan banyak", isCorrect: false },
+                    { text: "Global warming terjadi karena gas rumah kaca", isCorrect: false }
+                ],
+                explanation: "Pembahasan: HOTS menyintesis dua fakta menjadi dampak lanjutan (ancaman daratan pesisir)."
+            },
+            {
+                text: "Perhatikan gambar siklus air. Jika hutan di area X ditebang habis, dampak kalimat majemuk yang terjadi adalah...",
+                image: "gambar/gambar_soal23_siklus_air.jpg",
+                imageAlt: "Gambar siklus air dengan area hutan di pegunungan",
+                options: [
+                    { text: "Resapan air hilang sehingga memicu terjadinya banjir", isCorrect: true },
+                    { text: "Awan tidak terbentuk karena kurang uap air", isCorrect: false },
+                    { text: "Sinar matahari langsung memanaskan tanah daratan", isCorrect: false },
+                    { text: "Hujan turun sangat deras di daerah perkotaan", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Ketiadaan pohon menyebabkan hilangnya daerah resapan air (sebab-akibat)."
+            },
+            {
+                text: "Kalimat: 'Penggunaan sedotan bambu terus digalakkan'. Kata 'penggunaan' berasal dari kata dasar guna yang berarti...",
+                image: "",
+                options: [
+                    { text: "Proses atau cara memakai suatu benda", isCorrect: true },
+                    { text: "Tempat menyimpan benda yang banyak gunanya", isCorrect: false },
+                    { text: "Alat untuk mempermudah pekerjaan umat manusia", isCorrect: false },
+                    { text: "Hasil dari benda yang sudah lama dipakai", isCorrect: false }
+                ],
+                explanation: "Pembahasan: 'Penggunaan' (pe-an + guna) bermakna proses atau cara memakai."
+            },
+            {
+                text: "Topik teks eksposisi: 'Bahaya Fast Fashion bagi Bumi'. Argumen yang paling logis dan tidak melenceng adalah...",
+                image: "",
+                options: [
+                    { text: "Pewarna pakaian mencemari sungai sangat parah", isCorrect: true },
+                    { text: "Pakaian murah cepat rusak saat sering dicuci", isCorrect: false },
+                    { text: "Tren gaya berpakaian berubah sangat cepat sekali", isCorrect: false },
+                    { text: "Banyak desainer membuat baju model gaya baru", isCorrect: false }
+                ],
+                explanation: "Pembahasan: Argumen harus berfokus pada bahaya ekologis (lingkungan) dari fast fashion."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userName = "";
+        let userClass = "";
+        let userAnswers = new Array(questions.length).fill(null);
+        let shuffledOptions = [];
+
+        // Fungsi mengacak array (untuk posisi jawaban)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Tampilkan riwayat saat halaman dimuat
+        window.onload = function() {
+            displayHistory();
+        };
+
+        function startQuiz() {
+            userName = document.getElementById("nama").value.trim();
+            userClass = document.getElementById("kelas").value.trim();
+            if (userName === "" || userClass === "") {
+                alert("Harap isi nama dan kelas terlebih dahulu!");
+                return;
+            }
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("quiz-screen").style.display = "block";
+            loadQuestion(0);
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = questions[index];
+            
+            document.getElementById("question-number").innerText = `Soal ${index + 1} dari ${questions.length}`;
+            document.getElementById("question-text").innerText = q.text;
+            
+            // Handle image
+            const imgContainer = document.getElementById("image-container");
+            if (q.image !== "") {
+                imgContainer.innerHTML = `<img src="${q.image}" alt="${q.imageAlt}" class="question-image">`;
+            } else {
+                imgContainer.innerHTML = "";
+            }
+
+            // Options setup
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+            document.getElementById("explanation").style.display = "none";
+            document.getElementById("explanation").innerText = "";
+
+            // Acak pilihan jawaban HANYA JIKA belum dijawab
+            if (userAnswers[index] === null) {
+                shuffledOptions = shuffleArray([...q.options]);
+            }
+
+            shuffledOptions.forEach((opt, i) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt.text;
+                
+                // Jika sudah pernah dijawab
+                if (userAnswers[index] !== null) {
+                    btn.disabled = true;
+                    if (opt.isCorrect) btn.classList.add("correct");
+                    else if (userAnswers[index] === i && !opt.isCorrect) btn.classList.add("wrong");
+                } else {
+                    btn.onclick = () => selectOption(i, opt.isCorrect, btn);
+                }
+                
+                optionsContainer.appendChild(btn);
+            });
+
+            // Tampilkan pembahasan jika sudah dijawab
+            if (userAnswers[index] !== null) {
+                document.getElementById("explanation").style.display = "block";
+                document.getElementById("explanation").innerText = q.explanation;
+            }
+
+            // Nav buttons visibility
+            document.getElementById("btn-prev").style.display = index > 0 ? "inline-block" : "none";
+            
+            if (index === questions.length - 1) {
+                document.getElementById("btn-next").style.display = "none";
+                document.getElementById("btn-finish").style.display = userAnswers[index] !== null ? "inline-block" : "none";
+            } else {
+                document.getElementById("btn-next").style.display = userAnswers[index] !== null ? "inline-block" : "none";
+                document.getElementById("btn-finish").style.display = "none";
+            }
+        }
+
+        function selectOption(selectedIndex, isCorrect, btnElement) {
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            const buttons = document.querySelectorAll(".option-btn");
+            
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (shuffledOptions[i].isCorrect) {
+                    btn.classList.add("correct");
+                } else if (i === selectedIndex && !isCorrect) {
+                    btn.classList.add("wrong");
+                }
+            });
+
+            if (isCorrect) {
+                score += (100 / questions.length); // Skoring proporsional
+                document.getElementById("live-score").innerText = `Skor Sementara: ${Math.round(score)}`;
+            }
+
+            document.getElementById("explanation").style.display = "block";
+            document.getElementById("explanation").innerText = questions[currentQuestionIndex].explanation;
+
+            // Update nav buttons
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById("btn-finish").style.display = "inline-block";
+            } else {
+                document.getElementById("btn-next").style.display = "inline-block";
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function finishQuiz() {
+            const finalScore = Math.round(score);
+            const date = new Date().toLocaleString("id-ID");
+            
+            const historyItem = {
+                time: date,
+                name: userName,
+                className: userClass,
+                score: finalScore
+            };
+
+            let historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            historyData.push(historyItem);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(historyData));
+
+            alert(`Selamat ${userName}! Anda telah menyelesaikan kuis.\nSkor Akhir Anda: ${finalScore}`);
+            location.reload(); // Reload untuk kembali ke login screen
+        }
+
+        function displayHistory() {
+            const historyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            const tbody = document.getElementById("history-body");
+            tbody.innerHTML = "";
+            
+            historyData.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${item.time}</td>
+                    <td>${item.name}</td>
+                    <td>${item.className}</td>
+                    <td><strong>${item.score}</strong></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>

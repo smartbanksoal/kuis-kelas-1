@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPAS Kelas 5 - Indonesiaku Kaya Raya</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f39c12;
+            --bg-color: #f0f8ff;
+            --text-dark: #333;
+            --correct: #2ecc71;
+            --wrong: #e74c3c;
+            --footer-bg: #1a1a1a;
+        }
+
+        /* Keamanan: Mencegah seleksi teks */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            user-select: none; /* Anti select */
+            -webkit-user-select: none;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #8e44ad);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            flex: 1;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            width: 90%;
+        }
+
+        /* Login Screen */
+        .login-box, .quiz-box, .result-box {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #d68910;
+        }
+
+        .btn-home {
+            background-color: var(--primary);
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Quiz Elements */
+        .question-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .img-caption {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: left;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #e2e8f0;
+            border-color: var(--primary);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct { background-color: var(--correct) !important; color: white; border-color: var(--correct); }
+        .option-btn.wrong { background-color: var(--wrong) !important; color: white; border-color: var(--wrong); }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .discussion {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e1f5fe;
+            border-left: 5px solid var(--primary);
+            border-radius: 5px;
+            display: none;
+        }
+
+        /* History Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th { background-color: var(--primary); color: white; }
+
+        .live-score {
+            font-weight: bold;
+            color: var(--primary);
+            float: right;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            background-color: var(--footer-bg);
+            color: #ccc;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover { color: white; }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;" onselectstart="return false;">
+
+    <header>Kode Soal: IPAS-K5-S2-B6-HOTS</header>
+
+    <div class="container">
+        <div id="login-screen" class="login-box active">
+            <a href="../index.html" class="btn btn-home">🏠 Kembali ke Home</a>
+            
+            <h2 style="color: var(--primary); text-align: center;">Selamat Datang!</h2>
+            <p style="text-align: center;">Silakan isi data diri untuk memulai kuis.</p>
+            
+            <input type="text" id="input-nama" placeholder="Masukkan Nama Lengkap" required>
+            <input type="text" id="input-kelas" placeholder="Masukkan Kelas" required>
+            <button class="btn" style="width: 100%;" onclick="mulaiKuis()">Mulai Kuis</button>
+
+            <h3 style="margin-top: 30px;">Riwayat Skor (Perangkat Ini)</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Skor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="quiz-box">
+            <div>
+                <span id="question-counter" style="font-weight: bold; color: #666;">Soal 1 / 25</span>
+                <span class="live-score">Skor: <span id="current-score">0</span></span>
+            </div>
+            <hr>
+            
+            <div id="image-container" style="display: none;">
+                <img id="question-image" class="question-img" src="" alt="Gambar Soal">
+                <div id="image-caption" class="img-caption"></div>
+            </div>
+
+            <h3 id="question-text" style="line-height: 1.6;"></h3>
+            
+            <div id="options-container" class="options-grid">
+                </div>
+
+            <div id="discussion-box" class="discussion">
+                <strong>Pembahasan:</strong> <span id="discussion-text"></span>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn" id="btn-prev" onclick="gantiSoal(-1)" style="display:none; background-color: #95a5a6;">⬅ Sebelumnya</button>
+                <button class="btn" id="btn-next" onclick="gantiSoal(1)" style="display:none;">Selanjutnya ➡</button>
+                <button class="btn" id="btn-finish" onclick="selesaiKuis()" style="display:none; background-color: var(--correct);">Selesai Kuis ✔</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="result-box" style="text-align: center;">
+            <h2 style="color: var(--primary);">Kuis Selesai!</h2>
+            <h1 style="font-size: 4rem; margin: 10px 0; color: var(--secondary);" id="final-score">100</h1>
+            <p>Terima kasih telah mengerjakan, <span id="display-nama" style="font-weight: bold;"></span>.</p>
+            <button class="btn" onclick="location.reload()">Kembali ke Halaman Awal</button>
+        </div>
+    </div>
+
+    <footer>
+        Oleh: Dwi Endrasto<br>
+        Produk ini asli jika didapatkan/dibeli melalui <a href="https://lynk.id/smartbanksoal" target="_blank">https://lynk.id/smartbanksoal</a>
+    </footer>
+
+    <script>
+        // KUNCI PENYIMPANAN ISOLASI: Mencegah bentrok dengan kuis lain
+        const STORAGE_KEY = "history_IPAS_K5_S2_B6_HOTS";
+
+        // DATA SOAL (25 Soal HOTS)
+        // Panjang kata pilihan jawaban disamakan. Pilihan akan diacak oleh sistem.
+        const questions = [
+            // --- Materi: Bagaimana Bentuk Indonesiaku? ---
+            {
+                q: "Sebagian besar wilayah Indonesia terdiri atas perairan, sehingga sistem transportasi logistik antarpulau paling efisien menggunakan kapal. Kondisi geografis ini mengukuhkan identitas Indonesia sebagai negara...",
+                options: ["Negara maritim kepulauan", "Negara agraris tropis", "Negara industri maju", "Negara agraris daratan"],
+                answer: "Negara maritim kepulauan",
+                discussion: "Kondisi perairan yang lebih luas dari daratan (2/3 wilayah) membuat Indonesia disebut negara maritim."
+            },
+            {
+                q: "Posisi Indonesia diapit oleh Benua Asia dan Australia serta Samudra Hindia dan Pasifik. Dampak letak geografis ini terhadap kondisi sosial budaya masyarakat Indonesia adalah...",
+                options: ["Terjadi akulturasi budaya", "Memiliki satu musim saja", "Menjadi negara tertutup", "Tidak ada keragaman seni"],
+                answer: "Terjadi akulturasi budaya",
+                discussion: "Posisi silang membuat Indonesia menjadi jalur pelayaran dunia, sehingga banyak pengaruh budaya luar yang berakulturasi."
+            },
+            {
+                q: "Perhatikan peta wilayah Indonesia! Jika pemerintah ingin membangun pembangkit listrik tenaga angin bertenaga besar, wilayah yang paling logis dipilih berdasarkan peta topografi adalah...",
+                hasImage: true,
+                image: "gambar/peta_angin.jpg", // Jalur offline yang bisa diedit
+                imageDesc: "Peta Topografi dan Kecepatan Angin Indonesia",
+                options: ["Daerah pesisir selatan", "Daerah lembah tertutup", "Daerah hutan lebat", "Daerah perkotaan padat"],
+                answer: "Daerah pesisir selatan",
+                discussion: "Pesisir selatan (terutama Jawa-Nusa Tenggara) berhadapan langsung dengan samudra sehingga memiliki potensi angin yang konstan dan besar."
+            },
+            {
+                q: "Perbedaan relief bumi di Indonesia memengaruhi mata pencaharian penduduknya. Penduduk di dataran tinggi cenderung tidak berprofesi sebagai petani garam karena...",
+                options: ["Suhu terlalu dingin berkabut", "Suhu sangat panas menyengat", "Curah hujan sangat minim", "Lahan terlalu datar landai"],
+                answer: "Suhu terlalu dingin berkabut",
+                discussion: "Pembuatan garam membutuhkan panas matahari yang terik dan air laut, hal yang tidak tersedia di dataran tinggi yang bersuhu dingin."
+            },
+            {
+                q: "Seorang nelayan di pesisir utara Jawa lebih memilih berlayar pada malam hari dan kembali pada pagi hari. Fenomena alam yang dimanfaatkan oleh nelayan tersebut adalah...",
+                options: ["Angin darat dan laut", "Angin muson dan pasat", "Angin topan dan badai", "Angin lembah dan gunung"],
+                answer: "Angin darat dan laut",
+                discussion: "Angin darat bertiup malam hari membantu nelayan melaut, angin laut bertiup siang hari membantu nelayan pulang."
+            },
+            {
+                q: "Letak astronomis Indonesia menyebabkan curah hujan yang tinggi. Dampak positif kondisi ini bagi sektor pertanian adalah...",
+                options: ["Siklus tanam sepanjang tahun", "Tanaman sering mengalami layu", "Lahan pertanian cepat mengering", "Hanya bisa menanam palawija"],
+                answer: "Siklus tanam sepanjang tahun",
+                discussion: "Curah hujan tinggi dan sinar matahari sepanjang tahun membuat petani dapat menanam padi/tanaman berulang kali dalam setahun."
+            },
+            {
+                q: "Meskipun memiliki wilayah laut yang luas, hasil produksi ikan laut Indonesia terkadang kalah dari negara lain. Analisis penyebab struktural dari masalah ini adalah...",
+                options: ["Alat tangkap masih tradisional", "Jumlah ikan laut sangat sedikit", "Laut Indonesia sangat dangkal", "Tidak ada pelabuhan perikanan"],
+                answer: "Alat tangkap masih tradisional",
+                discussion: "Banyak nelayan masih menggunakan perahu kecil dan alat sederhana, sehingga daya jelajah dan hasil tangkapan kurang maksimal."
+            },
+            {
+                q: "Sistem irigasi Subak di Bali merupakan bukti adaptasi masyarakat terhadap kondisi geografis. Nilai utama yang terkandung dalam sistem irigasi ini adalah...",
+                options: ["Keadilan dan gotong royong", "Kekuatan dan persaingan ketat", "Keuntungan dan ekonomi pasar", "Monopoli dan penguasaan air"],
+                answer: "Keadilan dan gotong royong",
+                discussion: "Subak bukan hanya soal perairan, tetapi tentang keadilan membagi air dan semangat gotong royong antar petani."
+            },
+
+            // --- Materi: Indonesiaku Kaya Hayatinya ---
+            {
+                q: "Garis Wallace dan Weber membagi wilayah fauna di Indonesia. Jika Anda menemukan hewan berkantung seperti Kanguru di sebuah daerah, daerah tersebut masuk dalam zona...",
+                hasImage: true,
+                image: "gambar/garis_wallace.jpg",
+                imageDesc: "Peta Garis Wallace dan Garis Weber",
+                options: ["Fauna tipe Australis Timur", "Fauna tipe Asiatis Barat", "Fauna tipe Peralihan Tengah", "Fauna tipe Endemik Lokal"],
+                answer: "Fauna tipe Australis Timur",
+                discussion: "Kanguru dan hewan berkantung lainnya merupakan ciri khas fauna tipe Australis yang berada di bagian timur Indonesia."
+            },
+            {
+                q: "Bunga Rafflesia Arnoldii adalah flora endemik Sumatra yang memiliki ciri khas bau busuk. Fungsi dari bau busuk tersebut dalam kelangsungan hidupnya adalah...",
+                options: ["Menarik serangga lalat penyerbuk", "Mengusir herbivora pemakan daun", "Membunuh bakteri parasit tanah", "Menyerap nutrisi dari udara luar"],
+                answer: "Menarik serangga lalat penyerbuk",
+                discussion: "Bau busuk menyerupai bangkai berfungsi untuk memikat lalat yang akan membantu proses penyerbukan bunga langka ini."
+            },
+            {
+                q: "Perburuan liar menyebabkan badak bercula satu di Ujung Kulon terancam punah. Jika badak ini punah, dampak ekologis yang paling mungkin terjadi adalah...",
+                options: ["Keseimbangan rantai makanan terganggu", "Hutan menjadi semakin lebat rindang", "Hewan karnivora menjadi sangat jinak", "Tanah hutan menjadi sangat subur"],
+                answer: "Keseimbangan rantai makanan terganggu",
+                discussion: "Setiap hewan memiliki peran dalam ekosistem (niche). Kepunahan satu spesies merusak siklus jaring-jaring makanan."
+            },
+            {
+                q: "Tanaman bakau (mangrove) banyak ditanam di kawasan pesisir pantai. Berdasarkan fungsi ekologisnya, penanaman ini sangat penting untuk mencegah terjadinya...",
+                hasImage: true,
+                image: "gambar/hutan_bakau.jpg",
+                imageDesc: "Kawasan Hutan Mangrove di Pesisir",
+                options: ["Abrasi dan erosi pantai", "Banjir bandang pegunungan", "Gempa bumi tektonik dalam", "Pencemaran udara perkotaan"],
+                answer: "Abrasi dan erosi pantai",
+                discussion: "Akar bakau yang kuat berfungsi menahan gelombang laut sehingga mencegah pengikisan daratan pantai (abrasi)."
+            },
+            {
+                q: "Perhatikan ciri fauna berikut: mamalia berukuran besar, tidak memiliki kantung. Hewan dengan ciri tersebut umumnya ditemukan di wilayah...",
+                options: ["Sumatra dan Pulau Kalimantan", "Papua dan Kepulauan Maluku", "Pulau Sulawesi dan Nusa Tenggara", "Nusa Tenggara Timur dan Barat"],
+                answer: "Sumatra dan Pulau Kalimantan",
+                discussion: "Mamalia besar tanpa kantung (Gajah, Harimau, Badak) adalah ciri fauna Asiatis di wilayah Barat Indonesia."
+            },
+            {
+                q: "Pemerintah menetapkan beberapa wilayah sebagai Cagar Alam. Perbedaan mendasar antara Cagar Alam dan Taman Safari terletak pada...",
+                options: ["Tingkat campur tangan manusia", "Jumlah hewan yang dipelihara", "Jenis tiket masuk pengunjung", "Luas lahan yang digunakan"],
+                answer: "Tingkat campur tangan manusia",
+                discussion: "Cagar alam dibiarkan tumbuh alami tanpa campur tangan manusia untuk melindungi ekosistem aslinya."
+            },
+            {
+                q: "Komodo hanya dapat ditemukan di Pulau Komodo dan sekitarnya. Hewan yang hanya ada di satu wilayah tertentu dan tidak ditemukan di tempat lain di dunia disebut spesies...",
+                options: ["Spesies endemik wilayah", "Spesies epifit menempel", "Spesies nokturnal malam", "Spesies herbivora pemakan"],
+                answer: "Spesies endemik wilayah",
+                discussion: "Endemik berarti suatu jenis tumbuhan atau hewan hanya hidup dan ditemukan secara alami di suatu wilayah spesifik."
+            },
+            {
+                q: "Hutan hujan tropis di Kalimantan sering dijuluki 'Paru-paru Dunia'. Alasan ilmiah dari julukan tersebut berkaitan erat dengan proses...",
+                options: ["Penyerapan karbon dan produksi oksigen", "Penghasil kayu bangunan kualitas tinggi", "Tempat berlindung berbagai jenis hewan", "Penyaring air hujan menjadi air bersih"],
+                answer: "Penyerapan karbon dan produksi oksigen",
+                discussion: "Melalui fotosintesis, hutan hujan tropis menyerap banyak karbon dioksida dan menghasilkan oksigen dalam jumlah besar bagi bumi."
+            },
+
+            // --- Materi: Indonesiaku Kaya Alamnya ---
+            {
+                q: "Nikel merupakan salah satu sumber daya alam yang sedang gencar dikelola di Indonesia karena menjadi bahan baku utama pembuatan...",
+                options: ["Baterai kendaraan tenaga listrik", "Bahan bakar pesawat udara", "Konstruksi rangka jembatan", "Perhiasan logam mulia mahal"],
+                answer: "Baterai kendaraan tenaga listrik",
+                discussion: "Nikel merupakan komponen penting dalam pembuatan baterai ion-litium yang digunakan untuk mobil listrik di masa depan."
+            },
+            {
+                q: "Batu bara merupakan sumber daya alam yang tidak dapat diperbarui. Tindakan paling bijak untuk menjaga ketersediaan energi bagi generasi mendatang adalah...",
+                hasImage: true,
+                image: "gambar/panel_surya.jpg",
+                imageDesc: "Penggunaan Energi Alternatif Panel Surya",
+                options: ["Beralih ke energi surya alternatif", "Mengeksploitasi secara besar-besaran", "Menghentikan semua kegiatan pabrik", "Mengekspor semua hasil batu bara"],
+                answer: "Beralih ke energi surya alternatif",
+                discussion: "Energi alternatif (terbarukan) seperti panel surya tidak akan habis dan lebih ramah lingkungan menggantikan fosil."
+            },
+            {
+                q: "Kalimantan dikenal kaya akan hasil hutan berupa kayu rotan. Pemanfaatan rotan yang bernilai ekonomi tinggi namun tetap menjaga kelestarian lingkungan adalah dengan cara...",
+                options: ["Dibuat kerajinan mebel ekspor", "Dibakar untuk lahan pertanian", "Ditebang habis tanpa sisa", "Dibiarkan lapuk dimakan usia"],
+                answer: "Dibuat kerajinan mebel ekspor",
+                discussion: "Mengolah rotan menjadi barang jadi (mebel/kerajinan) akan meningkatkan nilai tambah ekonomi tanpa harus merusak hutan."
+            },
+            {
+                q: "Wilayah dataran rendah banyak dimanfaatkan untuk permukiman dan industri. Secara geografis, alasan utama pemilihan dataran rendah untuk kegiatan tersebut adalah...",
+                options: ["Akses transportasi darat sangat mudah", "Suhu udara yang sangat sejuk dingin", "Bebas dari risiko bencana banjir", "Terdapat banyak sumber air panas"],
+                answer: "Akses transportasi darat sangat mudah",
+                discussion: "Dataran rendah memiliki kontur datar yang memudahkan pembangunan jalan, rel, dan infrastruktur lainnya."
+            },
+            {
+                q: "Salah satu hasil kekayaan laut Indonesia adalah terumbu karang. Penggunaan bom ikan untuk menangkap ikan sangat dilarang keras karena...",
+                options: ["Menghancurkan ekosistem terumbu karang", "Membuat ikan berkembang biak cepat", "Meningkatkan suhu air laut sekitar", "Menambah nutrisi bagi biota laut"],
+                answer: "Menghancurkan ekosistem terumbu karang",
+                discussion: "Bom ikan tidak hanya membunuh ikan besar, tapi juga ikan kecil dan menghancurkan terumbu karang tempat ikan hidup."
+            },
+            {
+                q: "Emas merupakan sumber daya alam tambang yang banyak ditemukan di daerah Papua. Emas digolongkan sebagai sumber daya alam tidak dapat diperbarui karena...",
+                options: ["Proses pembentukannya jutaan tahun", "Mudah hancur jika terkena air hujan", "Hanya bisa ditemukan di pedalaman", "Bentuknya cair dan mudah menguap"],
+                answer: "Proses pembentukannya jutaan tahun",
+                discussion: "Barang tambang mineral membutuhkan waktu geologis yang sangat lama (jutaan tahun) untuk terbentuk kembali."
+            },
+            {
+                q: "Perhatikan aktivitas berikut: (1) Reboisasi, (2) Illegal logging, (3) Sistem tebang pilih, (4) Pembakaran lahan. Aktivitas yang melestarikan sumber daya alam hutan ditunjukkan oleh nomor...",
+                hasImage: true,
+                image: "gambar/reboisasi.jpg",
+                imageDesc: "Aktivitas Menjaga Kelestarian Hutan",
+                options: ["Nomor satu dan nomor tiga", "Nomor dua dan nomor empat", "Nomor satu dan nomor dua", "Nomor tiga dan nomor empat"],
+                answer: "Nomor satu dan nomor tiga",
+                discussion: "Reboisasi (penghijauan) dan tebang pilih (hanya menebang pohon tua) adalah cara menjaga hutan tetap lestari."
+            },
+            {
+                q: "Indonesia memiliki potensi energi panas bumi (geotermal) yang sangat besar karena letak geografisnya. Faktor geografis yang menyebabkan hal tersebut adalah...",
+                options: ["Berada di jalur Cincin Api", "Terletak di garis khatulistiwa", "Diapit oleh dua samudra besar", "Memiliki banyak sungai besar"],
+                answer: "Berada di jalur Cincin Api",
+                discussion: "Jalur Cincin Api Pasifik (Ring of Fire) membuat Indonesia memiliki banyak gunung berapi dan aktivitas magma sumber geotermal."
+            },
+            {
+                q: "Minyak bumi sering disebut sebagai 'emas hitam' karena nilai ekonominya yang tinggi. Dampak negatif dari pembakaran minyak bumi pada mesin kendaraan terhadap lingkungan adalah...",
+                options: ["Meningkatkan polusi udara kotor", "Menyebabkan tanah menjadi subur", "Menurunkan suhu permukaan bumi", "Menjernihkan air sungai perkotaan"],
+                answer: "Meningkatkan polusi udara kotor",
+                discussion: "Hasil pembakaran minyak bumi menghasilkan gas seperti karbon monoksida dan dioksida yang menyebabkan polusi udara."
+            }
+        ];
+
+        // VARIABEL KUIS
+        let currentSoal = 0;
+        let score = 0;
+        let userNama = "";
+        let userKelas = "";
+        let answersState = new Array(questions.length).fill(null); // Menyimpan status jawaban (benar/salah) tiap soal
+
+        // FUNGSI LOG IN & MEMULAI
+        function mulaiKuis() {
+            userNama = document.getElementById('input-nama').value.trim();
+            userKelas = document.getElementById('input-kelas').value.trim();
+
+            if (userNama === "" || userKelas === "") {
+                alert("Harap isi Nama dan Kelas terlebih dahulu!");
+                return;
+            }
+
+            document.getElementById('login-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            
+            // Randomize options for all questions once at start
+            questions.forEach(q => {
+                let optsWithAns = q.options.map(o => ({text: o, isAns: o === q.answer}));
+                shuffleArray(optsWithAns);
+                q.shuffledOptions = optsWithAns;
+            });
+
+            tampilkanSoal(0);
+        }
+
+        // FUNGSI MENGACAK ARRAY (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // FUNGSI TAMPIL SOAL
+        function tampilkanSoal(index) {
+            currentSoal = index;
+            let q = questions[index];
+            
+            // Update counter
+            document.getElementById('question-counter').innerText = `Soal ${index + 1} / ${questions.length}`;
+            
+            // Cek Gambar
+            let imgContainer = document.getElementById('image-container');
+            if (q.hasImage) {
+                imgContainer.style.display = "block";
+                document.getElementById('question-image').src = q.image;
+                document.getElementById('image-caption').innerText = q.imageDesc;
+            } else {
+                imgContainer.style.display = "none";
+            }
+
+            // Teks Soal
+            document.getElementById('question-text').innerText = q.q;
+
+            // Generate Options
+            let optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = "";
+            
+            let isAnswered = answersState[index] !== null;
+
+            q.shuffledOptions.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = "option-btn";
+                btn.innerText = opt.text;
+                
+                // Jika soal ini sudah pernah dijawab
+                if (isAnswered) {
+                    btn.disabled = true;
+                    if (opt.isAns) btn.classList.add('correct');
+                    else if (answersState[index] === opt.text) btn.classList.add('wrong'); // Jawaban salah yang diklik user
+                } else {
+                    btn.onclick = () => cekJawaban(btn, opt.isAns, opt.text);
+                }
+                optContainer.appendChild(btn);
+            });
+
+            // Tampilkan pembahasan jika sudah dijawab
+            let discBox = document.getElementById('discussion-box');
+            if (isAnswered) {
+                discBox.style.display = "block";
+                document.getElementById('discussion-text').innerText = q.discussion;
+            } else {
+                discBox.style.display = "none";
+            }
+
+            // Navigasi Tombol
+            document.getElementById('btn-prev').style.display = index > 0 ? "inline-block" : "none";
+            
+            if (index === questions.length - 1) {
+                document.getElementById('btn-next').style.display = "none";
+                document.getElementById('btn-finish').style.display = "inline-block";
+            } else {
+                document.getElementById('btn-next').style.display = "inline-block";
+                document.getElementById('btn-finish').style.display = "none";
+            }
+        }
+
+        // FUNGSI CEK JAWABAN
+        function cekJawaban(btn, isCorrect, btnText) {
+            let btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => b.disabled = true); // Disable semua opsi setelah klik
+
+            answersState[currentSoal] = btnText; // Rekam jawaban
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                score += (100 / questions.length); // Kalkulasi skor persis
+                document.getElementById('current-score').innerText = Math.round(score);
+            } else {
+                btn.classList.add('wrong');
+                // Tunjukkan yang benar
+                btns.forEach(b => {
+                    if (questions[currentSoal].answer === b.innerText) {
+                        b.classList.add('correct');
+                    }
+                });
+            }
+
+            // Tampilkan Pembahasan
+            document.getElementById('discussion-box').style.display = "block";
+            document.getElementById('discussion-text').innerText = questions[currentSoal].discussion;
+        }
+
+        // FUNGSI NAVIGASI
+        function gantiSoal(arah) {
+            let nextIndex = currentSoal + arah;
+            if (nextIndex >= 0 && nextIndex < questions.length) {
+                tampilkanSoal(nextIndex);
+            }
+        }
+
+        // FUNGSI SELESAI
+        function selesaiKuis() {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            let finalScore = Math.round(score);
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('display-nama').innerText = userNama;
+
+            simpanRiwayat(userNama, userKelas, finalScore);
+        }
+
+        // MANAJEMEN LOCAL STORAGE YANG AMAN & TERISOLASI
+        function simpanRiwayat(nama, kelas, skorAkhir) {
+            let date = new Date();
+            let timeString = date.toLocaleDateString('id-ID') + " " + date.toLocaleTimeString('id-ID');
+            
+            let record = { waktu: timeString, nama: nama, kelas: kelas, skor: skorAkhir };
+            
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            history.push(record);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            
+            tampilkanRiwayat();
+        }
+
+        function tampilkanRiwayat() {
+            let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            let tbody = document.getElementById('history-table-body');
+            tbody.innerHTML = "";
+            
+            // Tampilkan dari yang terbaru
+            history.reverse().forEach(row => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td>${row.waktu}</td><td>${row.nama}</td><td>${row.kelas}</td><td style="font-weight:bold; color:var(--primary)">${row.skor}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Muat riwayat saat halaman pertama dibuka
+        window.onload = tampilkanRiwayat;
+
+    </script>
+</body>
+</html>
